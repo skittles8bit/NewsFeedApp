@@ -12,13 +12,13 @@ class NewsTableViewCell: UITableViewCell {
     @IBOutlet weak var headerNewsLabel: UILabel!
     @IBOutlet weak var mainTextNewsLabel: UILabel!
     @IBOutlet weak var newsImageView: UIImageView!
+    @IBOutlet weak var timePublishedLabel: UILabel!
     
     func configure(with viewModel: NewsTableViewCellViewModel) {
         
         headerNewsLabel.text = viewModel.title
         mainTextNewsLabel.text = viewModel.subtitle
-        
-        newsImageView.layer.cornerRadius = 2
+        timePublishedLabel.text = viewModel.time?.convertData()
         
         if let imageData = viewModel.imageData {
             newsImageView.image = UIImage(data: imageData)

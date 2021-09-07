@@ -49,7 +49,8 @@ class LoadingViewController: UIViewController {
                     NewsTableViewCellViewModel(title: $0.author ?? "Empty author",
                                                subtitle: $0.description ?? "Empty description",
                                                imageUrl: URL(string: $0.urlToImage ?? ""),
-                                               url: URL(string: $0.url ?? ""))
+                                               url: URL(string: $0.url ?? ""),
+                                               time: $0.publishedAt)
                     
                 })
                 

@@ -19,6 +19,7 @@
 		FA2282C226E74DB300C93492 /* NewsTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2282C126E74DB300C93492 /* NewsTableViewCellViewModel.swift */; };
 		FA43BC9526E770480019A326 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BC9426E770480019A326 /* LoadingViewController.swift */; };
 		FA43BC9B26E77D530019A326 /* DescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BC9A26E77D530019A326 /* DescriptionViewController.swift */; };
+		FA43BC9D26E786C20019A326 /* Extansion.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BC9C26E786C20019A326 /* Extansion.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		FA2282C126E74DB300C93492 /* NewsTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		FA43BC9426E770480019A326 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		FA43BC9A26E77D530019A326 /* DescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionViewController.swift; sourceTree = "<group>"; };
+		FA43BC9C26E786C20019A326 /* Extansion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extansion.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				4FBFCD6026E6A64E00943B6F /* NewsViewController.swift */,
 				FA43BC9426E770480019A326 /* LoadingViewController.swift */,
 				FA2282BF26E74D4D00C93492 /* NewsTableViewCell.swift */,
+				FA43BC9C26E786C20019A326 /* Extansion.swift */,
 				FA43BC9A26E77D530019A326 /* DescriptionViewController.swift */,
 			);
 			path = View;
@@ -192,6 +195,7 @@
 				FA2282C026E74D4D00C93492 /* NewsTableViewCell.swift in Sources */,
 				FA43BC9526E770480019A326 /* LoadingViewController.swift in Sources */,
 				FA2282BC26E7445000C93492 /* NetworkService.swift in Sources */,
+				FA43BC9D26E786C20019A326 /* Extansion.swift in Sources */,
 				FA2282C226E74DB300C93492 /* NewsTableViewCellViewModel.swift in Sources */,
 				FA43BC9B26E77D530019A326 /* DescriptionViewController.swift in Sources */,
 				FA2282BE26E745CB00C93492 /* News.swift in Sources */,
