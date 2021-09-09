@@ -9,7 +9,7 @@ import Foundation
 
 final class NetworkService {
     
-    private let urlAPI = URL(string: "https://newsapi.org/v2/everything?q=tesla&from=2021-08-07&sortBy=publishedAt&apiKey=7e7a5f7c166344cf9f14d4a549ab9282")
+    private let urlAPI = URL(string: "https://newsapi.org/v2/everything?q=apple&from=2021-09-08&to=2021-09-08&sortBy=popularity&apiKey=7e7a5f7c166344cf9f14d4a549ab9282")
     
     static let shared = NetworkService()
     

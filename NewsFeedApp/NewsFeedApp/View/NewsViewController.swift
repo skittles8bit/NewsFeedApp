@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class NewsViewController: UIViewController {
 
@@ -19,15 +20,15 @@ class NewsViewController: UIViewController {
         tableView.reloadData()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == "contentViewController" else { return }
-        
-        let dvc = segue.destination as? DescriptionViewController
-        dvc?.url = viewModels[tableView.indexPathForSelectedRow?.row ?? 0].url
-    }
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        guard segue.identifier == "contentViewController" else { return }
+//
+//        let dvc = segue.destination as? DescriptionViewController
+//        dvc?.url = viewModels[tableView.indexPathForSelectedRow?.row ?? 0].url
+//    }
 }
 
-extension NewsViewController: UITableViewDataSource {
+extension NewsViewController: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModels.count
     }
@@ -40,6 +41,9 @@ extension NewsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        guard let url = viewModels[indexPath.row].url else { return }
+        present(SFSafariViewController(url: url), animated: true, completion: nil)
     }
     
 }

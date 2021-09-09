@@ -35,7 +35,8 @@ class LoadingViewController: UIViewController {
             let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let newsViewController = storyBoard.instantiateViewController(withIdentifier: "newsViewController") as! NewsViewController
             newsViewController.viewModels = viewModels
-            self.navigationController?.pushViewController(newsViewController, animated: true)
+            newsViewController.modalPresentationStyle = .fullScreen
+            self.present(newsViewController, animated: true, completion: nil)
         }
     }
     
@@ -66,9 +67,4 @@ class LoadingViewController: UIViewController {
             }
         }
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-    }
-    
 }
