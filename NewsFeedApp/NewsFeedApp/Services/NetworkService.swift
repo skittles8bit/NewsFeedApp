@@ -34,4 +34,14 @@ final class NetworkService {
         }.resume()
     }
     
+    public func loadImage(viewModel: TableViewCellViewModelType?, complitionHandler:  @escaping ((Data) -> Void)) {
+        
+        guard let url = viewModel?.imageUrl else { return }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else { return }
+            complitionHandler(data)
+        }.resume()
+    }
+    
 }

@@ -11,7 +11,7 @@ class LoadingViewController: UIViewController {
 
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     
-    private var viewModels = [NewsTableViewCellViewModel]()
+    private var viewModels: TableViewViewModelType?
     private var timer = Timer()
     private var complitedLoadingNews = false
     
@@ -46,14 +46,15 @@ class LoadingViewController: UIViewController {
             
             switch result {
             case .success(let news):
-                self.viewModels = news.compactMap({
-                    NewsTableViewCellViewModel(title: $0.author ?? "Empty author",
+                
+                self.viewModels = NewsTableViewViewModel(news: news.compactMap({
+                    ArticleModel(title: $0.author ?? "Empty author",
                                                subtitle: $0.description ?? "Empty description",
                                                imageUrl: URL(string: $0.urlToImage ?? ""),
                                                url: URL(string: $0.url ?? ""),
                                                time: $0.publishedAt)
                     
-                })
+                }))
                 
                 DispatchQueue.main.async {
                     self.loadingIndicator.stopAnimating()

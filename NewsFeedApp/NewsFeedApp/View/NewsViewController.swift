@@ -12,37 +12,34 @@ class NewsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
-    public var viewModels = [NewsTableViewCellViewModel]()
+    public var viewModels: TableViewViewModelType?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.reloadData()
     }
-    
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        guard segue.identifier == "contentViewController" else { return }
-//
-//        let dvc = segue.destination as? DescriptionViewController
-//        dvc?.url = viewModels[tableView.indexPathForSelectedRow?.row ?? 0].url
-//    }
 }
 
 extension NewsViewController: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModels.count
+        return viewModels?.numberOfRows ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? NewsTableViewCell else { fatalError() }
-        cell.configure(with: viewModels[indexPath.row])
+        guard let viewModels = viewModels else { return UITableViewCell() }
+        let cellViewModel = viewModels.cellViewModel(forIndexPath: indexPath)
+        
+        cell.viewModel = cellViewModel
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let cellViewModel = viewModels?.cellViewModel(forIndexPath: indexPath)
+        guard let url = cellViewModel?.url else { return }
         
-        guard let url = viewModels[indexPath.row].url else { return }
         present(SFSafariViewController(url: url), animated: true, completion: nil)
     }
     

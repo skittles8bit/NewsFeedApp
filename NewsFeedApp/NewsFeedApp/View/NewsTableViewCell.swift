@@ -14,24 +14,25 @@ class NewsTableViewCell: UITableViewCell {
     @IBOutlet weak var newsImageView: UIImageView!
     @IBOutlet weak var timePublishedLabel: UILabel!
     
-    func configure(with viewModel: NewsTableViewCellViewModel) {
-        
-        headerNewsLabel.text = viewModel.title
-        mainTextNewsLabel.text = viewModel.subtitle
-        timePublishedLabel.text = viewModel.time?.convertData()
-        
-        if let imageData = viewModel.imageData {
-            newsImageView.image = UIImage(data: imageData)
-        } else if let url = viewModel.imageUrl {
-            URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-                guard let data = data, error == nil else { return }
-                
-                viewModel.imageData = data
-                
-                DispatchQueue.main.async {
-                    self?.newsImageView.image = UIImage(data: data)
+    weak var viewModel: TableViewCellViewModelType? {
+        willSet(viewModel) {
+            headerNewsLabel.text = viewModel?.title
+            mainTextNewsLabel.text = viewModel?.subtitle
+            timePublishedLabel.text = viewModel?.time?.convertData()
+            
+            
+            
+            if let imageData = viewModel?.imageData {
+                newsImageView.image = UIImage(data: imageData)
+            } else if let viewModel = viewModel {
+                NetworkService.shared.loadImage(viewModel: viewModel) { [weak self] data in
+                    self?.viewModel?.imageData = data
+                    
+                    DispatchQueue.main.async {
+                        self?.newsImageView.image = UIImage(data: data)
+                    }
                 }
-            }.resume()
+            }
         }
     }
 }
