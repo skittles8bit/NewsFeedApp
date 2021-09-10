@@ -17,10 +17,30 @@ class LoadingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         loadingIndicator.startAnimating()
         setupTimer()
-        getPost()
+        
+        ConnectionMonitorService.shared.monitorConnection { [weak self] status in
+            
+            switch status {
+            case .satisfied:
+                self?.getPost()
+                break
+            default:
+                self?.showAlertController(title: "WARNING!", message: "No internet connection. Please try again.")
+                break
+            }
+        }
+        
+    }
+    
+    private func showAlertController(title: String, message: String) {
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: "RETRY", style: .cancel) { [weak self] _ in
+            self?.getPost()
+        }
+        ac.addAction(action)
     }
     
     private func setupTimer() {
@@ -62,8 +82,8 @@ class LoadingViewController: UIViewController {
                 
                 self.complitedLoadingNews = true
                 break
-            case .failure(let error):
-                print(error)
+            case .failure:
+                self.showAlertController(title: "ERROR!", message: "Data loading error. Please try again.")
                 break
             }
         }

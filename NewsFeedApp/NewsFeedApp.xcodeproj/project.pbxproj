@@ -24,6 +24,7 @@
 		FAE31F4C26EA3E6A00B3C816 /* TableViewViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F4B26EA3E6A00B3C816 /* TableViewViewModelType.swift */; };
 		FAE31F4F26EA403B00B3C816 /* TableViewCellViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F4E26EA403B00B3C816 /* TableViewCellViewModelType.swift */; };
 		FAE31F5126EA40FF00B3C816 /* NewsTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F5026EA40FF00B3C816 /* NewsTableViewCellViewModel.swift */; };
+		FAE31F5526EB355000B3C816 /* ConnectionMonitorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F5426EB355000B3C816 /* ConnectionMonitorService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		FAE31F4B26EA3E6A00B3C816 /* TableViewViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewViewModelType.swift; sourceTree = "<group>"; };
 		FAE31F4E26EA403B00B3C816 /* TableViewCellViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellViewModelType.swift; sourceTree = "<group>"; };
 		FAE31F5026EA40FF00B3C816 /* NewsTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCellViewModel.swift; sourceTree = "<group>"; };
+		FAE31F5426EB355000B3C816 /* ConnectionMonitorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionMonitorService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				FA2282BB26E7445000C93492 /* NetworkService.swift */,
+				FAE31F5426EB355000B3C816 /* ConnectionMonitorService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -214,6 +217,7 @@
 				FAE31F4A26EA397700B3C816 /* ArticleModel.swift in Sources */,
 				FAE31F4F26EA403B00B3C816 /* TableViewCellViewModelType.swift in Sources */,
 				4FBFCD6126E6A64E00943B6F /* NewsViewController.swift in Sources */,
+				FAE31F5526EB355000B3C816 /* ConnectionMonitorService.swift in Sources */,
 				4FBFCD5D26E6A64E00943B6F /* AppDelegate.swift in Sources */,
 				FAE31F4C26EA3E6A00B3C816 /* TableViewViewModelType.swift in Sources */,
 				FA2282C026E74D4D00C93492 /* NewsTableViewCell.swift in Sources */,
