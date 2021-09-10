@@ -49,7 +49,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="MFK-On-2LJ">
-                                <rect key="frame" x="0.0" y="96" width="375" height="571"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="623"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" rowHeight="160" id="XuL-tZ-cCv" customClass="NewsTableViewCell" customModule="NewsFeedApp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="24.5" width="375" height="160"/>
@@ -137,40 +137,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2444" y="87.706146926536732"/>
-        </scene>
-        <!--Description View Controller-->
-        <scene sceneID="ssu-vX-dUO">
-            <objects>
-                <viewController id="6cj-OI-Uw4" customClass="DescriptionViewController" customModule="NewsFeedApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="veJ-U3-amD">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2qJ-4N-Zho">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <wkWebViewConfiguration key="configuration">
-                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
-                                    <wkPreferences key="preferences"/>
-                                </wkWebViewConfiguration>
-                            </wkWebView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="16L-Aa-44q"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="2qJ-4N-Zho" firstAttribute="leading" secondItem="16L-Aa-44q" secondAttribute="leading" id="AoO-OB-qyX"/>
-                            <constraint firstItem="2qJ-4N-Zho" firstAttribute="bottom" secondItem="16L-Aa-44q" secondAttribute="bottom" id="FmD-QU-T3X"/>
-                            <constraint firstItem="2qJ-4N-Zho" firstAttribute="top" secondItem="16L-Aa-44q" secondAttribute="top" id="KYW-TW-GX9"/>
-                            <constraint firstItem="2qJ-4N-Zho" firstAttribute="trailing" secondItem="16L-Aa-44q" secondAttribute="trailing" id="TM5-Hh-vXR"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="sGP-h9-hGa"/>
-                    <connections>
-                        <outlet property="webView" destination="2qJ-4N-Zho" id="LRv-MT-UGX"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aWU-z2-UXs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3300" y="87.706146926536732"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="VKn-C5-wAI">

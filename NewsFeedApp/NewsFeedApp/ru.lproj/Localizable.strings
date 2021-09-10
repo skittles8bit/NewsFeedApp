@@ -1,0 +1,19 @@
+/* 
+  Localizable.strings
+  NewsFeedApp
+
+  Created by Alex on 9/10/21.
+  
+*/
+
+"Empty author" = "Неизвестный автор";
+"Empty description" = "Описание отсутствует";
+"Error!" = "Ошибка!";
+"Data loading error. Please try again." = "Упс, что-то пошло не так. Попробуйте повторить.";
+"WARNING!" = "Внимание!";
+"No internet connection. Please try again." = "Отсутствует подключение к интернету. Повторите попытку.";
+"RETRY" = "Повторить";
+"" = "";
+"" = "";
+"" = "";
+"" = "";

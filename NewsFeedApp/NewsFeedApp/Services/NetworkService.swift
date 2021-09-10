@@ -18,8 +18,12 @@ final class NetworkService {
     public func getPosts(complitionHandler: @escaping (Result<[Article], Error>) -> Void) {
         
         guard let url = urlAPI else { return }
+        let config = URLSessionConfiguration.default
+        config.waitsForConnectivity = true
+        config.timeoutIntervalForResource = 1
+        let session = URLSession(configuration: config)
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        session.dataTask(with: url) { data, response, error in
             
             if let error = error {
                 complitionHandler(.failure(error))

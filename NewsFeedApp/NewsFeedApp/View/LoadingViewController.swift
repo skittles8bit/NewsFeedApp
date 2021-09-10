@@ -28,7 +28,7 @@ class LoadingViewController: UIViewController {
                 self?.getPost()
                 break
             default:
-                self?.showAlertController(title: "WARNING!", message: "No internet connection. Please try again.")
+                self?.showAlertController(title: NSLocalizedString("WARNING!", comment: ""), message: NSLocalizedString("No internet connection. Please try again.", comment: ""))
                 break
             }
         }
@@ -36,8 +36,9 @@ class LoadingViewController: UIViewController {
     }
     
     private func showAlertController(title: String, message: String) {
-        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let action = UIAlertAction(title: "RETRY", style: .cancel) { [weak self] _ in
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        let action = UIAlertAction(title: NSLocalizedString("RETRY", comment: ""), style: .cancel) { [weak self] _ in
+            self?.loadingIndicator.stopAnimating()
             self?.getPost()
         }
         ac.addAction(action)
@@ -68,8 +69,8 @@ class LoadingViewController: UIViewController {
             case .success(let news):
                 
                 self.viewModels = NewsTableViewViewModel(news: news.compactMap({
-                    ArticleModel(title: $0.author ?? "Empty author",
-                                               subtitle: $0.description ?? "Empty description",
+                    ArticleModel(title: $0.author ?? NSLocalizedString("Empty author", comment: ""),
+                                               subtitle: $0.description ?? NSLocalizedString("Empty description", comment: ""),
                                                imageUrl: URL(string: $0.urlToImage ?? ""),
                                                url: URL(string: $0.url ?? ""),
                                                time: $0.publishedAt)
@@ -83,7 +84,10 @@ class LoadingViewController: UIViewController {
                 self.complitedLoadingNews = true
                 break
             case .failure:
-                self.showAlertController(title: "ERROR!", message: "Data loading error. Please try again.")
+                DispatchQueue.main.async {
+                    self.loadingIndicator.stopAnimating()
+                    self.showAlertController(title: NSLocalizedString("Error!", comment: ""), message: NSLocalizedString("Data loading error. Please try again.", comment: ""))
+                }
                 break
             }
         }
