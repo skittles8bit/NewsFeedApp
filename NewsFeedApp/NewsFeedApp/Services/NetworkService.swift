@@ -20,7 +20,7 @@ final class NetworkService {
         guard let url = urlAPI else { return }
         let config = URLSessionConfiguration.default
         config.waitsForConnectivity = true
-        config.timeoutIntervalForResource = 1
+        config.timeoutIntervalForResource = 10
         let session = URLSession(configuration: config)
         
         session.dataTask(with: url) { data, response, error in
