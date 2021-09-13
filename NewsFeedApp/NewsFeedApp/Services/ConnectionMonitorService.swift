@@ -8,6 +8,8 @@
 import Foundation
 import Network
 
+typealias ConnectionStatus = NWPath.Status
+
 final class ConnectionMonitorService {
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: StringConstants.internetConnectionMonitor)
@@ -16,7 +18,7 @@ final class ConnectionMonitorService {
     
     init(){}
     
-    public func monitorConnection(completionHandler: @escaping (NWPath.Status) -> Void) {
+    public func monitorConnection(completionHandler: @escaping (ConnectionStatus) -> Void) {
         monitor.pathUpdateHandler = { pathUpdateHandler in
                     
             switch pathUpdateHandler.status {
