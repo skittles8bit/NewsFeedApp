@@ -15,7 +15,7 @@ final class NetworkService {
     static let shared = NetworkService()
     
     private init(){
-        urlSessionConfigurationSetup()
+        setupUrlSessionConfiguration()
     }
     
     public func getPosts(completionHandler: @escaping (Result<[Article], Error>) -> Void) {
@@ -41,7 +41,7 @@ final class NetworkService {
         }.resume()
     }
     
-    public func loadImage(viewModel: TableViewCellViewModelType?, completionHandler:  @escaping ((Data) -> Void)) {
+    public func loadImage(viewModel: NewsCellViewModelType?, completionHandler:  @escaping ((Data) -> Void)) {
         
         guard let url = viewModel?.imageUrl else { return }
         
@@ -54,7 +54,7 @@ final class NetworkService {
 
 private extension NetworkService {
     
-    func urlSessionConfigurationSetup(){
+    func setupUrlSessionConfiguration(){
         urlSessionConfiguration.waitsForConnectivity = true
         urlSessionConfiguration.timeoutIntervalForResource = 10
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class NewsTableViewViewModel: TableViewViewModelType {
+class NewsTableViewViewModel: NewsViewModelType {
     
     private var articles: [ArticleModel]
     
@@ -19,7 +19,7 @@ class NewsTableViewViewModel: TableViewViewModelType {
         return articles.count
     }
     
-    func cellViewModel(forIndexPath indexPath: IndexPath) -> TableViewCellViewModelType? {
+    func cellViewModel(forIndexPath indexPath: IndexPath) -> NewsCellViewModelType? {
         let arcticles = articles[indexPath.row]
         
         return NewsTableViewCellViewModel(article: arcticles)

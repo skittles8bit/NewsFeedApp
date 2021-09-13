@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol TableViewCellViewModelType: AnyObject {
+protocol NewsCellViewModelType: AnyObject {
     var title: String? { get }
     var subtitle: String? { get }
     var imageUrl: URL? { get }

@@ -12,7 +12,7 @@ class NewsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
     
-    public var viewModels: TableViewViewModelType?
+    public var viewModels: NewsViewModelType?
 }
 
 extension NewsViewController: UITableViewDataSource, UITableViewDelegate{

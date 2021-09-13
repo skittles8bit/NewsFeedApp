@@ -10,16 +10,13 @@ import NVActivityIndicatorView
 
 class LoadingViewController: UIViewController {
 
-    private var viewModels: TableViewViewModelType?
+    private var viewModels: NewsTableViewViewModel?
     private var timer = Timer()
     private var isLoadingNews = false
     private var loadingIndicatorView:  NVActivityIndicatorView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //setupLoadingView()
-        //loadingIndicatorView?.startAnimating()
         
         setupTimer()
         

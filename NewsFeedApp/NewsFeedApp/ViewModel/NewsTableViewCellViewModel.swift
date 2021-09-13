@@ -7,7 +7,7 @@
 
 import Foundation
 
-class NewsTableViewCellViewModel: TableViewCellViewModelType {
+class NewsTableViewCellViewModel: NewsCellViewModelType {
 
     private var article: ArticleModel
     

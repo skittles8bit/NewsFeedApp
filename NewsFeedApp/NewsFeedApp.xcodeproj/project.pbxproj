@@ -22,8 +22,8 @@
 		FA43BC9526E770480019A326 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BC9426E770480019A326 /* LoadingViewController.swift */; };
 		FA43BC9D26E786C20019A326 /* Extension + String.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BC9C26E786C20019A326 /* Extension + String.swift */; };
 		FAE31F4A26EA397700B3C816 /* ArticleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F4926EA397700B3C816 /* ArticleModel.swift */; };
-		FAE31F4C26EA3E6A00B3C816 /* TableViewViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F4B26EA3E6A00B3C816 /* TableViewViewModelType.swift */; };
-		FAE31F4F26EA403B00B3C816 /* TableViewCellViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F4E26EA403B00B3C816 /* TableViewCellViewModelType.swift */; };
+		FAE31F4C26EA3E6A00B3C816 /* NewsViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F4B26EA3E6A00B3C816 /* NewsViewModelType.swift */; };
+		FAE31F4F26EA403B00B3C816 /* NewsCellViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F4E26EA403B00B3C816 /* NewsCellViewModelType.swift */; };
 		FAE31F5126EA40FF00B3C816 /* NewsTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F5026EA40FF00B3C816 /* NewsTableViewCellViewModel.swift */; };
 		FAE31F5526EB355000B3C816 /* ConnectionMonitorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE31F5426EB355000B3C816 /* ConnectionMonitorService.swift */; };
 		FAE31F5A26EB3E1300B3C816 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FAE31F5C26EB3E1300B3C816 /* Localizable.strings */; };
@@ -49,8 +49,8 @@
 		FA43BC9426E770480019A326 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		FA43BC9C26E786C20019A326 /* Extension + String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension + String.swift"; sourceTree = "<group>"; };
 		FAE31F4926EA397700B3C816 /* ArticleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleModel.swift; sourceTree = "<group>"; };
-		FAE31F4B26EA3E6A00B3C816 /* TableViewViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewViewModelType.swift; sourceTree = "<group>"; };
-		FAE31F4E26EA403B00B3C816 /* TableViewCellViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellViewModelType.swift; sourceTree = "<group>"; };
+		FAE31F4B26EA3E6A00B3C816 /* NewsViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsViewModelType.swift; sourceTree = "<group>"; };
+		FAE31F4E26EA403B00B3C816 /* NewsCellViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsCellViewModelType.swift; sourceTree = "<group>"; };
 		FAE31F5026EA40FF00B3C816 /* NewsTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		FAE31F5426EB355000B3C816 /* ConnectionMonitorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionMonitorService.swift; sourceTree = "<group>"; };
 		FAE31F5626EB3D9F00B3C816 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
@@ -174,8 +174,8 @@
 		FAE31F4D26EA3F3F00B3C816 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				FAE31F4B26EA3E6A00B3C816 /* TableViewViewModelType.swift */,
-				FAE31F4E26EA403B00B3C816 /* TableViewCellViewModelType.swift */,
+				FAE31F4B26EA3E6A00B3C816 /* NewsViewModelType.swift */,
+				FAE31F4E26EA403B00B3C816 /* NewsCellViewModelType.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -298,12 +298,12 @@
 			files = (
 				FAE31F5126EA40FF00B3C816 /* NewsTableViewCellViewModel.swift in Sources */,
 				FAE31F4A26EA397700B3C816 /* ArticleModel.swift in Sources */,
-				FAE31F4F26EA403B00B3C816 /* TableViewCellViewModelType.swift in Sources */,
+				FAE31F4F26EA403B00B3C816 /* NewsCellViewModelType.swift in Sources */,
 				4FBFCD6126E6A64E00943B6F /* NewsViewController.swift in Sources */,
 				FAE31F5526EB355000B3C816 /* ConnectionMonitorService.swift in Sources */,
 				FA35345826EF2CD8004047F5 /* StringConstants.swift in Sources */,
 				4FBFCD5D26E6A64E00943B6F /* AppDelegate.swift in Sources */,
-				FAE31F4C26EA3E6A00B3C816 /* TableViewViewModelType.swift in Sources */,
+				FAE31F4C26EA3E6A00B3C816 /* NewsViewModelType.swift in Sources */,
 				FA2282C026E74D4D00C93492 /* NewsTableViewCell.swift in Sources */,
 				FA43BC9526E770480019A326 /* LoadingViewController.swift in Sources */,
 				FA2282BC26E7445000C93492 /* NetworkService.swift in Sources */,

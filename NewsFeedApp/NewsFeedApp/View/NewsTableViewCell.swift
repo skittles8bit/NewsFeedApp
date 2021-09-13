@@ -14,10 +14,10 @@ class NewsTableViewCell: UITableViewCell {
     @IBOutlet private weak var newsImageView: UIImageView!
     @IBOutlet private weak var timePublishedLabel: UILabel!
     
-    weak var viewModel: TableViewCellViewModelType? {
+    weak var viewModel: NewsCellViewModelType? {
         willSet(viewModel) {
             headerNewsLabel.text = viewModel?.title
-            mainTextNewsLabel.text = viewModel?.subtitle
+            mainTextNewsLabel.text = viewModel?.subtitle?.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
             timePublishedLabel.text = viewModel?.time?.getFormattedDate()
             
             if let imageData = viewModel?.imageData {
