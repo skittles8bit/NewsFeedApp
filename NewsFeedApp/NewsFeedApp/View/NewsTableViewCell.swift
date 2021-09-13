@@ -18,7 +18,7 @@ class NewsTableViewCell: UITableViewCell {
         willSet(viewModel) {
             headerNewsLabel.text = viewModel?.title
             mainTextNewsLabel.text = viewModel?.subtitle
-            timePublishedLabel.text = viewModel?.time?.convertData()
+            timePublishedLabel.text = viewModel?.time?.getFormattedDate()
             
             if let imageData = viewModel?.imageData {
                 newsImageView.image = UIImage(data: imageData)
