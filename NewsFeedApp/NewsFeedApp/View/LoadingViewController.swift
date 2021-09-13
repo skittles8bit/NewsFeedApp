@@ -12,14 +12,14 @@ class LoadingViewController: UIViewController {
 
     private var viewModels: TableViewViewModelType?
     private var timer = Timer()
-    private var complitedLoadingNews = false
+    private var isLoadingNews = false
     private var loadingIndicatorView:  NVActivityIndicatorView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupLoadingView()
-        loadingIndicatorView?.startAnimating()
+        //setupLoadingView()
+        //loadingIndicatorView?.startAnimating()
         
         setupTimer()
         
@@ -55,7 +55,7 @@ class LoadingViewController: UIViewController {
     private func showAlertController(title: String, message: String) {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         let action = UIAlertAction(title: NSLocalizedString(StringConstants.retry, comment: ""), style: .cancel) { [weak self] _ in
-            self?.loadingIndicatorView?.stopAnimating()
+            //self?.loadingIndicatorView?.stopAnimating()
             self?.getPost()
         }
         ac.addAction(action)
@@ -65,13 +65,13 @@ class LoadingViewController: UIViewController {
     private func setupTimer() {
         timer = Timer.scheduledTimer(timeInterval: 0.5,
                                      target: self,
-                                     selector: #selector(checkedLoadingPosts),
+                                     selector: #selector(checkingDataLoading),
                                      userInfo: nil,
                                      repeats: true)
     }
     
-    @objc private func checkedLoadingPosts() {
-        if complitedLoadingNews {
+    @objc private func checkingDataLoading() {
+        if isLoadingNews {
             timer.invalidate()
             
             presentNewsViewController()
@@ -103,13 +103,13 @@ class LoadingViewController: UIViewController {
                 }))
                 
                 DispatchQueue.main.async {
-                    self.loadingIndicatorView?.stopAnimating()
+                    //self.loadingIndicatorView?.stopAnimating()
                 }
                 
-                self.complitedLoadingNews = true
+                self.isLoadingNews = true
             case .failure:
                 DispatchQueue.main.async {
-                    self.loadingIndicatorView?.stopAnimating()
+                    //self.loadingIndicatorView?.stopAnimating()
                     self.showAlertController(title: NSLocalizedString(StringConstants.error, comment: ""),
                                              message: NSLocalizedString(StringConstants.dataLoadingError, comment: ""))
                 }

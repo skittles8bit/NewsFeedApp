@@ -16,15 +16,15 @@ final class ConnectionMonitorService {
     
     init(){}
     
-    public func monitorConnection(complitionHandler: @escaping (NWPath.Status) -> Void) {
+    public func monitorConnection(completionHandler: @escaping (NWPath.Status) -> Void) {
         monitor.pathUpdateHandler = { pathUpdateHandler in
                     
             switch pathUpdateHandler.status {
             case .satisfied:
-                complitionHandler(.satisfied)
+                completionHandler(.satisfied)
                 break
             default:
-                complitionHandler(.unsatisfied)
+                completionHandler(.unsatisfied)
                 break
             }
         }

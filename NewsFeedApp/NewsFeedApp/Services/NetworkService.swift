@@ -18,7 +18,7 @@ final class NetworkService {
         urlSessionConfigurationSetup()
     }
     
-    public func getPosts(complitionHandler: @escaping (Result<[Article], Error>) -> Void) {
+    public func getPosts(completionHandler: @escaping (Result<[Article], Error>) -> Void) {
         
         guard
             let url = urlAPI
@@ -31,13 +31,13 @@ final class NetworkService {
         session.dataTask(with: url) { data, response, error in
             
             if let error = error {
-                complitionHandler(.failure(error))
+                completionHandler(.failure(error))
             } else if let data = data{
                 do {
                     let news = try JSONDecoder().decode(News.self, from: data)
-                    complitionHandler(.success(news.articles))
+                    completionHandler(.success(news.articles))
                 } catch {
-                    complitionHandler(.failure(error))
+                    completionHandler(.failure(error))
                 }
             }
         }.resume()
@@ -49,13 +49,13 @@ final class NetworkService {
     }
     
     
-    public func loadImage(viewModel: TableViewCellViewModelType?, complitionHandler:  @escaping ((Data) -> Void)) {
+    public func loadImage(viewModel: TableViewCellViewModelType?, completionHandler:  @escaping ((Data) -> Void)) {
         
         guard let url = viewModel?.imageUrl else { return }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, error == nil else { return }
-            complitionHandler(data)
+            completionHandler(data)
         }.resume()
     }
 }
