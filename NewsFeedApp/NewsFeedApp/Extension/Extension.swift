@@ -1,5 +1,5 @@
 //
-//  Extansion.swift
+//  Extension.swift
 //  NewsFeedApp
 //
 //  Created by Alex on 9/7/21.

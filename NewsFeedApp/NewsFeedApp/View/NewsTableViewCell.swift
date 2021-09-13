@@ -20,8 +20,6 @@ class NewsTableViewCell: UITableViewCell {
             mainTextNewsLabel.text = viewModel?.subtitle
             timePublishedLabel.text = viewModel?.time?.convertData()
             
-            
-            
             if let imageData = viewModel?.imageData {
                 newsImageView.image = UIImage(data: imageData)
             } else if let viewModel = viewModel {

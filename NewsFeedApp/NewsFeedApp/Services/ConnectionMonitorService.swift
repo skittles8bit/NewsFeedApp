@@ -10,11 +10,11 @@ import Network
 
 final class ConnectionMonitorService {
     private let monitor = NWPathMonitor()
-    private let queue = DispatchQueue(label: "InternetConnectionMonitor")
+    private let queue = DispatchQueue(label: StringConstants.internetConnectionMonitor)
     
     static let shared = ConnectionMonitorService()
     
-    init (){}
+    init(){}
     
     public func monitorConnection(complitionHandler: @escaping (NWPath.Status) -> Void) {
         monitor.pathUpdateHandler = { pathUpdateHandler in

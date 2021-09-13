@@ -9,19 +9,24 @@ import Foundation
 
 final class NetworkService {
     
-    private let urlAPI = URL(string: "https://newsapi.org/v2/everything?q=apple&from=2021-09-08&to=2021-09-08&sortBy=popularity&apiKey=7e7a5f7c166344cf9f14d4a549ab9282")
+    private let urlAPI = URL(string: StringConstants.api)
+    private let urlSessionConfiguration = URLSessionConfiguration.default
     
     static let shared = NetworkService()
     
-    private init(){}
+    private init(){
+        urlSessionConfigurationSetup()
+    }
     
     public func getPosts(complitionHandler: @escaping (Result<[Article], Error>) -> Void) {
         
-        guard let url = urlAPI else { return }
-        let config = URLSessionConfiguration.default
-        config.waitsForConnectivity = true
-        config.timeoutIntervalForResource = 10
-        let session = URLSession(configuration: config)
+        guard
+            let url = urlAPI
+        else {
+            return
+        }
+       
+        let session = URLSession(configuration: urlSessionConfiguration)
         
         session.dataTask(with: url) { data, response, error in
             
@@ -38,6 +43,12 @@ final class NetworkService {
         }.resume()
     }
     
+    private func urlSessionConfigurationSetup(){
+        urlSessionConfiguration.waitsForConnectivity = true
+        urlSessionConfiguration.timeoutIntervalForResource = 10
+    }
+    
+    
     public func loadImage(viewModel: TableViewCellViewModelType?, complitionHandler:  @escaping ((Data) -> Void)) {
         
         guard let url = viewModel?.imageUrl else { return }
@@ -47,5 +58,4 @@ final class NetworkService {
             complitionHandler(data)
         }.resume()
     }
-    
 }

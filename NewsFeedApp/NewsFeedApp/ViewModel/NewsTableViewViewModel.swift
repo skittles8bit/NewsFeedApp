@@ -9,7 +9,7 @@ import Foundation
 
 class NewsTableViewViewModel: TableViewViewModelType {
     
-    var articles: [ArticleModel]
+    private var articles: [ArticleModel]
     
     init(news: [ArticleModel]) {
         self.articles = news

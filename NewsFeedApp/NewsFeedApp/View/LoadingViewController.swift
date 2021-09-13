@@ -26,10 +26,9 @@ class LoadingViewController: UIViewController {
             switch status {
             case .satisfied:
                 self?.getPost()
-                break
             default:
-                self?.showAlertController(title: NSLocalizedString("WARNING!", comment: ""), message: NSLocalizedString("No internet connection. Please try again.", comment: ""))
-                break
+                self?.showAlertController(title: NSLocalizedString(StringConstants.warning, comment: ""),
+                                          message: NSLocalizedString(StringConstants.noInternetConnection, comment: ""))
             }
         }
         
@@ -37,28 +36,36 @@ class LoadingViewController: UIViewController {
     
     private func showAlertController(title: String, message: String) {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        let action = UIAlertAction(title: NSLocalizedString("RETRY", comment: ""), style: .cancel) { [weak self] _ in
+        let action = UIAlertAction(title: NSLocalizedString(StringConstants.retry, comment: ""), style: .cancel) { [weak self] _ in
             self?.loadingIndicator.stopAnimating()
             self?.getPost()
         }
         ac.addAction(action)
+        self.present(ac, animated: true, completion: nil)
     }
     
     private func setupTimer() {
-        print("Start timer")
-        timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(checkedLoadingPosts), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 0.5,
+                                     target: self,
+                                     selector: #selector(checkedLoadingPosts),
+                                     userInfo: nil,
+                                     repeats: true)
     }
     
     @objc private func checkedLoadingPosts() {
         if complitedLoadingNews {
             timer.invalidate()
             
-            let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            let newsViewController = storyBoard.instantiateViewController(withIdentifier: "newsViewController") as! NewsViewController
-            newsViewController.viewModels = viewModels
-            newsViewController.modalPresentationStyle = .fullScreen
-            self.present(newsViewController, animated: true, completion: nil)
+            presentNewsViewController()
         }
+    }
+    
+    fileprivate func presentNewsViewController() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: StringConstants.mainStoryboard, bundle: nil)
+        let newsViewController = storyBoard.instantiateViewController(withIdentifier: StringConstants.newsViewController) as! NewsViewController
+        newsViewController.viewModels = viewModels
+        newsViewController.modalPresentationStyle = .fullScreen
+        self.present(newsViewController, animated: true, completion: nil)
     }
     
     private func getPost() {
@@ -69,11 +76,11 @@ class LoadingViewController: UIViewController {
             case .success(let news):
                 
                 self.viewModels = NewsTableViewViewModel(news: news.compactMap({
-                    ArticleModel(title: $0.author ?? NSLocalizedString("Empty author", comment: ""),
-                                               subtitle: $0.description ?? NSLocalizedString("Empty description", comment: ""),
-                                               imageUrl: URL(string: $0.urlToImage ?? ""),
-                                               url: URL(string: $0.url ?? ""),
-                                               time: $0.publishedAt)
+                    ArticleModel(title: $0.author ?? NSLocalizedString(StringConstants.emptyAuthor, comment: ""),
+                                 subtitle: $0.description ?? NSLocalizedString(StringConstants.emptyDescription, comment: ""),
+                                 imageUrl: URL(string: $0.urlToImage ?? ""),
+                                 url: URL(string: $0.url ?? ""),
+                                 time: $0.publishedAt)
                     
                 }))
                 
@@ -82,13 +89,12 @@ class LoadingViewController: UIViewController {
                 }
                 
                 self.complitedLoadingNews = true
-                break
             case .failure:
                 DispatchQueue.main.async {
                     self.loadingIndicator.stopAnimating()
-                    self.showAlertController(title: NSLocalizedString("Error!", comment: ""), message: NSLocalizedString("Data loading error. Please try again.", comment: ""))
+                    self.showAlertController(title: NSLocalizedString(StringConstants.error, comment: ""),
+                                             message: NSLocalizedString(StringConstants.dataLoadingError, comment: ""))
                 }
-                break
             }
         }
     }

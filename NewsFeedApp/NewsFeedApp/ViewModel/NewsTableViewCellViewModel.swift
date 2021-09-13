@@ -43,5 +43,4 @@ class NewsTableViewCellViewModel: TableViewCellViewModelType {
     init(article: ArticleModel) {
         self.article = article
     }
-    
 }
