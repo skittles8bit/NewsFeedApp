@@ -33,31 +33,31 @@ class NewsTableViewViewModel: NewsViewModelType {
         return NewsTableViewCellViewModel(article: arcticles)
     }
     
-    func getPost(completionHandler: @escaping ([ArticleModel]?, ConnectionStatus) -> Void) {
+    func getPost(completionHandler: @escaping ([ArticleModel]?, ConnectionStatus, Error?) -> Void) {
         
         ConnectionMonitorService.shared.monitorConnection {status in
             
             switch status {
-            case .satisfied:
-                NetworkService.shared.getPosts {result in
+                case .satisfied:
+                    NetworkService.shared.getPosts {result in
 
-                    switch result {
-                    case .success(let news):
-                        
-                        completionHandler(news.compactMap({
-                            ArticleModel(title: $0.author ?? NSLocalizedString(StringConstants.emptyAuthor, comment: ""),
-                                         subtitle: $0.description ?? NSLocalizedString(StringConstants.emptyDescription, comment: ""),
-                                         imageUrl: URL(string: $0.urlToImage ?? ""),
-                                         url: URL(string: $0.url ?? ""),
-                                         time: $0.publishedAt)
+                        switch result {
+                        case .success(let news):
                             
-                        }), status)
-                    case .failure:
-                        completionHandler(nil, status)
+                            completionHandler(news.compactMap({
+                                ArticleModel(title: $0.author ?? NSLocalizedString(StringConstants.emptyAuthor, comment: ""),
+                                             subtitle: $0.description ?? NSLocalizedString(StringConstants.emptyDescription, comment: ""),
+                                             imageUrl: URL(string: $0.urlToImage ?? ""),
+                                             url: URL(string: $0.url ?? ""),
+                                             time: $0.publishedAt)
+                                
+                            }), status, nil)
+                        case .failure(let error):
+                            completionHandler(nil, status, error)
+                        }
                     }
-                }
-            default:
-                completionHandler(nil, status)
+                default:
+                    completionHandler(nil, status, nil)
             }
         }
     }

@@ -20,24 +20,43 @@ class LoadingViewController: UIViewController {
         
         setupTimer()
         
-        self.viewModels.getPost { [weak self] news, status in
-            switch status {
-            
-            case .satisfied:
-                guard let news = news else {
-                    return
-                }
-                
-                self?.viewModels = NewsTableViewViewModel(news: news)
-                self?.isLoadingNews = true
-            default:
-                self?.showAlertController(title: StringConstants.error, message: StringConstants.dataLoadingError)
-            }
-        }
+        setupLoadingView()
+        loadingIndicatorView?.startAnimating()
+        
+        getPost()
     }
 }
 
 private extension LoadingViewController {
+    
+    func getPost() {
+        self.viewModels.getPost { [weak self] news, status, error in
+            
+            switch status {
+            case .satisfied:
+                if let news = news{
+                    
+                    self?.viewModels = NewsTableViewViewModel(news: news)
+                    self?.isLoadingNews = true
+                    
+                    DispatchQueue.main.async {
+                        self?.loadingIndicatorView?.stopAnimating()
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self?.loadingIndicatorView?.stopAnimating()
+                        self?.showAlertController(title: StringConstants.error, message: StringConstants.dataLoadingError)
+                    }
+                }
+            default:
+                DispatchQueue.main.async {
+                    self?.loadingIndicatorView?.stopAnimating()
+                    self?.showAlertController(title: StringConstants.error, message: StringConstants.dataLoadingError)
+                }
+            }
+        }
+    }
+    
     
     func setupLoadingView() {
         
@@ -58,22 +77,10 @@ private extension LoadingViewController {
     
    func showAlertController(title: String, message: String) {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        let action = UIAlertAction(title: NSLocalizedString(StringConstants.retry, comment: ""), style: .cancel) { [weak self] _ in
-            //self?.loadingIndicatorView?.stopAnimating()
-            self?.viewModels.getPost { [weak self] news, status in
-                switch status {
-                
-                case .satisfied:
-                    guard let news = news else {
-                        return
-                    }
-                    
-                    self?.viewModels = NewsTableViewViewModel(news: news)
-                    self?.isLoadingNews = true
-                default:
-                    self?.showAlertController(title: StringConstants.error, message: StringConstants.dataLoadingError)
-                }
-            }
+        let action = UIAlertAction(title: NSLocalizedString(StringConstants.retry, comment: ""), style: .destructive) { [weak self] _ in
+            self?.loadingIndicatorView?.startAnimating()
+            
+            self?.getPost()
         }
         ac.addAction(action)
         self.present(ac, animated: true, completion: nil)
@@ -90,6 +97,8 @@ private extension LoadingViewController {
     @objc func checkingDataLoading() {
         if isLoadingNews {
             timer.invalidate()
+            
+            loadingIndicatorView?.stopAnimating()
             
             presentNewsViewController()
         }
