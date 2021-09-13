@@ -9,19 +9,56 @@ import Foundation
 
 class NewsTableViewViewModel: NewsViewModelType {
     
-    private var articles: [ArticleModel]
+    private var articles: [ArticleModel]?
+    
+    var numberOfRows: Int {
+        return articles?.count ?? 0
+    }
+    
+    init(){}
     
     init(news: [ArticleModel]) {
         self.articles = news
     }
     
-    var numberOfRows: Int {
-        return articles.count
-    }
-    
     func cellViewModel(forIndexPath indexPath: IndexPath) -> NewsCellViewModelType? {
-        let arcticles = articles[indexPath.row]
+        guard let arcticles = articles?[indexPath.row] else {
+            return NewsTableViewCellViewModel(article: ArticleModel(title: "",
+                                                                    subtitle: "",
+                                                                    imageUrl: URL(string: ""),
+                                                                    url: URL(string: ""),
+                                                                    time: ""))
+        }
         
         return NewsTableViewCellViewModel(article: arcticles)
+    }
+    
+    func getPost(completionHandler: @escaping ([ArticleModel]?, ConnectionStatus) -> Void) {
+        
+        ConnectionMonitorService.shared.monitorConnection {status in
+            
+            switch status {
+            case .satisfied:
+                NetworkService.shared.getPosts {result in
+
+                    switch result {
+                    case .success(let news):
+                        
+                        completionHandler(news.compactMap({
+                            ArticleModel(title: $0.author ?? NSLocalizedString(StringConstants.emptyAuthor, comment: ""),
+                                         subtitle: $0.description ?? NSLocalizedString(StringConstants.emptyDescription, comment: ""),
+                                         imageUrl: URL(string: $0.urlToImage ?? ""),
+                                         url: URL(string: $0.url ?? ""),
+                                         time: $0.publishedAt)
+                            
+                        }), status)
+                    case .failure:
+                        completionHandler(nil, status)
+                    }
+                }
+            default:
+                completionHandler(nil, status)
+            }
+        }
     }
 }

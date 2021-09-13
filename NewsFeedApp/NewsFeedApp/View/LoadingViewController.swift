@@ -10,7 +10,7 @@ import NVActivityIndicatorView
 
 class LoadingViewController: UIViewController {
 
-    private var viewModels: NewsTableViewViewModel?
+    private var viewModels =  NewsTableViewViewModel()
     private var timer = Timer()
     private var isLoadingNews = false
     private var loadingIndicatorView:  NVActivityIndicatorView?
@@ -20,19 +20,21 @@ class LoadingViewController: UIViewController {
         
         setupTimer()
         
-        ConnectionMonitorService.shared.monitorConnection { [weak self] status in
-            
+        self.viewModels.getPost { [weak self] news, status in
             switch status {
+            
             case .satisfied:
-                self?.getPost()
+                guard let news = news else {
+                    return
+                }
+                
+                self?.viewModels = NewsTableViewViewModel(news: news)
+                self?.isLoadingNews = true
             default:
-                self?.showAlertController(title: NSLocalizedString(StringConstants.warning, comment: ""),
-                                          message: NSLocalizedString(StringConstants.noInternetConnection, comment: ""))
+                self?.showAlertController(title: StringConstants.error, message: StringConstants.dataLoadingError)
             }
         }
     }
-    
-    
 }
 
 private extension LoadingViewController {
@@ -58,7 +60,20 @@ private extension LoadingViewController {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         let action = UIAlertAction(title: NSLocalizedString(StringConstants.retry, comment: ""), style: .cancel) { [weak self] _ in
             //self?.loadingIndicatorView?.stopAnimating()
-            self?.getPost()
+            self?.viewModels.getPost { [weak self] news, status in
+                switch status {
+                
+                case .satisfied:
+                    guard let news = news else {
+                        return
+                    }
+                    
+                    self?.viewModels = NewsTableViewViewModel(news: news)
+                    self?.isLoadingNews = true
+                default:
+                    self?.showAlertController(title: StringConstants.error, message: StringConstants.dataLoadingError)
+                }
+            }
         }
         ac.addAction(action)
         self.present(ac, animated: true, completion: nil)
@@ -86,36 +101,5 @@ private extension LoadingViewController {
         newsViewController.viewModels = viewModels
         newsViewController.modalPresentationStyle = .fullScreen
         self.present(newsViewController, animated: true, completion: nil)
-    }
-    
-    func getPost() {
-        NetworkService.shared.getPosts { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let news):
-                
-                self.viewModels = NewsTableViewViewModel(news: news.compactMap({
-                    ArticleModel(title: $0.author ?? NSLocalizedString(StringConstants.emptyAuthor, comment: ""),
-                                 subtitle: $0.description ?? NSLocalizedString(StringConstants.emptyDescription, comment: ""),
-                                 imageUrl: URL(string: $0.urlToImage ?? ""),
-                                 url: URL(string: $0.url ?? ""),
-                                 time: $0.publishedAt)
-                    
-                }))
-                
-                DispatchQueue.main.async {
-                    //self.loadingIndicatorView?.stopAnimating()
-                }
-                
-                self.isLoadingNews = true
-            case .failure:
-                DispatchQueue.main.async {
-                    //self.loadingIndicatorView?.stopAnimating()
-                    self.showAlertController(title: NSLocalizedString(StringConstants.error, comment: ""),
-                                             message: NSLocalizedString(StringConstants.dataLoadingError, comment: ""))
-                }
-            }
-        }
     }
 }
