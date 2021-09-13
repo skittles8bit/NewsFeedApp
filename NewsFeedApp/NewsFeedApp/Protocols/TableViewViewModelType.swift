@@ -9,5 +9,5 @@ import Foundation
 
 protocol TableViewViewModelType {
     var numberOfRows: Int { get }
-    func cellViewModel(forIndexPath indexPath : IndexPath) -> TableViewCellViewModelType?
+    func cellViewModel(forIndexPath indexPath: IndexPath) -> TableViewCellViewModelType?
 }

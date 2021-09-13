@@ -35,7 +35,12 @@ class LoadingViewController: UIViewController {
         }
     }
     
-    fileprivate func setupLoadingView() {
+    
+}
+
+private extension LoadingViewController {
+    
+    func setupLoadingView() {
         
         loadingIndicatorView = NVActivityIndicatorView(frame: .zero,
                                               type: .ballPulse,
@@ -52,7 +57,7 @@ class LoadingViewController: UIViewController {
         ])
     }
     
-    private func showAlertController(title: String, message: String) {
+   func showAlertController(title: String, message: String) {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         let action = UIAlertAction(title: NSLocalizedString(StringConstants.retry, comment: ""), style: .cancel) { [weak self] _ in
             //self?.loadingIndicatorView?.stopAnimating()
@@ -62,7 +67,7 @@ class LoadingViewController: UIViewController {
         self.present(ac, animated: true, completion: nil)
     }
     
-    private func setupTimer() {
+    func setupTimer() {
         timer = Timer.scheduledTimer(timeInterval: 0.5,
                                      target: self,
                                      selector: #selector(checkingDataLoading),
@@ -70,7 +75,7 @@ class LoadingViewController: UIViewController {
                                      repeats: true)
     }
     
-    @objc private func checkingDataLoading() {
+    @objc func checkingDataLoading() {
         if isLoadingNews {
             timer.invalidate()
             
@@ -78,7 +83,7 @@ class LoadingViewController: UIViewController {
         }
     }
     
-    fileprivate func presentNewsViewController() {
+    func presentNewsViewController() {
         let storyBoard: UIStoryboard = UIStoryboard(name: StringConstants.mainStoryboard, bundle: nil)
         let newsViewController = storyBoard.instantiateViewController(withIdentifier: StringConstants.newsViewController) as! NewsViewController
         newsViewController.viewModels = viewModels
@@ -86,7 +91,7 @@ class LoadingViewController: UIViewController {
         self.present(newsViewController, animated: true, completion: nil)
     }
     
-    private func getPost() {
+    func getPost() {
         NetworkService.shared.getPosts { [weak self] result in
             guard let self = self else { return }
             
