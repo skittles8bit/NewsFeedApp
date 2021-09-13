@@ -15,26 +15,10 @@
                     <view key="view" contentMode="scaleToFill" id="bIt-hp-Xu3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="XQ6-SX-jYo">
-                                <rect key="frame" x="177.5" y="323.5" width="20" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="MP0-Ia-D1K"/>
-                                    <constraint firstAttribute="width" constant="20" id="hL3-bk-3VW"/>
-                                </constraints>
-                            </activityIndicatorView>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="8NJ-hD-aVM"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="XQ6-SX-jYo" firstAttribute="centerY" secondItem="bIt-hp-Xu3" secondAttribute="centerY" id="AnQ-jg-NgA"/>
-                            <constraint firstItem="XQ6-SX-jYo" firstAttribute="centerX" secondItem="bIt-hp-Xu3" secondAttribute="centerX" id="Xhb-Cp-uPA"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="AFf-OE-tum"/>
-                    <connections>
-                        <outlet property="loadingIndicator" destination="XQ6-SX-jYo" id="TDV-ef-m93"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kJC-nX-sPc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

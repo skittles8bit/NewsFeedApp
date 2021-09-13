@@ -6,19 +6,21 @@
 //
 
 import UIKit
+import NVActivityIndicatorView
 
 class LoadingViewController: UIViewController {
 
-    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
-    
     private var viewModels: TableViewViewModelType?
     private var timer = Timer()
     private var complitedLoadingNews = false
+    private var loadingIndicatorView:  NVActivityIndicatorView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadingIndicator.startAnimating()
+        setupLoadingView()
+        loadingIndicatorView?.startAnimating()
+        
         setupTimer()
         
         ConnectionMonitorService.shared.monitorConnection { [weak self] status in
@@ -31,13 +33,29 @@ class LoadingViewController: UIViewController {
                                           message: NSLocalizedString(StringConstants.noInternetConnection, comment: ""))
             }
         }
+    }
+    
+    fileprivate func setupLoadingView() {
         
+        loadingIndicatorView = NVActivityIndicatorView(frame: .zero,
+                                              type: .ballPulse,
+                                              color: .blue,
+                                              padding: 0)
+        
+        loadingIndicatorView!.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(loadingIndicatorView!)
+        NSLayoutConstraint.activate([
+            loadingIndicatorView!.widthAnchor.constraint(equalToConstant: 70),
+            loadingIndicatorView!.heightAnchor.constraint(equalToConstant: 70),
+            loadingIndicatorView!.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            loadingIndicatorView!.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
+        ])
     }
     
     private func showAlertController(title: String, message: String) {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         let action = UIAlertAction(title: NSLocalizedString(StringConstants.retry, comment: ""), style: .cancel) { [weak self] _ in
-            self?.loadingIndicator.stopAnimating()
+            self?.loadingIndicatorView?.stopAnimating()
             self?.getPost()
         }
         ac.addAction(action)
@@ -85,13 +103,13 @@ class LoadingViewController: UIViewController {
                 }))
                 
                 DispatchQueue.main.async {
-                    self.loadingIndicator.stopAnimating()
+                    self.loadingIndicatorView?.stopAnimating()
                 }
                 
                 self.complitedLoadingNews = true
             case .failure:
                 DispatchQueue.main.async {
-                    self.loadingIndicator.stopAnimating()
+                    self.loadingIndicatorView?.stopAnimating()
                     self.showAlertController(title: NSLocalizedString(StringConstants.error, comment: ""),
                                              message: NSLocalizedString(StringConstants.dataLoadingError, comment: ""))
                 }
