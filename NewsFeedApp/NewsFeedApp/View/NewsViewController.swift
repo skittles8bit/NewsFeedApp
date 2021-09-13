@@ -10,7 +10,7 @@ import SafariServices
 
 class NewsViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
     
     public var viewModels: TableViewViewModelType?
 }
@@ -40,9 +40,7 @@ extension NewsViewController: UITableViewDataSource, UITableViewDelegate{
         tableView.deselectRow(at: indexPath, animated: true)
         
         let cellViewModel = viewModels?.cellViewModel(forIndexPath: indexPath)
-        guard
-            let url = cellViewModel?.url
-        else {
+        guard let url = cellViewModel?.url else {
             return
         }
         

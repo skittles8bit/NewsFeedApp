@@ -11,11 +11,11 @@ class NewsTableViewCellViewModel: TableViewCellViewModelType {
 
     private var article: ArticleModel
     
-    var title: String {
+    var title: String? {
         article.title
     }
     
-    var subtitle: String {
+    var subtitle: String? {
         article.subtitle
     }
     

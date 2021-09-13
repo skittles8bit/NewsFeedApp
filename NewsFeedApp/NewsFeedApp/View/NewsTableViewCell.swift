@@ -9,10 +9,10 @@ import UIKit
 
 class NewsTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var headerNewsLabel: UILabel!
-    @IBOutlet weak var mainTextNewsLabel: UILabel!
-    @IBOutlet weak var newsImageView: UIImageView!
-    @IBOutlet weak var timePublishedLabel: UILabel!
+    @IBOutlet private weak var headerNewsLabel: UILabel!
+    @IBOutlet private weak var mainTextNewsLabel: UILabel!
+    @IBOutlet private weak var newsImageView: UIImageView!
+    @IBOutlet private weak var timePublishedLabel: UILabel!
     
     weak var viewModel: TableViewCellViewModelType? {
         willSet(viewModel) {

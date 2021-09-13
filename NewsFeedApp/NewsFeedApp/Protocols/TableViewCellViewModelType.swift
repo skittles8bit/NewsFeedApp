@@ -8,8 +8,8 @@
 import Foundation
 
 protocol TableViewCellViewModelType: AnyObject {
-    var title: String { get }
-    var subtitle: String { get }
+    var title: String? { get }
+    var subtitle: String? { get }
     var imageUrl: URL? { get }
     var imageData: Data? { get set }
     var url: URL? { get }

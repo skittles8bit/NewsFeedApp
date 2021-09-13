@@ -20,9 +20,7 @@ final class NetworkService {
     
     public func getPosts(completionHandler: @escaping (Result<[Article], Error>) -> Void) {
         
-        guard
-            let url = urlAPI
-        else {
+        guard let url = urlAPI else {
             return
         }
        
@@ -43,12 +41,6 @@ final class NetworkService {
         }.resume()
     }
     
-    private func urlSessionConfigurationSetup(){
-        urlSessionConfiguration.waitsForConnectivity = true
-        urlSessionConfiguration.timeoutIntervalForResource = 10
-    }
-    
-    
     public func loadImage(viewModel: TableViewCellViewModelType?, completionHandler:  @escaping ((Data) -> Void)) {
         
         guard let url = viewModel?.imageUrl else { return }
@@ -57,5 +49,13 @@ final class NetworkService {
             guard let data = data, error == nil else { return }
             completionHandler(data)
         }.resume()
+    }
+}
+
+private extension NetworkService {
+    
+    func urlSessionConfigurationSetup(){
+        urlSessionConfiguration.waitsForConnectivity = true
+        urlSessionConfiguration.timeoutIntervalForResource = 10
     }
 }
