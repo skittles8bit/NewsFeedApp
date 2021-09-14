@@ -20,4 +20,8 @@ extension String {
         
         return dateFormatterPrint.string(from: date!);
     }
+    
+    var localized: String  {
+        return NSLocalizedString(self, comment: "")
+    }
 }

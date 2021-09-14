@@ -43,8 +43,8 @@ class NewsTableViewViewModel: NewsViewModelType {
                         case .success(let news):
                             
                             completionHandler(news.compactMap({
-                                ArticleModel(title: $0.author ?? NSLocalizedString(StringConstants.emptyAuthor, comment: ""),
-                                             subtitle: $0.description ?? NSLocalizedString(StringConstants.emptyDescription, comment: ""),
+                                ArticleModel(title: $0.author ?? StringConstants.emptyAuthor.localized,
+                                             subtitle: $0.description ?? StringConstants.emptyDescription.localized,
                                              imageUrl: URL(string: $0.urlToImage ?? ""),
                                              url: URL(string: $0.url ?? ""),
                                              time: $0.publishedAt)

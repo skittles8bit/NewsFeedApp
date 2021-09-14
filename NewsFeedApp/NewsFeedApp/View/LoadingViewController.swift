@@ -45,13 +45,13 @@ private extension LoadingViewController {
                 } else {
                     DispatchQueue.main.async {
                         self?.loadingIndicatorView?.stopAnimating()
-                        self?.showAlertController(title: StringConstants.error, message: StringConstants.dataLoadingError)
+                        self?.showAlertController(title: StringConstants.error.localized, message: StringConstants.dataLoadingError.localized)
                     }
                 }
             default:
                 DispatchQueue.main.async {
                     self?.loadingIndicatorView?.stopAnimating()
-                    self?.showAlertController(title: StringConstants.error, message: StringConstants.dataLoadingError)
+                    self?.showAlertController(title: StringConstants.error.localized, message: StringConstants.dataLoadingError.localized)
                 }
             }
         }
@@ -77,7 +77,7 @@ private extension LoadingViewController {
     
    func showAlertController(title: String, message: String) {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        let action = UIAlertAction(title: NSLocalizedString(StringConstants.retry, comment: ""), style: .destructive) { [weak self] _ in
+        let action = UIAlertAction(title: StringConstants.retry.localized, style: .destructive) { [weak self] _ in
             self?.loadingIndicatorView?.startAnimating()
             
             self?.getPost()
