@@ -36,7 +36,7 @@ private extension LoadingViewController {
             case .satisfied:
                 if let news = news{
                     
-                    self?.viewModels = NewsTableViewViewModel(news: news)
+                    self?.viewModels.updateAticles(articles: news)
                     self?.isLoadingNews = true
                     
                     DispatchQueue.main.async {
@@ -105,10 +105,11 @@ private extension LoadingViewController {
     }
     
     func presentNewsViewController() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: StringConstants.mainStoryboard, bundle: nil)
-        let newsViewController = storyBoard.instantiateViewController(withIdentifier: StringConstants.newsViewController) as! NewsViewController
+        let sceneDelegate = self.view.window?.windowScene?.delegate as? SceneDelegate
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: StringConstants.mainStoryboard, bundle: nil)
+        let newsViewController = mainStoryboard.instantiateViewController(withIdentifier: StringConstants.newsViewController) as! NewsViewController
         newsViewController.viewModels = viewModels
-        newsViewController.modalPresentationStyle = .fullScreen
-        self.present(newsViewController, animated: true, completion: nil)
+        sceneDelegate?.window?.rootViewController = newsViewController
+        sceneDelegate?.window?.makeKeyAndVisible()
     }
 }

@@ -15,10 +15,8 @@ class NewsTableViewViewModel: NewsViewModelType {
         return articles?.count ?? 0
     }
     
-    init(){}
-    
-    init(news: [ArticleModel]) {
-        self.articles = news
+    func updateAticles(articles: [ArticleModel]) {
+        self.articles = articles
     }
     
     func cellViewModel(forIndexPath indexPath: IndexPath) -> NewsCellViewModelType? {
