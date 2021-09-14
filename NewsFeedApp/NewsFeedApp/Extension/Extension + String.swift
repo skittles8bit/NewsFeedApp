@@ -21,7 +21,7 @@ extension String {
         return dateFormatterPrint.string(from: date!);
     }
     
-    var localized: String  {
+    var localized: String {
         return NSLocalizedString(self, comment: "")
     }
 }

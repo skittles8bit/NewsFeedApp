@@ -10,84 +10,28 @@ import NVActivityIndicatorView
 
 class LoadingViewController: UIViewController {
 
-    private var viewModels =  NewsTableViewViewModel()
-    private var timer = Timer()
-    private var isLoadingNews = false
-    private var loadingIndicatorView:  NVActivityIndicatorView?
+    private var viewModels = LoadingViewModel()
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         
         setupTimer()
-        
-        setupLoadingView()
-        loadingIndicatorView?.startAnimating()
-        
+        addLoadingIndicatorOnView()
         getPost()
     }
 }
 
 private extension LoadingViewController {
     
-    func getPost() {
-        self.viewModels.getPost { [weak self] news, status, error in
-            
-            switch status {
-            case .satisfied:
-                if let news = news{
-                    
-                    self?.viewModels.updateAticles(articles: news)
-                    self?.isLoadingNews = true
-                    
-                    DispatchQueue.main.async {
-                        self?.loadingIndicatorView?.stopAnimating()
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        self?.loadingIndicatorView?.stopAnimating()
-                        self?.showAlertController(title: StringConstants.error.localized, message: StringConstants.dataLoadingError.localized)
-                    }
-                }
-            default:
-                DispatchQueue.main.async {
-                    self?.loadingIndicatorView?.stopAnimating()
-                    self?.showAlertController(title: StringConstants.error.localized, message: StringConstants.dataLoadingError.localized)
-                }
-            }
-        }
-    }
-    
-    
-    func setupLoadingView() {
-        
-        loadingIndicatorView = NVActivityIndicatorView(frame: .zero,
-                                              type: .ballPulse,
-                                              color: .blue,
-                                              padding: 0)
-        
-        loadingIndicatorView!.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(loadingIndicatorView!)
-        NSLayoutConstraint.activate([
-            loadingIndicatorView!.widthAnchor.constraint(equalToConstant: 70),
-            loadingIndicatorView!.heightAnchor.constraint(equalToConstant: 70),
-            loadingIndicatorView!.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            loadingIndicatorView!.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
-        ])
-    }
-    
-   func showAlertController(title: String, message: String) {
-        let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        let action = UIAlertAction(title: StringConstants.retry.localized, style: .destructive) { [weak self] _ in
-            self?.loadingIndicatorView?.startAnimating()
-            
-            self?.getPost()
-        }
-        ac.addAction(action)
-        self.present(ac, animated: true, completion: nil)
+    func addLoadingIndicatorOnView() {
+        self.view.addSubview(viewModels.setupLoadingView())
+        NSLayoutConstraint.activate(viewModels.addConstraintsForLoadingView(view: self.view))
     }
     
     func setupTimer() {
-        timer = Timer.scheduledTimer(timeInterval: 0.5,
+        
+        viewModels.timer = Timer.scheduledTimer(timeInterval: 0.5,
                                      target: self,
                                      selector: #selector(checkingDataLoading),
                                      userInfo: nil,
@@ -95,16 +39,61 @@ private extension LoadingViewController {
     }
     
     @objc func checkingDataLoading() {
-        if isLoadingNews {
-            timer.invalidate()
+        
+        if viewModels.isLoadingNews != nil{
+            viewModels.timer.invalidate()
             
-            loadingIndicatorView?.stopAnimating()
+            viewModels.loadingIndicatorView?.stopAnimating()
             
             presentNewsViewController()
         }
     }
     
+    func getPost() {
+        
+        self.viewModels.getPost { [weak self] news, status, error in
+            
+            switch status {
+            case .satisfied:
+                if let news = news{
+                    
+                    self?.viewModels.updateAticles(articles: news)
+                    self?.viewModels.isLoadingNews = true
+                    
+                    DispatchQueue.main.async {
+                        self?.viewModels.loadingIndicatorView?.stopAnimating()
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self?.viewModels.loadingIndicatorView?.stopAnimating()
+                        self?.showAlertController(title: StringConstants.error.localized,
+                                                  message: StringConstants.dataLoadingError.localized)
+                    }
+                }
+            default:
+                DispatchQueue.main.async {
+                    self?.viewModels.loadingIndicatorView?.stopAnimating()
+                    self?.showAlertController(title: StringConstants.error.localized,
+                                              message: StringConstants.dataLoadingError.localized)
+                }
+            }
+        }
+    }
+    
+   func showAlertController(title: String, message: String) {
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        let action = UIAlertAction(title: StringConstants.retry.localized, style: .destructive) { [weak self] _ in
+            self?.viewModels.loadingIndicatorView?.startAnimating()
+            
+            self?.getPost()
+        }
+    
+        ac.addAction(action)
+        self.present(ac, animated: true, completion: nil)
+    }
+    
     func presentNewsViewController() {
+        
         let sceneDelegate = self.view.window?.windowScene?.delegate as? SceneDelegate
         let mainStoryboard: UIStoryboard = UIStoryboard(name: StringConstants.mainStoryboard, bundle: nil)
         let newsViewController = mainStoryboard.instantiateViewController(withIdentifier: StringConstants.newsViewController) as! NewsViewController

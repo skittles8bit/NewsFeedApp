@@ -30,33 +30,4 @@ class NewsTableViewViewModel: NewsViewModelType {
         
         return NewsTableViewCellViewModel(article: arcticles)
     }
-    
-    func getPost(completionHandler: @escaping ([ArticleModel]?, ConnectionStatus, Error?) -> Void) {
-        
-        ConnectionMonitorService.shared.monitorConnection {status in
-            
-            switch status {
-                case .satisfied:
-                    NetworkService.shared.getPosts {result in
-
-                        switch result {
-                        case .success(let news):
-                            
-                            completionHandler(news.compactMap({
-                                ArticleModel(title: $0.author ?? StringConstants.emptyAuthor.localized,
-                                             subtitle: $0.description ?? StringConstants.emptyDescription.localized,
-                                             imageUrl: URL(string: $0.urlToImage ?? ""),
-                                             url: URL(string: $0.url ?? ""),
-                                             time: $0.publishedAt)
-                                
-                            }), status, nil)
-                        case .failure(let error):
-                            completionHandler(nil, status, error)
-                        }
-                    }
-                default:
-                    completionHandler(nil, status, nil)
-            }
-        }
-    }
 }
