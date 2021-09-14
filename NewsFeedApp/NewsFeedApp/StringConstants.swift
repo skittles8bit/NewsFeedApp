@@ -6,7 +6,6 @@
 //
 
 struct StringConstants {
-    static let api = "https://newsapi.org/v2/everything?q=apple&from=2021-09-12&to=2021-09-12&sortBy=popularity&apiKey=7e7a5f7c166344cf9f14d4a549ab9282"
     
     static let mainStoryboard = "Main"
     static let newsViewController = "newsViewController"

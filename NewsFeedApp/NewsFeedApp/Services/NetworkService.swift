@@ -9,7 +9,7 @@ import Foundation
 
 final class NetworkService {
     
-    private let urlAPI = URL(string: StringConstants.api)
+    private let urlAPI = URL(string: API.api)
     private let urlSessionConfiguration = URLSessionConfiguration.default
     
     static let shared = NetworkService()
