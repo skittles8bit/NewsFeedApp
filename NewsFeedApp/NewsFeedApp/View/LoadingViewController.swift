@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import NVActivityIndicatorView
 
 class LoadingViewController: UIViewController {
 
