@@ -8,25 +8,10 @@
 import Foundation
 import UIKit
 
-protocol LoadingViewModelType: NewsViewModelType {
+protocol LoadingViewModelType {
     func updateIsLoadingNews(value: Bool)
     func updateAticles(articles: [ArticleModel])
     func setupLoadingView() -> UIView
     func addConstraintsForLoadingView(view: UIView) -> [NSLayoutConstraint]
     func getPost(completionHandler: @escaping ([ArticleModel]?, ConnectionStatus, Error?) -> Void)
-}
-
-extension LoadingViewModelType {
-    var numberOfRows: Int {
-        return 0
-    }
-    
-    func cellViewModel(forIndexPath indexPath: IndexPath) -> NewsCellViewModelType? {
-        
-        return NewsTableViewCellViewModel(article: ArticleModel(title: "",
-                                                                subtitle: "",
-                                                                imageUrl: URL(string: ""),
-                                                                url: URL(string: ""),
-                                                                time: ""))
-    }
 }

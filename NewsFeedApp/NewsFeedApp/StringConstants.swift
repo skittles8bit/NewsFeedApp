@@ -17,6 +17,7 @@ struct StringConstants {
     static let error = "Error!"
     static let retry = "RETRY"
     
+    static let news = "News"
     static let emptyAuthor = "Empty author"
     static let emptyDescription = "Empty description"
     static let dataLoadingError = "Data loading error. Please try again."

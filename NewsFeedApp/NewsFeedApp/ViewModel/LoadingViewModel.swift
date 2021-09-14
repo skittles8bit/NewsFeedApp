@@ -8,13 +8,50 @@
 import Foundation
 import NVActivityIndicatorView
 
-class LoadingViewModel: LoadingViewModelType {
+class LoadingViewModel: LoadingViewModelType, NewsViewModelType {
     
     var timer = Timer()
     private var articles: [ArticleModel]?
     private(set) var loadingIndicatorView:  NVActivityIndicatorView?
     
     var isLoadingNews: Bool?
+    var numberOfRows: Int {
+        return articles?.count ?? 0
+    }
+    
+    func cellViewModel(forIndexPath indexPath: IndexPath) -> NewsCellViewModelType? {
+        guard let arcticles = articles?[indexPath.row] else {
+            return NewsTableViewCellViewModel(article: ArticleModel(title: "",
+                                                                    subtitle: "",
+                                                                    imageUrl: URL(string: ""),
+                                                                    url: URL(string: ""),
+                                                                    time: ""))
+        }
+        
+        return NewsTableViewCellViewModel(article: arcticles)
+    }
+    
+    func createAlertController(title: String, message: String, handler: ((UIAlertAction) -> Void)? ) -> UIAlertController {
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        let action = UIAlertAction(title: StringConstants.retry.localized, style: .destructive, handler: handler)
+    
+        ac.addAction(action)
+        return ac
+    }
+    
+    func presentNewsViewController(view: UIView, viewModel: LoadingViewModel) {
+        
+        let sceneDelegate = view.window?.windowScene?.delegate as? SceneDelegate
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: StringConstants.mainStoryboard, bundle: nil)
+        let newsViewController = mainStoryboard.instantiateViewController(withIdentifier: StringConstants.newsViewController) as! NewsViewController
+        let navigationController = UINavigationController(rootViewController: newsViewController)
+        navigationController.navigationBar.prefersLargeTitles = true
+        navigationController.navigationBar.topItem?.title = StringConstants.news.localized
+        
+        newsViewController.viewModels = viewModel
+        sceneDelegate?.window?.rootViewController = navigationController
+        sceneDelegate?.window?.makeKeyAndVisible()
+    }
     
     func updateIsLoadingNews(value: Bool) {
         

@@ -16,9 +16,9 @@ extension String {
         let dateFormatterPrint = DateFormatter()
         dateFormatterPrint.dateFormat = "MM-dd-yyyy HH:mm"
 
-        let date: Date? = dateFormatterGet.date(from: self)
+        guard let date: Date = dateFormatterGet.date(from: self) else { return ""}
         
-        return dateFormatterPrint.string(from: date!);
+        return dateFormatterPrint.string(from: date);
     }
     
     var localized: String {
