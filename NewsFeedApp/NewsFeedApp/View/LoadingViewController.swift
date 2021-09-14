@@ -108,8 +108,11 @@ private extension LoadingViewController {
         let sceneDelegate = self.view.window?.windowScene?.delegate as? SceneDelegate
         let mainStoryboard: UIStoryboard = UIStoryboard(name: StringConstants.mainStoryboard, bundle: nil)
         let newsViewController = mainStoryboard.instantiateViewController(withIdentifier: StringConstants.newsViewController) as! NewsViewController
+        let navigationController = UINavigationController(rootViewController: newsViewController)
+        navigationController.navigationBar.prefersLargeTitles = true
+        
         newsViewController.viewModels = viewModels
-        sceneDelegate?.window?.rootViewController = newsViewController
+        sceneDelegate?.window?.rootViewController = navigationController
         sceneDelegate?.window?.makeKeyAndVisible()
     }
 }
