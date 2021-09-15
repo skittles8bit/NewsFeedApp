@@ -10,7 +10,6 @@ import NVActivityIndicatorView
 
 class LoadingViewModel: LoadingViewModelType, NewsViewModelType {
     
-    var timer = Timer()
     private var articles: [ArticleModel]?
     private(set) var loadingIndicatorView:  NVActivityIndicatorView?
     
@@ -19,7 +18,13 @@ class LoadingViewModel: LoadingViewModelType, NewsViewModelType {
         return articles?.count ?? 0
     }
     
+    func setImage(imageByName: String) -> UIImage? {
+        
+        return UIImage(named: imageByName)
+    }
+    
     func cellViewModel(forIndexPath indexPath: IndexPath) -> NewsCellViewModelType? {
+        
         guard let arcticles = articles?[indexPath.row] else {
             return NewsTableViewCellViewModel(article: ArticleModel(title: "",
                                                                     subtitle: "",
@@ -32,6 +37,7 @@ class LoadingViewModel: LoadingViewModelType, NewsViewModelType {
     }
     
     func createAlertController(title: String, message: String, handler: ((UIAlertAction) -> Void)? ) -> UIAlertController {
+        
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         let action = UIAlertAction(title: StringConstants.retry.localized, style: .destructive, handler: handler)
     
@@ -53,35 +59,9 @@ class LoadingViewModel: LoadingViewModelType, NewsViewModelType {
         sceneDelegate?.window?.makeKeyAndVisible()
     }
     
-    func updateIsLoadingNews(value: Bool) {
-        
-        self.isLoadingNews = value
-    }
-    
     func updateAticles(articles: [ArticleModel]) {
         
         self.articles = articles
-    }
-    
-    func setupLoadingView() -> UIView {
-        
-        loadingIndicatorView = NVActivityIndicatorView(frame: .zero,
-                                              type: .ballPulse,
-                                              color: .blue,
-                                              padding: 0)
-        
-        loadingIndicatorView!.translatesAutoresizingMaskIntoConstraints = false
-        
-        return loadingIndicatorView!
-    }
-    
-    func addConstraintsForLoadingView(view: UIView) -> [NSLayoutConstraint] {
-        return [
-            loadingIndicatorView!.widthAnchor.constraint(equalToConstant: 70),
-            loadingIndicatorView!.heightAnchor.constraint(equalToConstant: 70),
-            loadingIndicatorView!.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingIndicatorView!.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ]
     }
     
     func getPost(completionHandler: @escaping ([ArticleModel]?, ConnectionStatus, Error?) -> Void) {

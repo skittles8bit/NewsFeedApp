@@ -15,10 +15,26 @@
                     <view key="view" contentMode="scaleToFill" id="bIt-hp-Xu3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pZq-kG-iwS">
+                                <rect key="frame" x="162.5" y="308.5" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="C9E-mt-PjK"/>
+                                    <constraint firstAttribute="height" constant="50" id="c0p-uH-nCe"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="8NJ-hD-aVM"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="pZq-kG-iwS" firstAttribute="centerY" secondItem="bIt-hp-Xu3" secondAttribute="centerY" id="COZ-zh-VQM"/>
+                            <constraint firstItem="pZq-kG-iwS" firstAttribute="centerX" secondItem="bIt-hp-Xu3" secondAttribute="centerX" id="YxG-oU-s4x"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="AFf-OE-tum"/>
+                    <connections>
+                        <outlet property="customIndicatorImageView" destination="pZq-kG-iwS" id="WJE-Sw-pLz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kJC-nX-sPc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
