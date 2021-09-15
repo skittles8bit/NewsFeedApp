@@ -24,4 +24,11 @@ extension String {
     var localized: String {
         return NSLocalizedString(self, comment: "")
     }
+    
+    var removedHTMLTags: String {
+        return self.replacingOccurrences(of: "<[^>]+>",
+                                         with: "",
+                                         options: .regularExpression,
+                                         range: nil)
+    }
 }

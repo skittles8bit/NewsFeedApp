@@ -24,10 +24,7 @@ class NewsTableViewCell: UITableViewCell {
 private extension NewsTableViewCell {
     func setValue(viewModel: NewsCellViewModelType?) {
         headerNewsLabel.text = viewModel?.title
-        mainTextNewsLabel.text = viewModel?.subtitle?.replacingOccurrences(of: "<[^>]+>",
-                                                                           with: "",
-                                                                           options: .regularExpression,
-                                                                           range: nil)
+        mainTextNewsLabel.text = viewModel?.subtitle?.removedHTMLTags
         timePublishedLabel.text = viewModel?.time?.getFormattedDate()
         
         if let imageData = viewModel?.imageData {
