@@ -10,17 +10,19 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 	var window: UIWindow?
+	var appCoordinator: AppCoordinatorProtocol?
 
 	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 		guard let scene = (scene as? UIWindowScene) else { return }
 
 		window = UIWindow(windowScene: scene)
-		window?.rootViewController = NewsFeedViewController(
-			viewModel: NewsFeedViewModel(
-				dependencies: .init()
-			)
-		)
+		let navigationController = UINavigationController()
+		window?.rootViewController = navigationController
 		window?.makeKeyAndVisible()
+
+		print("Start application")
+		appCoordinator = AppCoordinator(navigationController: navigationController)
+		appCoordinator?.start()
 	}
 }
 

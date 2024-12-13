@@ -7,11 +7,11 @@
 
 import UIKit
 
-class NewsFeedViewController: UIViewController {
+final class NewsFeedViewController: UIViewController {
 
 	private let viewModel: NewsFeedViewModel
 
-	init(viewModel: NewsFeedViewModel) {
+	init(with viewModel: NewsFeedViewModel) {
 		self.viewModel = viewModel
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -22,6 +22,10 @@ class NewsFeedViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		viewModel.viewActions.lifecycle.send(.didLoad)
 	}
+}
+
+private extension NewsFeedViewController {
 }
 
