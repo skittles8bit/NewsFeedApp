@@ -6,16 +6,25 @@
 //
 
 import Combine
+import Foundation
 
-final class NewsFeedViewModel: NewsFeedViewModelActionsProtocol {
+final class NewsFeedViewModel: NewsFeedViewModelActionsAndData {
 
 	/// Зависимости
 	struct Dependencies {
 		let apiService: APIServiceProtocol
+		let imageLoader: ImageLoaderProtocol
 	}
+
+	var newsFeedItems: [NewsModel] = []
+	let data: NewsFeedViewModelData
 
 	private(set) lazy var viewActions = NewsFeedViewModelActions()
 	private let dependencies: Dependencies
+	private let reloadDataSubject = PassthroughSubject<Void, Never>()
+	private let loadingSubject = PassthroughSubject<Void, Never>()
+	private let errorSubject = PassthroughSubject<Void, Never>()
+
 	private var subscriptions = Subscriptions()
 
 	/// Инициализатор
@@ -23,6 +32,11 @@ final class NewsFeedViewModel: NewsFeedViewModelActionsProtocol {
 	///   - dependencies: Зависимости вьюмодели
 	init(dependencies: Dependencies) {
 		self.dependencies = dependencies
+		data = NewsFeedViewModelData(
+			loadingPublisher: loadingSubject.eraseToAnyPublisher(),
+			reloadDataPublisher: reloadDataSubject.eraseToAnyPublisher(),
+			errorPublisher: errorSubject.eraseToAnyPublisher()
+		)
 		bind()
 	}
 }
@@ -39,16 +53,43 @@ private extension NewsFeedViewModel {
 				break
 			}
 		}.store(in: &subscriptions)
+
+		viewActions.events.sink { [weak self] event in
+			guard let self else { return }
+			switch event {
+			case .refreshDidTap:
+				fetchNewsFeed()
+			}
+		}.store(in: &subscriptions)
 	}
 
 	func fetchNewsFeed() {
+		loadingSubject.send()
 		print("Loading RSS")
 		Task {
 			do {
-				let items = try await dependencies.apiService.fetchAndParseRSSFeeds()
+				newsFeedItems = try await dependencies.apiService.fetchAndParseRSSFeeds()
+				await fetchImages(for: newsFeedItems)
+				reloadDataSubject.send()
 			} catch {
 				print("Ошибка при загрузке или разборе RSS: \(error)")
+				errorSubject.send()
 			}
+		}
+	}
+
+	func fetchImages(for items: [NewsModel]) async {
+		for (index, item) in newsFeedItems.enumerated() {
+			guard
+				let imageURL = item.imageURL,
+				let url = URL(string: imageURL)
+			else {
+				return
+			}
+
+			newsFeedItems[index].image = await dependencies.imageLoader.loadImage(
+				from: url
+			)
 		}
 	}
 }

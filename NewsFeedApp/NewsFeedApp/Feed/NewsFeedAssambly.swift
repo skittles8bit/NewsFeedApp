@@ -12,7 +12,10 @@ final class NewsFeedAssambly {
 	static func build() -> NewsFeedViewController {
 		NewsFeedViewController(
 			with: NewsFeedViewModel(
-				dependencies: .init(apiService: APIService(rssParser: RSSParser()))
+				dependencies: .init(
+					apiService: APIService(rssParser: RSSParserService()),
+					imageLoader: ImageLoader()
+				)
 			)
 		)
 	}
