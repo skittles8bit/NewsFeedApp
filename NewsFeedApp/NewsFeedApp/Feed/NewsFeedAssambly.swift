@@ -13,8 +13,7 @@ final class NewsFeedAssambly {
 		NewsFeedViewController(
 			with: NewsFeedViewModel(
 				dependencies: .init(
-					apiService: APIService(rssParser: RSSParserService()),
-					imageLoader: ImageLoader()
+					apiService: APIService(rssParser: RSSParserService())
 				)
 			)
 		)

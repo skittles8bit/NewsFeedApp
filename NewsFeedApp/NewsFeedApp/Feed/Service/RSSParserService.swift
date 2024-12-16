@@ -19,7 +19,8 @@ final class RSSParserService: NSObject {
 	private var currentDescription = ""
 	private var currentLink = ""
 	private var currentImageURL = ""
-	private var currentPubDate: String?
+	private var currentPubDate: Date?
+	private var channelTitle = ""
 
 	var items = [NewsModel]()
 }
@@ -79,7 +80,8 @@ extension RSSParserService: XMLParserDelegate {
 		case RSSTagNames.link.rawValue:
 			currentLink.append(string)
 		case RSSTagNames.pubDate.rawValue:
-			currentPubDate = string
+			guard !string.clearString.isEmpty else { return }
+			currentPubDate = DateFormatter.newsDateFormatter.date(from: string)
 		default:
 			break
 		}
@@ -91,15 +93,18 @@ extension RSSParserService: XMLParserDelegate {
 		namespaceURI: String?,
 		qualifiedName qName: String?
 	) {
-		if elementName == RSSTagNames.item.rawValue {
+		switch elementName {
+		case RSSTagNames.item.rawValue:
 			let item = NewsModel(
 				title: currentTitle.clearString,
 				description: currentDescription.clearString,
 				link: currentLink.clearString,
-				publicationDate: currentPubDate?.clearString,
+				publicationDate: currentPubDate,
 				imageURL: currentImageURL.clearString
 			)
 			items.append(item)
+		default:
+			break
 		}
 	}
 }
@@ -115,5 +120,6 @@ private extension RSSParserService {
 		case description
 		case enclosure
 		case mediaContent = "media:content"
+		case channel
 	}
 }

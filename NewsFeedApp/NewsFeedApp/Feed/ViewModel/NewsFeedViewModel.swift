@@ -13,7 +13,6 @@ final class NewsFeedViewModel: NewsFeedViewModelActionsAndData {
 	/// Зависимости
 	struct Dependencies {
 		let apiService: APIServiceProtocol
-		let imageLoader: ImageLoaderProtocol
 	}
 
 	var newsFeedItems: [NewsModel] = []
@@ -69,27 +68,11 @@ private extension NewsFeedViewModel {
 		Task {
 			do {
 				newsFeedItems = try await dependencies.apiService.fetchAndParseRSSFeeds()
-				await fetchImages(for: newsFeedItems)
 				reloadDataSubject.send()
 			} catch {
 				print("Ошибка при загрузке или разборе RSS: \(error)")
 				errorSubject.send()
 			}
-		}
-	}
-
-	func fetchImages(for items: [NewsModel]) async {
-		for (index, item) in newsFeedItems.enumerated() {
-			guard
-				let imageURL = item.imageURL,
-				let url = URL(string: imageURL)
-			else {
-				return
-			}
-
-			newsFeedItems[index].image = await dependencies.imageLoader.loadImage(
-				from: url
-			)
 		}
 	}
 }

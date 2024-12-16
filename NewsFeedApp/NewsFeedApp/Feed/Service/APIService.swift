@@ -39,18 +39,27 @@ extension APIService: APIServiceProtocol {
 			allItems.append(contentsOf: rssParser.items)
 		}
 
-		return allItems
+		return Array(Set(allItems)).sorted { prev, curr in
+			guard
+				let prevPublicationDate = prev.publicationDate,
+				let currPublicationDate = curr.publicationDate
+			else {
+				return false
+			}
+			return prevPublicationDate > currPublicationDate
+		}
 	}
 }
 
 private extension APIService {
 
 	enum Constants {
-		static let vedomosti = "https://www.lenta.ru/rss/articles/russia"
-		static let vedomosti1 = "https://www.lenta.ru/rss/news"
-		static let vedomosti2 = "https://www.lenta.ru/rss/top7"
-		static let vedomosti3 = "https://www.lenta.ru/rss/last24"
-		static let vedomosti4 = "https://www.lenta.ru/rss/photo/russia"
+		static let vedomosti = "https://www.vedomosti.ru/rss/news.xml"
+		static let lenta = "https://www.lenta.ru/rss/articles/russia"
+		static let lenta1 = "https://www.lenta.ru/rss/news"
+		static let lenta2 = "https://www.lenta.ru/rss/top7"
+		static let lenta3 = "https://www.lenta.ru/rss/last24"
+		static let lenta4 = "https://www.lenta.ru/rss/photo/russia"
 		static let nytimes = "https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml"
 	}
 }

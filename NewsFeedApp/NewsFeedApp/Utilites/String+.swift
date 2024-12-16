@@ -29,4 +29,21 @@ extension String {
 			range: nil
 		)
 	}
+
+	func extractDomain(from urlString: String) -> String? {
+		guard let url = URL(string: urlString) else { return nil }
+
+		// Извлекаем компоненты URL
+		var components = URLComponents(
+			url: url,
+			resolvingAgainstBaseURL: false
+		)
+
+		// Проверяем наличие хоста
+		if let host = components?.host {
+			return host
+		}
+
+		return nil
+	}
 }

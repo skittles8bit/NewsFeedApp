@@ -7,7 +7,7 @@
 
 import Foundation
 
-private extension DateFormatter {
+extension DateFormatter {
 
 	static let newsDateFormatter: DateFormatter = {
 		let formatter = DateFormatter()

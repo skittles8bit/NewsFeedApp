@@ -7,74 +7,43 @@
 
 import UIKit
 
-protocol ImageLoaderProtocol {
-	func loadImage(from url: URL) async -> UIImage?
-}
+final class ImageLoader {
+	static let shared = ImageLoader()
 
-class ImageLoader {
+	private var imageCache = NSCache<NSString, UIImage>()
 
-	private let memoryCache = NSCache<NSURL, UIImage>()
-	private let diskCacheDirectory: URL
+	private init() {}
 
-	init() {
-		self.diskCacheDirectory = FileManager.default.urls(
-			for: .cachesDirectory,
-			in: .userDomainMask
-		)[0].appendingPathComponent("Images")
-	}
-}
-
-// MARK: - ImageLoaderProtocol
-
-extension ImageLoader: ImageLoaderProtocol {
-
-	func loadImage(from url: URL) async -> UIImage? {
-		await loadImageInternal(from: url)
-	}
-}
-
-// MARK: - Private
-
-private extension ImageLoader {
-
-	func loadImageInternal(from url: URL) async -> UIImage? {
-		// Проверяем память
-		if let cachedImage = memoryCache.object(forKey: url as NSURL) {
-			return cachedImage
+	func loadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
+		// Проверка на наличие URL
+		guard let url = URL(string: urlString) else {
+			completion(nil)
+			return
 		}
 
-		// Проверяем дисковый кэш
-		let diskCachePath = diskCacheDirectory.appendingPathComponent(url.lastPathComponent)
-		if let imageFromDisk = UIImage(contentsOfFile: diskCachePath.path) {
-			memoryCache.setObject(imageFromDisk, forKey: url as NSURL)
-			return imageFromDisk
+		// Проверка кэша
+		if let cachedImage = imageCache.object(forKey: urlString as NSString) {
+			completion(cachedImage)
+			return
 		}
 
-		// Загружаем изображение из сети
-		do {
-			let (data, response) = try await URLSession.shared.data(from: url)
-			guard
-				let image = UIImage(data: data),
-				let response = response as? HTTPURLResponse,
-				response.statusCode == 200
-			else {
-				return nil
+		// Загрузка изображения из сети
+		let task = URLSession.shared.dataTask(with: url) { data, response, error in
+			// Обработка ошибок и проверки данных
+			guard let data = data, error == nil, let image = UIImage(data: data) else {
+				completion(nil)
+				return
 			}
 
-			// Сохраняем изображение в память
-			memoryCache.setObject(image, forKey: url as NSURL)
+			// Сохранение изображения в кэш
+			self.imageCache.setObject(image, forKey: urlString as NSString)
 
-			// Сохраняем изображение на диск
-			do {
-				try data.write(to: diskCachePath)
-			} catch {
-				print("Error saving image to disk: \(error)")
+			// Возвращаем изображение через завершение
+			DispatchQueue.main.async {
+				completion(image)
 			}
-
-			return image
-		} catch {
-			print("Error loading image: \(error)")
-			return nil
 		}
+
+		task.resume()
 	}
 }

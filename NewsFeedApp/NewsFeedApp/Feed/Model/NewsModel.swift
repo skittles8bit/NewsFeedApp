@@ -11,9 +11,20 @@ struct NewsModel {
 	let title: String?
 	let description: String?
 	let link: String?
-	let publicationDate: String?
+	let publicationDate: Date?
 	let imageURL: String?
 	var image: UIImage?
+}
+
+extension NewsModel: Hashable {
+
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(title)
+		hasher.combine(description)
+		hasher.combine(link)
+		hasher.combine(publicationDate)
+		hasher.combine(imageURL)
+	}
 }
 
 extension NewsModel: Equatable {

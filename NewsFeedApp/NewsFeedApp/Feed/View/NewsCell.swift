@@ -9,13 +9,6 @@ import UIKit
 
 final class NewsCell: UITableViewCell {
 
-	private lazy var image: UIImageView = {
-		let imageView = UIImageView()
-		imageView.contentMode = .scaleAspectFill
-		imageView.clipsToBounds = true
-		return imageView
-	}()
-
 	private lazy var titleLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 16, weight: .bold)
@@ -30,9 +23,17 @@ final class NewsCell: UITableViewCell {
 		return label
 	}()
 
+	private lazy var newsImageView: UIImageView = {
+		let imageView = UIImageView()
+		imageView.contentMode = .scaleAspectFill
+		imageView.clipsToBounds = true
+		imageView.translatesAutoresizingMaskIntoConstraints = false
+		return imageView
+	}()
+
 	private lazy var publicationDateLabel: UILabel = {
 		let label = UILabel()
-		label.font = .systemFont(ofSize: 14)
+		label.font = .systemFont(ofSize: 12, weight: .bold)
 		return label
 	}()
 
@@ -54,21 +55,29 @@ final class NewsCell: UITableViewCell {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-	func setup(with item: NewsModel) {
-		stackView.subviews.forEach { $0.removeFromSuperview() }
-		selectionStyle = .none
+	override func prepareForReuse() {
+		super.prepareForReuse()
 
+		stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+		titleLabel.text = nil
+		newsImageView.image = nil
+		descriptionLabel.text = nil
+	}
+
+	func setup(with item: NewsModel) {
 		titleLabel.text = item.title
-		image.image = item.image
+		if let imageURL = item.imageURL {
+			ImageLoader.shared.loadImage(from: imageURL) { [weak self] image in
+				guard let self else { return }
+				newsImageView.image = image
+			}
+		}
 		descriptionLabel.text = item.description
 
-		stackView.addArrangedSubview(titleLabel)
-		stackView.addArrangedSubview(descriptionLabel)
-		stackView.addArrangedSubview(image)
-		stackView.addArrangedSubview(publicationDateLabel)
+		let channel = item.link?.extractDomain(from: item.link ?? "") ?? ""
 
-		if let publicationDate = item.publicationDate, !publicationDate.isEmpty {
-			publicationDateLabel.text = publicationDate
+		if let publicationDate = item.publicationDate {
+			publicationDateLabel.text = channel + " | " + publicationDate.formatted()
 		}
 	}
 }
@@ -77,18 +86,41 @@ final class NewsCell: UITableViewCell {
 
 private extension NewsCell {
 
+	enum Constants {
+		static let insent: CGFloat = 10
+		static let imageHeight: CGFloat = 300
+	}
+
 	func setup() {
+		selectionStyle = .none
 		backgroundColor = .systemBackground
 		contentView.addSubview(stackView)
-		stackView.translatesAutoresizingMaskIntoConstraints = false
+		stackView.addArrangedSubview(titleLabel)
+		stackView.addArrangedSubview(descriptionLabel)
+		stackView.addArrangedSubview(newsImageView)
+		stackView.addArrangedSubview(publicationDateLabel)
+		NSLayoutConstraint.activate(
+			[
+				stackView.topAnchor.constraint(
+					equalTo: contentView.topAnchor,
+					constant: Constants.insent
+				),
+				stackView.bottomAnchor.constraint(
+					equalTo: contentView.bottomAnchor,
+					constant: -Constants.insent
+				),
+				stackView.leadingAnchor.constraint(
+					equalTo: contentView.leadingAnchor,
+					constant: Constants.insent
+				),
+				stackView.trailingAnchor.constraint(
+					equalTo: contentView.trailingAnchor,
+					constant: -Constants.insent
+				),
+			]
+		)
 		NSLayoutConstraint.activate([
-			stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-			stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-			stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-			stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-		])
-		NSLayoutConstraint.activate([
-			image.heightAnchor.constraint(equalToConstant: 300)
+			newsImageView.heightAnchor.constraint(equalToConstant: Constants.imageHeight)
 		])
 	}
 }
