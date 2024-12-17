@@ -8,6 +8,7 @@
 import Foundation
 
 protocol APIServiceProtocol {
+
 	func fetchAndParseRSSFeeds() async throws -> [NewsModel]
 }
 
@@ -27,7 +28,8 @@ extension APIService: APIServiceProtocol {
 
 		let news = [
 			Constants.vedomosti,
-			Constants.nytimes
+			Constants.nytimes,
+			Constants.lenta
 		]
 
 		for url in news {
@@ -54,12 +56,8 @@ extension APIService: APIServiceProtocol {
 private extension APIService {
 
 	enum Constants {
+		static let nytimes = "https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml"
 		static let vedomosti = "https://www.vedomosti.ru/rss/news.xml"
 		static let lenta = "https://www.lenta.ru/rss/articles/russia"
-		static let lenta1 = "https://www.lenta.ru/rss/news"
-		static let lenta2 = "https://www.lenta.ru/rss/top7"
-		static let lenta3 = "https://www.lenta.ru/rss/last24"
-		static let lenta4 = "https://www.lenta.ru/rss/photo/russia"
-		static let nytimes = "https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml"
 	}
 }
