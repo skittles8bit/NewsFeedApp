@@ -1,5 +1,5 @@
 //
-//  NewsFeedAssambly.swift
+//  NewsFeedAssembly.swift
 //  NewsFeedApp
 //
 //  Created by Aliaksandr Karenski on 13.12.24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class NewsFeedAssambly {
+final class NewsFeedAssembly {
 
 	let view: UIViewController
 	let viewModel: NewsFeedViewModelInputOutput

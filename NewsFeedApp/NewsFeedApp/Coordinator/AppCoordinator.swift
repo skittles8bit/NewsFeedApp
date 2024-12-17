@@ -14,7 +14,7 @@ protocol AppCoordinatorProtocol {
 final class AppCoordinator: AppCoordinatorProtocol {
 
 	private lazy var newsFeedCoordinator: NewsFeedCoordinatorProtocol = {
-		let assembly = NewsFeedAssambly()
+		let assembly = NewsFeedAssembly()
 		let coordinator = assembly.newsFeedCoordinator(
 			navigationController: navigationController
 		)

@@ -17,14 +17,15 @@ final class NewsFeedCoordinator: NewsFeedCoordinatorProtocol {
 		SettingsCoordinator(navigationController: navigationController)
 	}()
 
-	private let assembly: NewsFeedAssambly
+	private let assembly: NewsFeedAssembly
 	private let navigationController: UINavigationController
 
 	private var subscriptions = Subscriptions()
 
 	init(navigationController: UINavigationController) {
 		self.navigationController = navigationController
-		self.assembly = NewsFeedAssambly()
+		self.assembly = NewsFeedAssembly()
+		bind()
 	}
 
 	func start() {
