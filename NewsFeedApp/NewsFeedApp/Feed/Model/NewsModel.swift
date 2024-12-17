@@ -13,6 +13,7 @@ struct NewsModel {
 	let link: String?
 	let publicationDate: Date?
 	let imageURL: String?
+	let channel: String
 }
 
 extension NewsModel: Hashable {

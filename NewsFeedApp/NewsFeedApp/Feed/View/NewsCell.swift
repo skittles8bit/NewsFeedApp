@@ -75,10 +75,8 @@ final class NewsCell: UITableViewCell {
 		}
 		descriptionLabel.text = item.description
 
-		let channel = item.link?.extractDomain(from: item.link ?? "") ?? ""
-
 		if let publicationDate = item.publicationDate {
-			publicationDateLabel.text = channel + " | " + publicationDate.formatted()
+			publicationDateLabel.text = item.channel + " | " + publicationDate.formatted()
 		}
 	}
 }

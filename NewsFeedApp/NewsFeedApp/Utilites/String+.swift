@@ -30,8 +30,8 @@ extension String {
 		)
 	}
 
-	func extractDomain(from urlString: String) -> String? {
-		guard let url = URL(string: urlString) else { return nil }
+	func extractDomain() -> String? {
+		guard let url = URL(string: self) else { return nil }
 
 		// Извлекаем компоненты URL
 		var components = URLComponents(

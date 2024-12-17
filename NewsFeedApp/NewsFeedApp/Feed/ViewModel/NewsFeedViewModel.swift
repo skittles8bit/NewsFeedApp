@@ -8,21 +8,26 @@
 import Combine
 import Foundation
 
-final class NewsFeedViewModel: NewsFeedViewModelActionsAndData {
+typealias NewsViewModelProtocol =
+NewsFeedViewModelActionsAndData & NewsFeedViewModelInputOutput
+
+final class NewsFeedViewModel: NewsViewModelProtocol {
 
 	/// Зависимости
 	struct Dependencies {
 		let apiService: APIServiceProtocol
 	}
 
-	var newsFeedItems: [NewsModel] = []
-	let data: NewsFeedViewModelData
+	let input = NewsFeedViewModelInput()
+	let output: NewsFeedViewModelOutput
+	var data: NewsFeedViewModelData
 
 	private(set) lazy var viewActions = NewsFeedViewModelActions()
 	private let dependencies: Dependencies
 	private let reloadDataSubject = PassthroughSubject<Void, Never>()
 	private let loadingSubject = PassthroughSubject<Void, Never>()
 	private let errorSubject = PassthroughSubject<Void, Never>()
+	private let performSettingsSubject = PassthroughSubject<Void, Never>()
 
 	private var subscriptions = Subscriptions()
 
@@ -31,10 +36,14 @@ final class NewsFeedViewModel: NewsFeedViewModelActionsAndData {
 	///   - dependencies: Зависимости вьюмодели
 	init(dependencies: Dependencies) {
 		self.dependencies = dependencies
+		output = NewsFeedViewModelOutput(
+			performSettingsPublisher: performSettingsSubject.eraseToAnyPublisher()
+		)
 		data = NewsFeedViewModelData(
 			loadingPublisher: loadingSubject.eraseToAnyPublisher(),
 			reloadDataPublisher: reloadDataSubject.eraseToAnyPublisher(),
-			errorPublisher: errorSubject.eraseToAnyPublisher()
+			errorPublisher: errorSubject.eraseToAnyPublisher(),
+			newsFeedItems: []
 		)
 		bind()
 	}
@@ -47,9 +56,7 @@ private extension NewsFeedViewModel {
 			guard let self else { return }
 			switch lifecycle {
 			case .didLoad:
-				print("NewsFeed Did Load")
 				fetchNewsFeed()
-				break
 			}
 		}.store(in: &subscriptions)
 
@@ -58,16 +65,17 @@ private extension NewsFeedViewModel {
 			switch event {
 			case .refreshDidTap:
 				fetchNewsFeed()
+			case .settingsDidTap:
+				performSettingsSubject.send()
 			}
 		}.store(in: &subscriptions)
 	}
 
 	func fetchNewsFeed() {
 		loadingSubject.send()
-		print("Loading RSS")
 		Task {
 			do {
-				newsFeedItems = try await dependencies.apiService.fetchAndParseRSSFeeds()
+				data.newsFeedItems = try await dependencies.apiService.fetchAndParseRSSFeeds()
 				reloadDataSubject.send()
 			} catch {
 				print("Ошибка при загрузке или разборе RSS: \(error)")

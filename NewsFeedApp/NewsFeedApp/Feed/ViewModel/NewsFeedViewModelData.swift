@@ -11,4 +11,5 @@ struct NewsFeedViewModelData {
 	let loadingPublisher: AnyPublisher<Void, Never>
 	let reloadDataPublisher: AnyPublisher<Void, Never>
 	let errorPublisher: AnyPublisher<Void, Never>
+	var newsFeedItems: [NewsModel]
 }

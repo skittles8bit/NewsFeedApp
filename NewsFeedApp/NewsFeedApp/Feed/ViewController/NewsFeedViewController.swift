@@ -9,7 +9,7 @@ import UIKit
 
 final class NewsFeedViewController: UIViewController {
 
-	private let viewModel: NewsFeedViewModel
+	private let viewModel: NewsFeedViewModelActionsAndData
 
 	private lazy var tableView: UITableView = {
 		let tableView = UITableView()
@@ -43,9 +43,20 @@ final class NewsFeedViewController: UIViewController {
 		return errorView
 	}()
 
+	private lazy var settingsBarButtonItem: UIBarButtonItem = {
+		let settingsBarButtonItem = UIBarButtonItem(
+			image: UIImage(systemName: "gearshape"),
+			style: .plain,
+			target: self,
+			action: #selector(settings)
+		)
+		settingsBarButtonItem.tintColor = .black
+		return settingsBarButtonItem
+	}()
+
 	private var subscriptions = Subscriptions()
 
-	init(with viewModel: NewsFeedViewModel) {
+	init(with viewModel: NewsFeedViewModelActionsAndData) {
 		self.viewModel = viewModel
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -70,7 +81,7 @@ extension NewsFeedViewController: UITableViewDataSource, UITableViewDelegate {
 		_ tableView: UITableView,
 		numberOfRowsInSection section: Int
 	) -> Int {
-		return viewModel.newsFeedItems.count
+		return viewModel.data.newsFeedItems.count
 	}
 	
 	func tableView(
@@ -85,7 +96,7 @@ extension NewsFeedViewController: UITableViewDataSource, UITableViewDelegate {
 		else {
 			return UITableViewCell()
 		}
-		let item = viewModel.newsFeedItems[indexPath.row]
+		let item = viewModel.data.newsFeedItems[indexPath.row]
 		cell.setup(with: item)
 		return cell
 	}
@@ -134,6 +145,7 @@ private extension NewsFeedViewController {
 	func setup() {
 		title = "Новости"
 		view.addSubviews(tableView, loadView, errorView)
+		setupRightBarButtonItem()
 		NSLayoutConstraint.activate([
 			tableView.topAnchor.constraint(equalTo: view.topAnchor),
 			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -156,8 +168,17 @@ private extension NewsFeedViewController {
 		])
 	}
 
+	func setupRightBarButtonItem() {
+		navigationItem.rightBarButtonItem = settingsBarButtonItem
+	}
+
 	@objc
 	func refresh() {
 		viewModel.viewActions.events.send(.refreshDidTap)
+	}
+
+	@objc
+	func settings() {
+		viewModel.viewActions.events.send(.settingsDidTap)
 	}
 }

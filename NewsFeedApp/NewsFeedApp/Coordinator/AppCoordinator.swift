@@ -13,6 +13,14 @@ protocol AppCoordinatorProtocol {
 
 final class AppCoordinator: AppCoordinatorProtocol {
 
+	private lazy var newsFeedCoordinator: NewsFeedCoordinatorProtocol = {
+		let assembly = NewsFeedAssambly()
+		let coordinator = assembly.newsFeedCoordinator(
+			navigationController: navigationController
+		)
+		return coordinator
+	}()
+
 	private var navigationController: UINavigationController
 
 	init(navigationController: UINavigationController) {
@@ -20,9 +28,6 @@ final class AppCoordinator: AppCoordinatorProtocol {
 	}
 
 	func start() {
-		print("Assembly NewsFeedViewController")
-		let vc = NewsFeedAssambly.build()
-		print("Push NewsFeedViewController")
-		navigationController.pushViewController(vc, animated: true)
+		newsFeedCoordinator.start()
 	}
 }

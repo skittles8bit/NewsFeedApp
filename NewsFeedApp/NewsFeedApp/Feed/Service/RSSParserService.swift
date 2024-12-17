@@ -20,7 +20,6 @@ final class RSSParserService: NSObject {
 	private var currentLink = ""
 	private var currentImageURL = ""
 	private var currentPubDate: Date?
-	private var channelTitle = ""
 
 	var items = [NewsModel]()
 }
@@ -100,7 +99,8 @@ extension RSSParserService: XMLParserDelegate {
 				description: currentDescription.clearString,
 				link: currentLink.clearString,
 				publicationDate: currentPubDate,
-				imageURL: currentImageURL.clearString
+				imageURL: currentImageURL.clearString,
+				channel: currentLink.clearString.extractDomain() ?? ""
 			)
 			items.append(item)
 		default:
