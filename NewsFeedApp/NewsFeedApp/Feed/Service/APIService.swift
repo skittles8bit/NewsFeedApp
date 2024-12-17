@@ -39,7 +39,7 @@ extension APIService: APIServiceProtocol {
 			allItems.append(contentsOf: rssParser.items)
 		}
 
-		return Array(Set(allItems)).sorted { prev, curr in
+		return allItems.uniqued().sorted { prev, curr in
 			guard
 				let prevPublicationDate = prev.publicationDate,
 				let currPublicationDate = curr.publicationDate

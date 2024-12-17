@@ -112,7 +112,7 @@ private extension NewsFeedViewController {
 				refreshControl.endRefreshing()
 				loadView.isHidden = true
 				loadView.stopAnimation()
-				tableView.reloadData()
+				tableView.reloadSections(IndexSet(integer: 0), with: .fade)
 			}.store(in: &subscriptions)
 		viewModel.data.loadingPublisher
 			.receive(on: DispatchQueue.main)

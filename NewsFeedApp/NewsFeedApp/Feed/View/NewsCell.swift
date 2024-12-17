@@ -12,14 +12,14 @@ final class NewsCell: UITableViewCell {
 	private lazy var titleLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 16, weight: .bold)
-		label.numberOfLines = 0
+		label.numberOfLines = .zero
 		return label
 	}()
 
 	private lazy var descriptionLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 14)
-		label.numberOfLines = 0
+		label.numberOfLines = .zero
 		return label
 	}()
 
@@ -58,15 +58,16 @@ final class NewsCell: UITableViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 
-		stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
 		titleLabel.text = nil
-		newsImageView.image = nil
 		descriptionLabel.text = nil
+		newsImageView.image = nil
+		publicationDateLabel.text = nil
 	}
 
 	func setup(with item: NewsModel) {
 		titleLabel.text = item.title
 		if let imageURL = item.imageURL {
+			newsImageView.image = Constants.placeholderImage
 			ImageLoader.shared.loadImage(from: imageURL) { [weak self] image in
 				guard let self else { return }
 				newsImageView.image = image
@@ -89,6 +90,7 @@ private extension NewsCell {
 	enum Constants {
 		static let insent: CGFloat = 10
 		static let imageHeight: CGFloat = 300
+		static let placeholderImage: UIImage? = UIImage(named: "placeholder-image")
 	}
 
 	func setup() {

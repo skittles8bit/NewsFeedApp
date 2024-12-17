@@ -13,7 +13,6 @@ struct NewsModel {
 	let link: String?
 	let publicationDate: Date?
 	let imageURL: String?
-	var image: UIImage?
 }
 
 extension NewsModel: Hashable {
