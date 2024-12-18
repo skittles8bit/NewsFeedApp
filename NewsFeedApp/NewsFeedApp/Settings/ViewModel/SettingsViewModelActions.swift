@@ -9,7 +9,9 @@ import Combine
 
 struct SettingsViewModelActions {
 
-	enum Events {}
+	enum Events {
+		case clearCacheDidTap
+	}
 
 	let lifecycle = PassthroughSubject<Lifecycle, Never>()
 	let events = PassthroughSubject<Events, Never>()

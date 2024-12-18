@@ -40,4 +40,8 @@ final class ImageLoader {
 
 		task.resume()
 	}
+
+	func clearCache() {
+		imageCache.removeAllObjects()
+	}
 }

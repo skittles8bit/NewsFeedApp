@@ -13,14 +13,21 @@ protocol SettingsCoordinatorProtocol {
 
 final class SettingsCoordinator: SettingsCoordinatorProtocol {
 
+	struct Dependencies {
+		let dataStoreService: DataStoreServiceProtocol
+	}
+
 	private let assembly: SettingsAssembly
 	private let navigationController: UINavigationController
 
 	private var subscriptions = Subscriptions()
 
-	init(navigationController: UINavigationController) {
+	init(
+		dependencies: Dependencies,
+		navigationController: UINavigationController
+	) {
 		self.navigationController = navigationController
-		self.assembly = SettingsAssembly()
+		self.assembly = SettingsAssembly(dependencies: dependencies)
 	}
 
 	func start() {

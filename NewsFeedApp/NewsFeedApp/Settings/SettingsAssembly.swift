@@ -12,8 +12,12 @@ final class SettingsAssembly {
 	let view: UIViewController
 	let viewModel: SettingsViewModelInputOutput
 
-	init() {
-		let model = SettingsViewModel()
+	init(dependencies: SettingsCoordinator.Dependencies) {
+		let model = SettingsViewModel(
+			dependencies: .init(
+				dataStoreService: dependencies.dataStoreService
+			)
+		)
 		viewModel = model
 		let controller = SettingsViewController(viewModel: model)
 		view = controller

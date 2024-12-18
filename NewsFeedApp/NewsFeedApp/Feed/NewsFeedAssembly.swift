@@ -6,16 +6,18 @@
 //
 
 import UIKit
+import RealmSwift
 
 final class NewsFeedAssembly {
 
 	let view: UIViewController
 	let viewModel: NewsFeedViewModelInputOutput
 
-	init() {
+	init(dependencies: NewsFeedCoordinator.Dependencies) {
 		let model = NewsFeedViewModel(
 			dependencies: NewsFeedViewModel.Dependencies(
-				apiService: APIService(rssParser: RSSParserService())
+				apiService: APIService(rssParser: RSSParserService()),
+				dataStoreService: dependencies.dataStoreService
 			)
 		)
 		viewModel = model
@@ -24,8 +26,12 @@ final class NewsFeedAssembly {
 	}
 
 	func newsFeedCoordinator(
+		dependencies: NewsFeedCoordinator.Dependencies,
 		navigationController: UINavigationController
 	) -> NewsFeedCoordinator {
-		NewsFeedCoordinator(navigationController: navigationController)
+		NewsFeedCoordinator(
+			dependencies: dependencies,
+			navigationController: navigationController
+		)
 	}
 }
