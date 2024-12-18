@@ -108,7 +108,6 @@
 			mainGroup = 652531E62D0C65DE003096E6;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				6525324A2D11A6E3003096E6 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 652531F02D0C65DE003096E6 /* Products */;
@@ -336,17 +335,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		6525324A2D11A6E3003096E6 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-cocoa";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 652531E72D0C65DE003096E6 /* Project object */;
 }
