@@ -13,6 +13,7 @@ protocol DataStoreServiceProtocol {
 	func updateNews(with id: String, and model: NewsModel)
 	func deleteNews(with id: String)
 	func deleteAllNews()
+	func saveSettings(with model: SettingsModel)
 }
 
 final class DataStoreService { }
@@ -62,7 +63,6 @@ extension DataStoreService: DataStoreServiceProtocol {
 		} catch {
 			print(error)
 		}
-
 	}
 
 	// Обновление новости
@@ -123,6 +123,25 @@ extension DataStoreService: DataStoreServiceProtocol {
 				}
 			} catch {
 				print(error)
+			}
+		} catch {
+			print(error)
+		}
+	}
+
+	func saveSettings(with model: SettingsModel) {
+		do {
+			let realm = try Realm()
+			let settings = SettingsDataModel()
+			let timeInterval = TimeIntervalDataModel()
+			timeInterval.hour = model.timerModel.hour
+			timeInterval.minute = model.timerModel.minute
+			timeInterval.second = model.timerModel.second
+			settings.timeInterval = timeInterval
+			do {
+				try realm.write {
+					realm.add(settings)
+				}
 			}
 		} catch {
 			print(error)

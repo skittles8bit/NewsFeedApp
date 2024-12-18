@@ -21,6 +21,8 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 	let data: SettingsViewModelData = .init()
 	private(set) lazy var viewActions = SettingsViewModelActions()
 
+	private var timeInterval: TimeIntervalModel?
+
 	private let dependencies: Dependencies
 
 	private var subscriptions = Subscriptions()
@@ -34,8 +36,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 private extension SettingsViewModel {
 
 	func bind() {
-		viewActions.lifecycle.sink { [weak self] lifecycle in
-			guard let self else { return }
+		viewActions.lifecycle.sink {lifecycle in
 			switch lifecycle {
 			case .didLoad:
 				break
@@ -47,6 +48,9 @@ private extension SettingsViewModel {
 			switch event {
 			case .clearCacheDidTap:
 				clearCache()
+			case let .timerDidChange(model):
+				timeInterval = model
+				saveSettings()
 			}
 		}.store(in: &subscriptions)
 	}
@@ -54,5 +58,11 @@ private extension SettingsViewModel {
 	func clearCache() {
 		dependencies.dataStoreService.deleteAllNews()
 		ImageLoader.shared.clearCache()
+	}
+
+	func saveSettings() {
+		guard let timeInterval else { return }
+		let settings = SettingsModel(timerModel: timeInterval)
+		dependencies.dataStoreService.saveSettings(with: settings)
 	}
 }

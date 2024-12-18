@@ -53,32 +53,37 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 private extension NewsFeedViewModel {
 
 	func bind() {
-		viewActions.lifecycle.sink { [weak self] lifecycle in
-			guard let self else { return }
-			switch lifecycle {
-			case .didLoad:
-				fetchNewsFeed()
-			}
-		}.store(in: &subscriptions)
+		viewActions.lifecycle
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] lifecycle in
+				guard let self else { return }
+				switch lifecycle {
+				case .didLoad:
+					fetchNewsFeed()
+				}
+			}.store(in: &subscriptions)
 
-		viewActions.events.sink { [weak self] event in
-			guard let self else { return }
-			switch event {
-			case .refreshDidTap:
-				fetchNewsFeed()
-			case .settingsDidTap:
-				performSettingsSubject.send()
-			}
-		}.store(in: &subscriptions)
+		viewActions.events
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] event in
+				guard let self else { return }
+				switch event {
+				case .refreshDidTap:
+					fetchNewsFeed()
+				case .settingsDidTap:
+					performSettingsSubject.send()
+				}
+			}.store(in: &subscriptions)
 	}
 
 	func fetchNewsFeed() {
-		if let news = dependencies.dataStoreService.getAllNews() {
-			data.newsFeedItems = news
-			return
-		}
 		loadingSubject.send()
 		Task {
+			if let news = dependencies.dataStoreService.getAllNews() {
+				data.newsFeedItems = news
+				reloadDataSubject.send()
+				return
+			}
 			do {
 				data.newsFeedItems = try await dependencies.apiService.fetchAndParseRSSFeeds()
 				data.newsFeedItems.forEach { model in

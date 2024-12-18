@@ -16,7 +16,19 @@ final class SettingsViewController: UIViewController {
 		button.setTitle("Очистить кеш", for: .normal)
 		button.addTarget(self, action: #selector(clearCache), for: .touchUpInside)
 		button.translatesAutoresizingMaskIntoConstraints = false
+		button.backgroundColor = .systemBlue
+		button.layer.cornerRadius = 10
+		button.clipsToBounds = true
+		button.setTitleColor(.white, for: .normal)
 		return button
+	}()
+
+	private lazy var pickerView: TimerPickerView = {
+		let pickerView = TimerPickerView()
+		pickerView.translatesAutoresizingMaskIntoConstraints = false
+		pickerView.backgroundColor = .systemBackground
+		pickerView.delegate = self
+		return pickerView
 	}()
 
 	init(viewModel: SettingsViewModelActionsAndData) {
@@ -34,16 +46,41 @@ final class SettingsViewController: UIViewController {
 	}
 }
 
+extension SettingsViewController: TimerPickerViewDelegate {
+
+	func didSelectTimer(model: TimeIntervalModel) {
+		viewModel.viewActions.events.send(.timerDidChange(model))
+	}
+}
+
 private extension SettingsViewController {
 
 	func setup() {
 		view.backgroundColor = .systemBackground
 		title = "Настройки"
 		navigationController?.navigationBar.tintColor = .black
+		view.addSubview(pickerView)
+		NSLayoutConstraint.activate(
+			[
+				pickerView.leadingAnchor.constraint(
+					equalTo: view.leadingAnchor,
+					constant: 10
+				),
+				pickerView.trailingAnchor.constraint(
+					equalTo: view.trailingAnchor,
+					constant: -10
+				),
+				pickerView.topAnchor.constraint(
+					equalTo: view.safeAreaLayoutGuide.topAnchor,
+					constant: 10
+				),
+				pickerView.heightAnchor.constraint(equalToConstant: 150)
+			]
+		)
 		view.addSubview(clearCacheButton)
 		NSLayoutConstraint.activate(
 			[
-				clearCacheButton.heightAnchor.constraint(equalToConstant: 100),
+				clearCacheButton.heightAnchor.constraint(equalToConstant: 50),
 				clearCacheButton.leadingAnchor.constraint(
 					equalTo: view.leadingAnchor,
 					constant: 10
@@ -53,7 +90,7 @@ private extension SettingsViewController {
 					constant: -10
 				),
 				clearCacheButton.bottomAnchor.constraint(
-					equalTo: view.bottomAnchor,
+					equalTo: view.safeAreaLayoutGuide.bottomAnchor,
 					constant: -10
 				),
 			]
