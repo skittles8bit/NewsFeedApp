@@ -80,7 +80,7 @@ final class NewsCell: UITableViewCell {
 			imageHeightConstraint?.isActive = false
 		}
 		if let publicationDate = item.publicationDate {
-			publicationDateLabel.text = item.channel + " | " + publicationDate.formatted()
+			publicationDateLabel.text = (item.channel ?? "") + " | " + publicationDate.formatted()
 		}
 	}
 }
