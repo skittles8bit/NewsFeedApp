@@ -90,7 +90,7 @@ final class NewsCell: UITableViewCell {
 private extension NewsCell {
 
 	enum Constants {
-		static let insent: CGFloat = 10
+		static let insent: CGFloat = 16
 		static let imageHeight: CGFloat = 300
 		static let placeholderImage: UIImage? = UIImage(named: "placeholder-image")
 	}

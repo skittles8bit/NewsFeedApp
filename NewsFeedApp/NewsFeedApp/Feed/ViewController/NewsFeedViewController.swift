@@ -49,7 +49,7 @@ final class NewsFeedViewController: UIViewController {
 			target: self,
 			action: #selector(settings)
 		)
-		settingsBarButtonItem.tintColor = .black
+		settingsBarButtonItem.tintColor = .systemBlue
 		return settingsBarButtonItem
 	}()
 

@@ -14,16 +14,17 @@ SettingsViewModelInputOutput & SettingsViewModelActionsAndData
 final class SettingsViewModel: SettingsViewModelProtocol {
 
 	struct Dependencies {
-		let dataStoreService: StorageServiceProtocol
+		let repository: SettingsRepositoryProtocol
 	}
 
 	let input: SettingsViewModelInput = .init()
-	let output: SettingsViewModelOutput = .init()
+	let output: SettingsViewModelOutput
 	let data: SettingsViewModelData
 	private(set) lazy var viewActions = SettingsViewModelActions()
 
 	private let switchStateSubject = PassthroughSubject<Bool, Never>()
 	private let pickerViewStateSubject = PassthroughSubject<Bool, Never>()
+	private let backButtonSubject = PassthroughSubject<Void, Never>()
 
 	private var timeInterval: TimeIntervalModel?
 	private var timerEnabled: Bool = false
@@ -38,6 +39,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 			switchStatePublisher: switchStateSubject.eraseToAnyPublisher(),
 			pickerViewStatePublisher: pickerViewStateSubject.eraseToAnyPublisher()
 		)
+		self.output = SettingsViewModelOutput(backButtonPublisher: backButtonSubject.eraseToAnyPublisher())
 		bind()
 	}
 }
@@ -68,22 +70,24 @@ private extension SettingsViewModel {
 				case let .timerStateDidChange(value):
 					timerEnabled = value
 					pickerViewStateSubject.send(value)
+				case .backButtonDidTap:
+					backButtonSubject.send()
 				}
 			}.store(in: &subscriptions)
 	}
 
 	func clearCache() {
-		dependencies.dataStoreService.deleteAllCache()
+		dependencies.repository.clearAllCache()
 	}
 
 	func saveSettings() {
 		guard let timeInterval else { return }
-		let settings = SettingsModel(timerModel: timeInterval, timerEnabled: timerEnabled)
-		dependencies.dataStoreService.saveSettings(with: settings)
+		let settings = SettingsModelDTO(timerModel: timeInterval, timerEnabled: timerEnabled)
+		dependencies.repository.saveSettings(settings)
 	}
 
 	func getSettings() {
-		let settings = dependencies.dataStoreService.getSettings()
+		let settings = dependencies.repository.fetchSettings()
 		timerEnabled = settings?.timerEnabled ?? false
 		switchStateSubject.send(timerEnabled)
 		pickerViewStateSubject.send(timerEnabled)

@@ -37,6 +37,7 @@ final class SettingsViewController: UIViewController {
 	private lazy var clearCacheButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setTitle("Очистить кеш", for: .normal)
+		button.titleLabel?.font = .boldSystemFont(ofSize: 16)
 		button.addTarget(self, action: #selector(clearCache), for: .touchUpInside)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		button.backgroundColor = .systemBlue
@@ -81,34 +82,38 @@ extension SettingsViewController: SettingsCellDelegate {
 
 private extension SettingsViewController {
 
+	enum Constants {
+		static let insent: CGFloat = 16
+		static let buttonHeight: CGFloat = 50
+	}
+
 	func setup() {
 		view.backgroundColor = .systemBackground
 		title = "Настройки"
-		navigationController?.navigationBar.tintColor = .black
 		stackView.addArrangedSubview(settingsCell)
 		stackView.addArrangedSubview(pickerView)
 		view.addSubview(stackView)
 		NSLayoutConstraint.activate([
-			stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-			stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-			stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+			stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.insent),
+			stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.insent),
+			stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.insent),
 		])
 		view.addSubview(clearCacheButton)
 		NSLayoutConstraint.activate(
 			[
-				clearCacheButton.heightAnchor.constraint(equalToConstant: 50),
+				clearCacheButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
 				clearCacheButton.leadingAnchor.constraint(
 					equalTo: view.leadingAnchor,
-					constant: 10
+					constant: Constants.insent
 				),
 				clearCacheButton.trailingAnchor.constraint(
 					equalTo: view.trailingAnchor,
-					constant: -10
+					constant: -Constants.insent
 				),
 				clearCacheButton.bottomAnchor.constraint(
 					equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-					constant: -10
-				),
+					constant: -Constants.insent
+				)
 			]
 		)
 	}

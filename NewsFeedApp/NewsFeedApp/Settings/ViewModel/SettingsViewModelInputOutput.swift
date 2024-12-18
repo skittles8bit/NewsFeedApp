@@ -13,4 +13,7 @@ protocol SettingsViewModelInputOutput {
 }
 
 struct SettingsViewModelInput {}
-struct SettingsViewModelOutput {}
+struct SettingsViewModelOutput {
+
+	let backButtonPublisher: AnyPublisher<Void, Never>
+}

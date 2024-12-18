@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SettingsModel {
+struct SettingsModelDTO {
 
 	var timerModel: TimeIntervalModel { _timerModel }
 	var timerEnabled: Bool { _timerEnabled }
@@ -18,5 +18,15 @@ struct SettingsModel {
 	init(timerModel: TimeIntervalModel, timerEnabled: Bool) {
 		_timerModel = timerModel
 		_timerEnabled = timerEnabled
+	}
+}
+
+extension SettingsModelDTO {
+
+	init(from object: SettingsObject) {
+		self.init(
+			timerModel: TimeIntervalModel(from: object),
+			timerEnabled: object.timerEnabled
+		)
 	}
 }

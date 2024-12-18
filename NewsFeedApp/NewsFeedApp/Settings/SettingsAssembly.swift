@@ -14,9 +14,7 @@ final class SettingsAssembly {
 
 	init(dependencies: SettingsCoordinator.Dependencies) {
 		let model = SettingsViewModel(
-			dependencies: .init(
-				dataStoreService: dependencies.storage
-			)
+			dependencies: .init(repository: SettingsRepository(storage: dependencies.storage))
 		)
 		viewModel = model
 		let controller = SettingsViewController(viewModel: model)

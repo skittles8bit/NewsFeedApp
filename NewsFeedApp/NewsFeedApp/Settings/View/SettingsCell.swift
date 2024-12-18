@@ -19,7 +19,7 @@ final class SettingsCell: UIView {
 		label.text = "Активировать обновление новостей \nпо таймеру"
 		label.font = .boldSystemFont(ofSize: 14)
 		label.textAlignment = .left
-		label.numberOfLines = 0
+		label.numberOfLines = .zero
 		return label
 	}()
 

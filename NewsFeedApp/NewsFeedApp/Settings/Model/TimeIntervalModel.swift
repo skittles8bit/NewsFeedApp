@@ -23,3 +23,14 @@ struct TimeIntervalModel {
 		_second = second
 	}
 }
+
+extension TimeIntervalModel {
+
+	init(from object: SettingsObject) {
+		self.init(
+			hour: object.hour,
+			minute: object.minute,
+			second: object.second
+		)
+	}
+}
