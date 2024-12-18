@@ -28,21 +28,9 @@ final class SettingsCoordinator: SettingsCoordinatorProtocol {
 	) {
 		self.navigationController = navigationController
 		self.assembly = SettingsAssembly(dependencies: dependencies)
-		bind()
 	}
 
 	func start() {
 		navigationController.pushViewController(assembly.view, animated: true)
-	}
-}
-
-private extension SettingsCoordinator {
-
-	func bind() {
-		assembly.viewModel.output.backButtonPublisher
-			.receive(on: DispatchQueue.main)
-			.sink { [weak self] in
-				self?.navigationController.popToRootViewController(animated: true)
-			}.store(in: &subscriptions)
 	}
 }

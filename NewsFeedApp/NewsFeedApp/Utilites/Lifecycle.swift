@@ -8,4 +8,6 @@
 enum Lifecycle {
 	/// Вью загрузилась
 	case didLoad
+	/// Вью исчезнет
+	case willDisappear
 }

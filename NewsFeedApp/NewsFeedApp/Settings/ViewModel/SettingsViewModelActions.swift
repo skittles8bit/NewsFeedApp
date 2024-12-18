@@ -13,7 +13,6 @@ struct SettingsViewModelActions {
 		case clearCacheDidTap
 		case timerDidChange(TimeIntervalModel)
 		case timerStateDidChange(Bool)
-		case backButtonDidTap
 	}
 
 	let lifecycle = PassthroughSubject<Lifecycle, Never>()

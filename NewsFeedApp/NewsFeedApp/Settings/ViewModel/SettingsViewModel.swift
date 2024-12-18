@@ -18,13 +18,12 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 	}
 
 	let input: SettingsViewModelInput = .init()
-	let output: SettingsViewModelOutput
+	let output: SettingsViewModelOutput = .init()
 	let data: SettingsViewModelData
 	private(set) lazy var viewActions = SettingsViewModelActions()
 
 	private let switchStateSubject = PassthroughSubject<Bool, Never>()
 	private let pickerViewStateSubject = PassthroughSubject<Bool, Never>()
-	private let backButtonSubject = PassthroughSubject<Void, Never>()
 
 	private var timeInterval: TimeIntervalModel?
 	private var timerEnabled: Bool = false
@@ -39,7 +38,6 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 			switchStatePublisher: switchStateSubject.eraseToAnyPublisher(),
 			pickerViewStatePublisher: pickerViewStateSubject.eraseToAnyPublisher()
 		)
-		self.output = SettingsViewModelOutput(backButtonPublisher: backButtonSubject.eraseToAnyPublisher())
 		bind()
 	}
 }
@@ -54,6 +52,8 @@ private extension SettingsViewModel {
 				switch lifecycle {
 				case .didLoad:
 					getSettings()
+				case .willDisappear:
+					saveSettings()
 				}
 			}.store(in: &subscriptions)
 
@@ -66,12 +66,9 @@ private extension SettingsViewModel {
 					clearCache()
 				case let .timerDidChange(model):
 					timeInterval = model
-					saveSettings()
 				case let .timerStateDidChange(value):
 					timerEnabled = value
 					pickerViewStateSubject.send(value)
-				case .backButtonDidTap:
-					backButtonSubject.send()
 				}
 			}.store(in: &subscriptions)
 	}

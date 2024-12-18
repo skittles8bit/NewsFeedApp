@@ -61,8 +61,17 @@ final class SettingsViewController: UIViewController {
 		bind()
 	}
 
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		viewModel.viewActions.lifecycle.send(.willDisappear)
+	}
+
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
+	}
+
+	deinit {
+		print("SettingViewController deinit")
 	}
 }
 

@@ -59,6 +59,8 @@ private extension NewsFeedViewModel {
 				switch lifecycle {
 				case .didLoad:
 					fetchNewsFeed()
+				case .willDisappear:
+					break
 				}
 			}.store(in: &subscriptions)
 

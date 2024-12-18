@@ -59,6 +59,12 @@ private extension NewsFeedCoordinator {
 	}
 
 	func showSettings() {
-		settingsCoordinator.start()
+		let coordinator = SettingsCoordinator(
+			dependencies: .init(
+				storage: dependencies.dataStoreService
+			),
+			navigationController: navigationController
+		)
+		coordinator.start()
 	}
 }
