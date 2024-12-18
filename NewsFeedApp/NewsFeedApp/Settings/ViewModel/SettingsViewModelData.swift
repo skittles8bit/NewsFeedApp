@@ -5,6 +5,9 @@
 //  Created by Aliaksandr Karenski on 17.12.24.
 //
 
-import Foundation
+import Combine
 
-struct SettingsViewModelData {}
+struct SettingsViewModelData {
+	let switchStatePublisher: AnyPublisher<Bool, Never>
+	let pickerViewStatePublisher: AnyPublisher<Bool, Never>
+}

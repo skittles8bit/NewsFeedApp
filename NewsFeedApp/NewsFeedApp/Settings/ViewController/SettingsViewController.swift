@@ -11,6 +11,29 @@ final class SettingsViewController: UIViewController {
 
 	private let viewModel: SettingsViewModelActionsAndData
 
+	private lazy var stackView: UIStackView = {
+		let stackView = UIStackView()
+		stackView.axis = .vertical
+		stackView.spacing = 20
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		return stackView
+	}()
+
+	private lazy var settingsCell: SettingsCell = {
+		let cell = SettingsCell()
+		cell.translatesAutoresizingMaskIntoConstraints = false
+		cell.delegate = self
+		return cell
+	}()
+
+	private lazy var pickerView: TimerPickerView = {
+		let pickerView = TimerPickerView()
+		pickerView.translatesAutoresizingMaskIntoConstraints = false
+		pickerView.backgroundColor = .systemBackground
+		pickerView.delegate = self
+		return pickerView
+	}()
+
 	private lazy var clearCacheButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setTitle("Очистить кеш", for: .normal)
@@ -23,13 +46,7 @@ final class SettingsViewController: UIViewController {
 		return button
 	}()
 
-	private lazy var pickerView: TimerPickerView = {
-		let pickerView = TimerPickerView()
-		pickerView.translatesAutoresizingMaskIntoConstraints = false
-		pickerView.backgroundColor = .systemBackground
-		pickerView.delegate = self
-		return pickerView
-	}()
+	private var subscriptions = Subscriptions()
 
 	init(viewModel: SettingsViewModelActionsAndData) {
 		self.viewModel = viewModel
@@ -38,7 +55,9 @@ final class SettingsViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		viewModel.viewActions.lifecycle.send(.didLoad)
 		setup()
+		bind()
 	}
 
 	required init?(coder: NSCoder) {
@@ -53,30 +72,27 @@ extension SettingsViewController: TimerPickerViewDelegate {
 	}
 }
 
+extension SettingsViewController: SettingsCellDelegate {
+
+	func switchValueChanged(_ value: Bool) {
+		viewModel.viewActions.events.send(.timerStateDidChange(value))
+	}
+}
+
 private extension SettingsViewController {
 
 	func setup() {
 		view.backgroundColor = .systemBackground
 		title = "Настройки"
 		navigationController?.navigationBar.tintColor = .black
-		view.addSubview(pickerView)
-		NSLayoutConstraint.activate(
-			[
-				pickerView.leadingAnchor.constraint(
-					equalTo: view.leadingAnchor,
-					constant: 10
-				),
-				pickerView.trailingAnchor.constraint(
-					equalTo: view.trailingAnchor,
-					constant: -10
-				),
-				pickerView.topAnchor.constraint(
-					equalTo: view.safeAreaLayoutGuide.topAnchor,
-					constant: 10
-				),
-				pickerView.heightAnchor.constraint(equalToConstant: 150)
-			]
-		)
+		stackView.addArrangedSubview(settingsCell)
+		stackView.addArrangedSubview(pickerView)
+		view.addSubview(stackView)
+		NSLayoutConstraint.activate([
+			stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+			stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+			stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+		])
 		view.addSubview(clearCacheButton)
 		NSLayoutConstraint.activate(
 			[
@@ -95,6 +111,23 @@ private extension SettingsViewController {
 				),
 			]
 		)
+	}
+
+	func bind() {
+		viewModel.data.switchStatePublisher
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] isEnabled in
+				guard let self else { return }
+				settingsCell.setup(switchValue: isEnabled)
+			}.store(in: &subscriptions)
+
+		viewModel.data.pickerViewStatePublisher
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] isEnabled in
+				guard let self else { return }
+				pickerView.alpha = isEnabled ? 1 : 0.5
+				pickerView.isUserInteractionEnabled = isEnabled
+			}.store(in: &subscriptions)
 	}
 
 	@objc func clearCache() {

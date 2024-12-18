@@ -18,6 +18,6 @@ class NewsDataModel: Object {
 	@objc dynamic var channel: String? // Источник новостей
 
 	override class func primaryKey() -> String? {
-		return "id" // Устанавливаем уникальный ключ
+		"id" // Устанавливаем уникальный ключ
 	}
 }

@@ -12,6 +12,7 @@ struct SettingsViewModelActions {
 	enum Events {
 		case clearCacheDidTap
 		case timerDidChange(TimeIntervalModel)
+		case timerStateDidChange(Bool)
 	}
 
 	let lifecycle = PassthroughSubject<Lifecycle, Never>()

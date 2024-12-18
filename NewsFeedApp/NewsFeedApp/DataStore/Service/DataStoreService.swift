@@ -12,8 +12,9 @@ protocol DataStoreServiceProtocol {
 	func saveNews(with model: NewsModel)
 	func updateNews(with id: String, and model: NewsModel)
 	func deleteNews(with id: String)
-	func deleteAllNews()
+	func claerCache()
 	func saveSettings(with model: SettingsModel)
+	func getSettings() -> SettingsModel?
 }
 
 final class DataStoreService { }
@@ -114,7 +115,8 @@ extension DataStoreService: DataStoreServiceProtocol {
 		}
 	}
 
-	func deleteAllNews() {
+	func claerCache() {
+		ImageLoader.shared.clearCache()
 		do {
 			let realm = try Realm()
 			do {
@@ -133,11 +135,10 @@ extension DataStoreService: DataStoreServiceProtocol {
 		do {
 			let realm = try Realm()
 			let settings = SettingsDataModel()
-			let timeInterval = TimeIntervalDataModel()
-			timeInterval.hour = model.timerModel.hour
-			timeInterval.minute = model.timerModel.minute
-			timeInterval.second = model.timerModel.second
-			settings.timeInterval = timeInterval
+			settings.hour = model.timerModel.hour
+			settings.minute = model.timerModel.minute
+			settings.second = model.timerModel.second
+			settings.timerEnabled = model.timerEnabled
 			do {
 				try realm.write {
 					realm.add(settings)
@@ -145,6 +146,25 @@ extension DataStoreService: DataStoreServiceProtocol {
 			}
 		} catch {
 			print(error)
+		}
+	}
+
+	func getSettings() -> SettingsModel? {
+		do {
+			let realm = try Realm()
+			let settings = realm.objects(SettingsDataModel.self).first
+			guard let settings else { return nil }
+			return SettingsModel(
+				timerModel: .init(
+					hour: settings.hour,
+					minute: settings.minute,
+					second: settings.second
+				),
+				timerEnabled: settings.timerEnabled
+			)
+		} catch {
+			print(error)
+			return nil
 		}
 	}
 }
