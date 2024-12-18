@@ -81,11 +81,11 @@ private extension NewsFeedViewModel {
 		loadingSubject.send()
 		Task {
 			guard let news = await self.dependencies.repository.fetchNewsFeed() else {
-				self.errorSubject.send()
+				errorSubject.send()
 				return
 			}
-			self.data.newsFeedItems = news
-			self.reloadDataSubject.send()
+			data.newsFeedItems = news
+			reloadDataSubject.send()
 		}
 	}
 }
