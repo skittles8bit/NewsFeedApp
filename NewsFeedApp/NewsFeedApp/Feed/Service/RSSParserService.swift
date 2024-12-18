@@ -18,7 +18,7 @@ final class RSSParserService: NSObject {
 	private var currentTitle = ""
 	private var currentDescription = ""
 	private var currentLink = ""
-	private var currentImageURL = ""
+	private var currentImageURL: String?
 	private var currentPubDate: Date?
 
 	var items = [NewsModel]()
@@ -53,6 +53,7 @@ extension RSSParserService: XMLParserDelegate {
 			currentTitle = ""
 			currentDescription = ""
 			currentLink = ""
+			currentImageURL = nil
 			currentPubDate = nil
 		case RSSTagNames.enclosure.rawValue:
 			if let urlString = attributeDict["url"] {
@@ -99,7 +100,7 @@ extension RSSParserService: XMLParserDelegate {
 				description: currentDescription.clearString,
 				link: currentLink.clearString,
 				publicationDate: currentPubDate,
-				imageURL: currentImageURL.clearString,
+				imageURL: currentImageURL?.clearString,
 				channel: currentLink.clearString.extractDomain() ?? ""
 			)
 			items.append(item)

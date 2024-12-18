@@ -17,7 +17,6 @@ final class NewsFeedViewController: UIViewController {
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 		tableView.dataSource = self
 		tableView.delegate = self
-		tableView.separatorStyle = .none
 		tableView.register(NewsCell.self, forCellReuseIdentifier: "NewsCell")
 		tableView.refreshControl = refreshControl
 		return tableView

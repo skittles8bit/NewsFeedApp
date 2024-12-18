@@ -46,6 +46,8 @@ final class NewsCell: UITableViewCell {
 		return stackView
 	}()
 
+	private var imageHeightConstraint: NSLayoutConstraint?
+
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		setup()
@@ -66,15 +68,17 @@ final class NewsCell: UITableViewCell {
 
 	func setup(with item: NewsModel) {
 		titleLabel.text = item.title
+		descriptionLabel.text = item.description
 		if let imageURL = item.imageURL {
 			newsImageView.image = Constants.placeholderImage
 			ImageLoader.shared.loadImage(from: imageURL) { [weak self] image in
 				guard let self else { return }
 				newsImageView.image = image
+				imageHeightConstraint?.isActive = true
 			}
+		} else {
+			imageHeightConstraint?.isActive = false
 		}
-		descriptionLabel.text = item.description
-
 		if let publicationDate = item.publicationDate {
 			publicationDateLabel.text = item.channel + " | " + publicationDate.formatted()
 		}
@@ -119,8 +123,9 @@ private extension NewsCell {
 				),
 			]
 		)
-		NSLayoutConstraint.activate([
-			newsImageView.heightAnchor.constraint(equalToConstant: Constants.imageHeight)
-		])
+		imageHeightConstraint = newsImageView.heightAnchor.constraint(
+			equalToConstant: Constants.imageHeight
+		)
+		imageHeightConstraint?.isActive = true
 	}
 }
