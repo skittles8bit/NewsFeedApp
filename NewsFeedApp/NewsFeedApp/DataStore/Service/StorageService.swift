@@ -22,21 +22,12 @@ final class StorageService {
 
 extension StorageService: StorageServiceProtocol {
 
-	func save(object: Object) {
-		guard let storage = try? Realm(configuration: configuration) else { return }
-		do {
-			try? storage.write {
-				storage.add(object)
-			}
-		}
-	}
-
 	func save(objects: [Object]) {
 		do {
 			objects.forEach {
 				save(object: $0)
 			}
-		}
+		} 
 	}
 
 	func deleteAllCache() {
@@ -54,6 +45,20 @@ extension StorageService: StorageServiceProtocol {
 	func fetch<T: Object>(by type: T.Type) -> [T] {
 		guard let storage = try? Realm(configuration: configuration) else { return [] }
 		return storage.objects(T.self).toArray()
+	}
+}
+
+private extension StorageService {
+
+	func save(object: Object) {
+		guard let storage = try? Realm(configuration: configuration) else { return }
+		do {
+			try storage.write {
+				storage.add(object)
+			}
+		} catch {
+			print(error)
+		}
 	}
 }
 
