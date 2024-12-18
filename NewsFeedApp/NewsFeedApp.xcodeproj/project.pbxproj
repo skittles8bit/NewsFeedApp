@@ -6,13 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		65A641B92D12DAC7003D785D /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65A641B82D12DAC7003D785D /* CoreData.framework */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		652531EF2D0C65DE003096E6 /* NewsFeedApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewsFeedApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		65A641B82D12DAC7003D785D /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -41,7 +36,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65A641B92D12DAC7003D785D /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,7 +46,6 @@
 			isa = PBXGroup;
 			children = (
 				652531F12D0C65DE003096E6 /* NewsFeedApp */,
-				65A641B72D12DAC7003D785D /* Frameworks */,
 				652531F02D0C65DE003096E6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -63,14 +56,6 @@
 				652531EF2D0C65DE003096E6 /* NewsFeedApp.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		65A641B72D12DAC7003D785D /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				65A641B82D12DAC7003D785D /* CoreData.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

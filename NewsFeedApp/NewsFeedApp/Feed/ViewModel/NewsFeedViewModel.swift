@@ -16,7 +16,7 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 	/// Зависимости
 	struct Dependencies {
 		let apiService: APIServiceProtocol
-		let coreDataService: CoreDataServiceProtocol
+//		let coreDataService: CoreDataServiceProtocol
 	}
 
 	let input = NewsFeedViewModelInput()
@@ -73,16 +73,16 @@ private extension NewsFeedViewModel {
 	}
 
 	func fetchNewsFeed() {
-		if let models = dependencies.coreDataService.fetchNews() {
-			data.newsFeedItems = models
-		}
+//		if let models = dependencies.coreDataService.fetchNews() {
+//			data.newsFeedItems = models
+//		}
 		loadingSubject.send()
 		Task {
 			do {
 				data.newsFeedItems = try await dependencies.apiService.fetchAndParseRSSFeeds()
-				data.newsFeedItems.forEach { model in
-					dependencies.coreDataService.saveNews(with: model)
-				}
+//				data.newsFeedItems.forEach { model in
+//					dependencies.coreDataService.saveNews(with: model)
+//				}
 				reloadDataSubject.send()
 			} catch {
 				print("Ошибка при загрузке или разборе RSS: \(error)")
