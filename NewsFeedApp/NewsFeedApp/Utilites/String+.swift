@@ -34,7 +34,7 @@ extension String {
 		guard let url = URL(string: self) else { return nil }
 
 		// Извлекаем компоненты URL
-		var components = URLComponents(
+		let components = URLComponents(
 			url: url,
 			resolvingAgainstBaseURL: false
 		)
