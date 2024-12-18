@@ -14,13 +14,13 @@ protocol NewsFeedCoordinatorProtocol {
 final class NewsFeedCoordinator: NewsFeedCoordinatorProtocol {
 
 	struct Dependencies {
-		let dataStoreService: DataStoreServiceProtocol
+		let dataStoreService: StorageServiceProtocol
 	}
 
 	private lazy var settingsCoordinator: SettingsCoordinatorProtocol = {
 		SettingsCoordinator(
 			dependencies: .init(
-				dataStoreService: dependencies.dataStoreService
+				storage: dependencies.dataStoreService
 			),
 			navigationController: navigationController
 		)

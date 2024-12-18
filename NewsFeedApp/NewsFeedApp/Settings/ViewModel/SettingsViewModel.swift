@@ -14,7 +14,7 @@ SettingsViewModelInputOutput & SettingsViewModelActionsAndData
 final class SettingsViewModel: SettingsViewModelProtocol {
 
 	struct Dependencies {
-		let dataStoreService: DataStoreServiceProtocol
+		let dataStoreService: StorageServiceProtocol
 	}
 
 	let input: SettingsViewModelInput = .init()
@@ -73,7 +73,7 @@ private extension SettingsViewModel {
 	}
 
 	func clearCache() {
-		dependencies.dataStoreService.claerCache()
+		dependencies.dataStoreService.deleteAllCache()
 	}
 
 	func saveSettings() {

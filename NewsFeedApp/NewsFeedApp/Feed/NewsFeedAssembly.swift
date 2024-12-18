@@ -16,8 +16,10 @@ final class NewsFeedAssembly {
 	init(dependencies: NewsFeedCoordinator.Dependencies) {
 		let model = NewsFeedViewModel(
 			dependencies: NewsFeedViewModel.Dependencies(
-				apiService: APIService(rssParser: RSSParserService()),
-				dataStoreService: dependencies.dataStoreService
+				repository: NewsFeedRepository(
+					storage: dependencies.dataStoreService,
+					apiService: APIService(rssParser: RSSParserService())
+				)
 			)
 		)
 		viewModel = model

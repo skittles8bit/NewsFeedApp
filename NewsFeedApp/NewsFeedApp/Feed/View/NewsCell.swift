@@ -66,7 +66,7 @@ final class NewsCell: UITableViewCell {
 		publicationDateLabel.text = nil
 	}
 
-	func setup(with item: NewsModel) {
+	func setup(with item: NewsFeedModelDTO) {
 		titleLabel.text = item.title
 		descriptionLabel.text = item.description
 		if let imageURL = item.imageURL {

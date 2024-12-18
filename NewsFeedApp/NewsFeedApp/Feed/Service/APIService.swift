@@ -9,7 +9,7 @@ import Foundation
 
 protocol APIServiceProtocol {
 
-	func fetchAndParseRSSFeeds() async throws -> [NewsModel]
+	func fetchAndParseRSSFeeds() async throws -> [NewsFeedModelDTO]
 }
 
 final class APIService {
@@ -23,8 +23,8 @@ final class APIService {
 
 extension APIService: APIServiceProtocol {
 
-	func fetchAndParseRSSFeeds() async throws -> [NewsModel] {
-		var allItems = [NewsModel]()
+	func fetchAndParseRSSFeeds() async throws -> [NewsFeedModelDTO] {
+		var allItems = [NewsFeedModelDTO]()
 
 		let news = [
 			Constants.vedomosti,

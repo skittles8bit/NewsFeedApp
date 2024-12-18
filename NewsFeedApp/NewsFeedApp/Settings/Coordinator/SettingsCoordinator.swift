@@ -14,7 +14,7 @@ protocol SettingsCoordinatorProtocol {
 final class SettingsCoordinator: SettingsCoordinatorProtocol {
 
 	struct Dependencies {
-		let dataStoreService: DataStoreServiceProtocol
+		let storage: StorageServiceProtocol
 	}
 
 	private let assembly: SettingsAssembly

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol RSSParserServiceProtocol {
-	var items: [NewsModel] { get }
+	var items: [NewsFeedModelDTO] { get }
 	func parseRSS(at urlString: String) async throws
 }
 
@@ -21,7 +21,7 @@ final class RSSParserService: NSObject {
 	private var currentImageURL: String?
 	private var currentPubDate: Date?
 
-	var items = [NewsModel]()
+	var items = [NewsFeedModelDTO]()
 }
 
 extension RSSParserService: RSSParserServiceProtocol {
@@ -95,7 +95,7 @@ extension RSSParserService: XMLParserDelegate {
 	) {
 		switch elementName {
 		case RSSTagNames.item.rawValue:
-			let item = NewsModel(
+			let item = NewsFeedModelDTO(
 				title: currentTitle.clearString,
 				description: currentDescription.clearString,
 				link: currentLink.clearString,

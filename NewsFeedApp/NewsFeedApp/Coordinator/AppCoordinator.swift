@@ -16,11 +16,11 @@ final class AppCoordinator: AppCoordinatorProtocol {
 	private lazy var newsFeedCoordinator: NewsFeedCoordinatorProtocol = {
 		let assembly = NewsFeedAssembly(
 			dependencies: .init(
-				dataStoreService: DataStoreService()
+				dataStoreService: StorageService()
 			)
 		)
 		let coordinator = assembly.newsFeedCoordinator(
-			dependencies: .init(dataStoreService: DataStoreService()),
+			dependencies: .init(dataStoreService: StorageService()),
 			navigationController: navigationController
 		)
 		return coordinator
