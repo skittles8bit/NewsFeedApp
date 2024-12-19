@@ -118,6 +118,8 @@ private extension NewsFeedViewModel {
 				interval: TimeInterval(settings.period),
 				updateHandler: handler
 			)
+		} else {
+			timer?.stop()
 		}
 	}
 }

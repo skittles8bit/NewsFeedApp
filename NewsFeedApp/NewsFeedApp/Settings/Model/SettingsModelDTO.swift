@@ -20,13 +20,3 @@ struct SettingsModelDTO {
 		_timerEnabled = timerEnabled
 	}
 }
-
-extension SettingsModelDTO {
-
-	init(from object: SettingsObject) {
-		self.init(
-			period: object.period,
-			timerEnabled: object.timerEnabled
-		)
-	}
-}

@@ -11,9 +11,19 @@ protocol StorageServiceProtocol {
 	func save(objects: [Object])
 	func deleteAllCache()
 	func fetch<T: Object>(by type: T.Type) -> [T]
+
+	func saveSettings(settings: SettingsModelDTO)
+	func fetchSettings() -> SettingsModelDTO
 }
 
-final class StorageService {}
+final class StorageService {
+
+	private let settingsService: SettingsServiceProtocol
+
+	init(settingsService: SettingsServiceProtocol = SettingsService()) {
+		self.settingsService = settingsService
+	}
+}
 
 extension StorageService: StorageServiceProtocol {
 
@@ -26,7 +36,6 @@ extension StorageService: StorageServiceProtocol {
 	}
 
 	func deleteAllCache() {
-		ImageLoader.shared.clearCache()
 		guard let storage = try? Realm() else { return }
 		do {
 			try storage.write {
@@ -40,6 +49,18 @@ extension StorageService: StorageServiceProtocol {
 	func fetch<T: Object>(by type: T.Type) -> [T] {
 		guard let storage = try? Realm() else { return [] }
 		return storage.objects(T.self).toArray()
+	}
+
+	func saveSettings(settings: SettingsModelDTO) {
+		settingsService.setNewsUpdate(settings.timerEnabled)
+		settingsService.setNewsUpdateInterval(settings.period)
+	}
+
+	func fetchSettings() -> SettingsModelDTO {
+		.init(
+			period: settingsService.newsUpdateInterval,
+			timerEnabled: settingsService.isNewsUpdateEnabled
+		)
 	}
 }
 

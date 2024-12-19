@@ -42,6 +42,7 @@ extension NewsFeedRepository: NewsFeedRepositoryProtocol {
 		do {
 			let news = try await apiService.fetchAndParseRSSFeeds()
 			let objects = news.compactMap { NewsFeedObject(from: $0) }
+			storage.deleteAllCache()
 			storage.save(objects: objects)
 			return news
 		} catch {

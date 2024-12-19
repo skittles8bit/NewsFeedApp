@@ -25,21 +25,15 @@ final class SettingsRepository {
 extension SettingsRepository: SettingsRepositoryProtocol {
 
 	func fetchSettings() -> SettingsModelDTO? {
-		let settingsObjects = storage.fetch(by: SettingsObject.self)
-		guard settingsObjects.count > .zero  else {
-			return nil
-		}
-		guard let object = settingsObjects.last else {
-			return nil
-		}
-		return SettingsModelDTO(from: object)
+		storage.fetchSettings()
 	}
 
 	func saveSettings(_ settings: SettingsModelDTO) {
-		storage.save(objects: [SettingsObject(from: settings)])
+		storage.saveSettings(settings: settings)
 	}
 
 	func clearAllCache() {
+		ImageLoader.shared.clearCache()
 		storage.deleteAllCache()
 	}
 }
