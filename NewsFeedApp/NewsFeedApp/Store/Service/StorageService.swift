@@ -13,12 +13,7 @@ protocol StorageServiceProtocol {
 	func fetch<T: Object>(by type: T.Type) -> [T]
 }
 
-final class StorageService {
-
-	private lazy var configuration: Realm.Configuration = {
-		Realm.Configuration(inMemoryIdentifier: "inMemory")
-	}()
-}
+final class StorageService {}
 
 extension StorageService: StorageServiceProtocol {
 
@@ -32,7 +27,7 @@ extension StorageService: StorageServiceProtocol {
 
 	func deleteAllCache() {
 		ImageLoader.shared.clearCache()
-		guard let storage = try? Realm(configuration: configuration) else { return }
+		guard let storage = try? Realm() else { return }
 		do {
 			try storage.write {
 				storage.deleteAll()
@@ -43,7 +38,7 @@ extension StorageService: StorageServiceProtocol {
 	}
 
 	func fetch<T: Object>(by type: T.Type) -> [T] {
-		guard let storage = try? Realm(configuration: configuration) else { return [] }
+		guard let storage = try? Realm() else { return [] }
 		return storage.objects(T.self).toArray()
 	}
 }
@@ -51,7 +46,7 @@ extension StorageService: StorageServiceProtocol {
 private extension StorageService {
 
 	func save(object: Object) {
-		guard let storage = try? Realm(configuration: configuration) else { return }
+		guard let storage = try? Realm() else { return }
 		do {
 			try storage.write {
 				storage.add(object)

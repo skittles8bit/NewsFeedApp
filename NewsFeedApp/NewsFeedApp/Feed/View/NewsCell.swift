@@ -70,11 +70,11 @@ final class NewsCell: UITableViewCell {
 		titleLabel.text = item.title
 		descriptionLabel.text = item.description
 		if let imageURL = item.imageURL {
+			imageHeightConstraint?.isActive = true
 			newsImageView.image = Constants.placeholderImage
 			ImageLoader.shared.loadImage(from: imageURL) { [weak self] image in
 				guard let self else { return }
 				newsImageView.image = image
-				imageHeightConstraint?.isActive = true
 			}
 		} else {
 			imageHeightConstraint?.isActive = false
@@ -126,6 +126,5 @@ private extension NewsCell {
 		imageHeightConstraint = newsImageView.heightAnchor.constraint(
 			equalToConstant: Constants.imageHeight
 		)
-		imageHeightConstraint?.isActive = true
 	}
 }
