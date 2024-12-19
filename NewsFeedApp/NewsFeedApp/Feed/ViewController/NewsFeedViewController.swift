@@ -34,7 +34,7 @@ final class NewsFeedViewController: UIViewController {
 
 	private lazy var settingsBarButtonItem: UIBarButtonItem = {
 		let settingsBarButtonItem = UIBarButtonItem(
-			image: UIImage(systemName: "gearshape"),
+			image: Constants.settingsImage,
 			style: .plain,
 			target: self,
 			action: #selector(settings)
@@ -82,6 +82,11 @@ extension NewsFeedViewController: ErrorViewDelegate {
 
 private extension NewsFeedViewController {
 
+	enum Constants {
+		static let navigationBarTitle: String = "Новости"
+		static let settingsImage: UIImage? = UIImage(systemName: "gearshape")
+	}
+
 	func bind() {
 		viewModel.data.reloadDataPublisher
 			.receive(on: DispatchQueue.main)
@@ -109,7 +114,7 @@ private extension NewsFeedViewController {
 	}
 
 	func setup() {
-		title = "Новости"
+		title = Constants.navigationBarTitle
 		view.addSubviews(tableView, loadView, errorView)
 		setupRightBarButtonItem()
 		NSLayoutConstraint.activate([
