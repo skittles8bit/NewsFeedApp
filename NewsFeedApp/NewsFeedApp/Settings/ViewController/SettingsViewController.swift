@@ -137,10 +137,11 @@ private extension SettingsViewController {
 
 		viewModel.data.pickerViewStatePublisher
 			.receive(on: DispatchQueue.main)
-			.sink { [weak self] isEnabled in
+			.sink { [weak self] model in
 				guard let self else { return }
-				pickerView.alpha = isEnabled ? 1 : 0.5
-				pickerView.isUserInteractionEnabled = isEnabled
+				pickerView.alpha = model.isEnabled ? 1 : 0.5
+				pickerView.isUserInteractionEnabled = model.isEnabled
+				pickerView.configure(with: model.period)
 			}.store(in: &subscriptions)
 	}
 

@@ -49,7 +49,7 @@ private extension StorageService {
 		guard let storage = try? Realm() else { return }
 		do {
 			try storage.write {
-				storage.add(object)
+				storage.add(object, update: .all)
 			}
 		} catch {
 			print(error)

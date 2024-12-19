@@ -60,6 +60,11 @@ final class NewsFeedViewController: UIViewController {
 		setup()
 		bind()
 	}
+
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		viewModel.viewActions.lifecycle.send(.willAppear)
+	}
 }
 
 extension NewsFeedViewController: TableViewDelegate {

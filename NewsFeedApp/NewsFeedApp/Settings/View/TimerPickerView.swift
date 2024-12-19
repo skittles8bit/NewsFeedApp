@@ -13,7 +13,7 @@ protocol TimerPickerViewDelegate: AnyObject {
 
 final class TimerPickerView: UIView {
 
-	private let period = [10, 15, 20, 25, 30]
+	private let periods = [10, 15, 20, 25, 30]
 
 	private lazy var pickerView: UIPickerView = {
 		let pickerView = UIPickerView()
@@ -32,6 +32,14 @@ final class TimerPickerView: UIView {
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
+
+	func configure(with period: Int){
+		pickerView.selectRow(
+			periods.firstIndex(of: period) ?? .zero,
+			inComponent: .zero,
+			animated: false
+		)
+	}
 }
 
 extension TimerPickerView: UIPickerViewDataSource {
@@ -41,7 +49,7 @@ extension TimerPickerView: UIPickerViewDataSource {
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		period.count
+		periods.count
 	}
 }
 
@@ -50,11 +58,11 @@ extension TimerPickerView: UIPickerViewDataSource {
 extension TimerPickerView: UIPickerViewDelegate {
 
 	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		return "\(period[row]) сек"
+		return "\(periods[row]) сек"
 	}
 
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-		delegate?.didSelectTimer(period: period[row])
+		delegate?.didSelectTimer(period: periods[row])
 	}
 }
 

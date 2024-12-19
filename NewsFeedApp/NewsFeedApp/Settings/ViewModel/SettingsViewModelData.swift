@@ -9,5 +9,5 @@ import Combine
 
 struct SettingsViewModelData {
 	let switchStatePublisher: AnyPublisher<Bool, Never>
-	let pickerViewStatePublisher: AnyPublisher<Bool, Never>
+	let pickerViewStatePublisher: AnyPublisher<SettingsPickerViewStateModel, Never>
 }

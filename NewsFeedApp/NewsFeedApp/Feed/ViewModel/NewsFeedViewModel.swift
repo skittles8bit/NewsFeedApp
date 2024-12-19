@@ -15,7 +15,8 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 
 	/// Зависимости
 	struct Dependencies {
-		let repository: NewsFeedRepository
+		let newsRepository: NewsFeedRepository
+		let settingsRepository: SettingsRepository
 	}
 
 	let input = NewsFeedViewModelInput()
@@ -28,6 +29,8 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 	private let loadingSubject = PassthroughSubject<Void, Never>()
 	private let errorSubject = PassthroughSubject<Void, Never>()
 	private let performSettingsSubject = PassthroughSubject<Void, Never>()
+
+	private var timer: NewsTimerProtocol?
 
 	private var subscriptions = Subscriptions()
 
@@ -59,8 +62,10 @@ private extension NewsFeedViewModel {
 				switch lifecycle {
 				case .didLoad:
 					fetchNewsFeed()
+				case .willAppear:
+					fetchSettings()
 				case .willDisappear:
-					break
+					timer?.stop()
 				}
 			}.store(in: &subscriptions)
 
@@ -80,7 +85,7 @@ private extension NewsFeedViewModel {
 	func fetchNewsFeed() {
 		loadingSubject.send()
 		Task {
-			guard let news = await self.dependencies.repository.fetchNewsFeed() else {
+			guard let news = await self.dependencies.newsRepository.fetchNewsFeed() else {
 				errorSubject.send()
 				return
 			}
@@ -92,12 +97,27 @@ private extension NewsFeedViewModel {
 	func loadNewsFeed() {
 		loadingSubject.send()
 		Task {
-			guard let news = await self.dependencies.repository.fetchNewsFeed() else {
+			guard let news = await self.dependencies.newsRepository.loadNews() else {
 				errorSubject.send()
 				return
 			}
 			data.newsFeedItems = news
 			reloadDataSubject.send()
+		}
+	}
+
+	func fetchSettings() {
+		let settings = dependencies.settingsRepository.fetchSettings()
+		guard let settings else { return }
+		if settings.timerEnabled {
+			let handler: () -> Void = { [weak self] in
+				guard let self else { return }
+				loadNewsFeed()
+			}
+			timer = NewsTimer(
+				interval: TimeInterval(settings.period),
+				updateHandler: handler
+			)
 		}
 	}
 }

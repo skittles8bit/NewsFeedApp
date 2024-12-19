@@ -29,7 +29,7 @@ extension SettingsRepository: SettingsRepositoryProtocol {
 		guard settingsObjects.count > .zero  else {
 			return nil
 		}
-		guard let object = settingsObjects.first else {
+		guard let object = settingsObjects.last else {
 			return nil
 		}
 		return SettingsModelDTO(from: object)

@@ -23,9 +23,9 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 	private(set) lazy var viewActions = SettingsViewModelActions()
 
 	private let switchStateSubject = PassthroughSubject<Bool, Never>()
-	private let pickerViewStateSubject = PassthroughSubject<Bool, Never>()
+	private let pickerViewStateSubject = PassthroughSubject<SettingsPickerViewStateModel, Never>()
 
-	private var period: Int?
+	private var period: Int = Constants.defaultPeriodValue
 	private var timerEnabled: Bool = false
 
 	private let dependencies: Dependencies
@@ -44,16 +44,17 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 
 private extension SettingsViewModel {
 
+	enum Constants {
+		static let defaultPeriodValue: Int = 10
+	}
+
 	func bind() {
 		viewActions.lifecycle
 			.receive(on: DispatchQueue.main)
 			.sink { [weak self] lifecycle in
 				guard let self else { return }
-				switch lifecycle {
-				case .didLoad:
+				if case .didLoad = lifecycle {
 					getSettings()
-				case .willDisappear:
-					saveSettings()
 				}
 			}.store(in: &subscriptions)
 
@@ -68,8 +69,14 @@ private extension SettingsViewModel {
 					period = time
 				case let .timerStateDidChange(value):
 					timerEnabled = value
-					pickerViewStateSubject.send(value)
+					pickerViewStateSubject.send(
+						.init(
+							period: period,
+							isEnabled: timerEnabled
+						)
+					)
 				}
+				saveSettings()
 			}.store(in: &subscriptions)
 	}
 
@@ -78,7 +85,7 @@ private extension SettingsViewModel {
 	}
 
 	func saveSettings() {
-		guard let period else { return }
+		period = timerEnabled ? period : Constants.defaultPeriodValue
 		let settings = SettingsModelDTO(period: period, timerEnabled: timerEnabled)
 		dependencies.repository.saveSettings(settings)
 	}
@@ -86,7 +93,13 @@ private extension SettingsViewModel {
 	func getSettings() {
 		let settings = dependencies.repository.fetchSettings()
 		timerEnabled = settings?.timerEnabled ?? false
+		period = settings?.period ?? Constants.defaultPeriodValue
 		switchStateSubject.send(timerEnabled)
-		pickerViewStateSubject.send(timerEnabled)
+		pickerViewStateSubject.send(
+			.init(
+				period: period,
+				isEnabled: timerEnabled
+			)
+		)
 	}
 }
