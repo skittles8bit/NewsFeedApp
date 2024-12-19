@@ -11,7 +11,7 @@ struct SettingsViewModelActions {
 
 	enum Events {
 		case clearCacheDidTap
-		case timerDidChange(TimeIntervalModel)
+		case timerDidChange(Int)
 		case timerStateDidChange(Bool)
 	}
 

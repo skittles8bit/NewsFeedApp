@@ -77,8 +77,8 @@ final class SettingsViewController: UIViewController {
 
 extension SettingsViewController: TimerPickerViewDelegate {
 
-	func didSelectTimer(model: TimeIntervalModel) {
-		viewModel.viewActions.events.send(.timerDidChange(model))
+	func didSelectTimer(period: Int) {
+		viewModel.viewActions.events.send(.timerDidChange(period))
 	}
 }
 

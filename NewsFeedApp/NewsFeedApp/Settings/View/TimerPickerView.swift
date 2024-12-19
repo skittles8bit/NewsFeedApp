@@ -8,19 +8,12 @@
 import UIKit
 
 protocol TimerPickerViewDelegate: AnyObject {
-	func didSelectTimer(model: TimeIntervalModel)
+	func didSelectTimer(period: Int)
 }
 
 final class TimerPickerView: UIView {
 
-	// Массивы для выбора часов и минут
-	private let hours = Array(0...23) // Часы от 0 до 23
-	private let minutes = Array(0...59) // Минуты от 0 до 59
-	private let seconds = Array(1...59) // Минуты от 0 до 59
-
-	private var selectedHour = 0
-	private var selectedMinute = 0
-	private var selectedSecond = 1
+	private let period = [10, 15, 20, 25, 30]
 
 	private lazy var pickerView: UIPickerView = {
 		let pickerView = UIPickerView()
@@ -42,21 +35,13 @@ final class TimerPickerView: UIView {
 }
 
 extension TimerPickerView: UIPickerViewDataSource {
+
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
-		3
+		1
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		switch component {
-		case .zero:
-			hours.count
-		case 1:
-			minutes.count
-		case 2:
-			seconds.count
-		default:
-			.zero
-		}
+		period.count
 	}
 }
 
@@ -65,36 +50,11 @@ extension TimerPickerView: UIPickerViewDataSource {
 extension TimerPickerView: UIPickerViewDelegate {
 
 	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		switch component {
-		case .zero:
-			return "\(hours[row]) ч"
-		case 1:
-			return "\(minutes[row]) мин"
-		case 2:
-			return "\(seconds[row]) сек"
-		default:
-			return nil
-		}
+		return "\(period[row]) сек"
 	}
 
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-		switch component {
-		case .zero:
-			selectedHour = hours[row]
-		case 1:
-			selectedMinute = minutes[row]
-		case 2:
-			selectedSecond = seconds[row]
-		default:
-			return
-		}
-		delegate?.didSelectTimer(
-			model: .init(
-				hour: selectedHour,
-				minute: selectedMinute,
-				second: selectedSecond
-			)
-		)
+		delegate?.didSelectTimer(period: period[row])
 	}
 }
 

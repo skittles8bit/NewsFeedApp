@@ -22,7 +22,7 @@ extension StorageService: StorageServiceProtocol {
 			objects.forEach {
 				save(object: $0)
 			}
-		} 
+		}
 	}
 
 	func deleteAllCache() {

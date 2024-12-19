@@ -70,7 +70,7 @@ private extension NewsFeedViewModel {
 				guard let self else { return }
 				switch event {
 				case .didUpdate:
-					fetchNewsFeed()
+					loadNewsFeed()
 				case .didTapSettings:
 					performSettingsSubject.send()
 				}
@@ -78,6 +78,18 @@ private extension NewsFeedViewModel {
 	}
 
 	func fetchNewsFeed() {
+		loadingSubject.send()
+		Task {
+			guard let news = await self.dependencies.repository.fetchNewsFeed() else {
+				errorSubject.send()
+				return
+			}
+			data.newsFeedItems = news
+			reloadDataSubject.send()
+		}
+	}
+
+	func loadNewsFeed() {
 		loadingSubject.send()
 		Task {
 			guard let news = await self.dependencies.repository.fetchNewsFeed() else {

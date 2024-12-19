@@ -25,7 +25,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 	private let switchStateSubject = PassthroughSubject<Bool, Never>()
 	private let pickerViewStateSubject = PassthroughSubject<Bool, Never>()
 
-	private var timeInterval: TimeIntervalModel?
+	private var period: Int?
 	private var timerEnabled: Bool = false
 
 	private let dependencies: Dependencies
@@ -64,8 +64,8 @@ private extension SettingsViewModel {
 				switch event {
 				case .clearCacheDidTap:
 					clearCache()
-				case let .timerDidChange(model):
-					timeInterval = model
+				case let .timerDidChange(time):
+					period = time
 				case let .timerStateDidChange(value):
 					timerEnabled = value
 					pickerViewStateSubject.send(value)
@@ -78,8 +78,8 @@ private extension SettingsViewModel {
 	}
 
 	func saveSettings() {
-		guard let timeInterval else { return }
-		let settings = SettingsModelDTO(timerModel: timeInterval, timerEnabled: timerEnabled)
+		guard let period else { return }
+		let settings = SettingsModelDTO(period: period, timerEnabled: timerEnabled)
 		dependencies.repository.saveSettings(settings)
 	}
 

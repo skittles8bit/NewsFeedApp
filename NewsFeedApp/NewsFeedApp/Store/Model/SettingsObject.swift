@@ -11,9 +11,7 @@ class SettingsObject: Object {
 
 	@Persisted(primaryKey: true) var id: String = UUID().uuidString // Уникальный идентификатор
 	@Persisted var timerEnabled: Bool = false
-	@Persisted var hour: Int = 0
-	@Persisted var minute: Int = 0
-	@Persisted var second: Int = 1
+	@Persisted var period: Int = 10
 }
 
 extension SettingsObject {
@@ -21,8 +19,6 @@ extension SettingsObject {
 	convenience init(from settings: SettingsModelDTO) {
 		self.init()
 		timerEnabled = settings.timerEnabled
-		hour = settings.timerModel.hour
-		minute = settings.timerModel.minute
-		second = settings.timerModel.second
+		period = settings.period
 	}
 }

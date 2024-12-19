@@ -9,14 +9,14 @@ import Foundation
 
 struct SettingsModelDTO {
 
-	var timerModel: TimeIntervalModel { _timerModel }
 	var timerEnabled: Bool { _timerEnabled }
+	var period: Int { _period }
 
-	private let _timerModel: TimeIntervalModel
+	private let _period: Int
 	private let _timerEnabled: Bool
 
-	init(timerModel: TimeIntervalModel, timerEnabled: Bool) {
-		_timerModel = timerModel
+	init(period: Int, timerEnabled: Bool) {
+		_period = period
 		_timerEnabled = timerEnabled
 	}
 }
@@ -25,7 +25,7 @@ extension SettingsModelDTO {
 
 	init(from object: SettingsObject) {
 		self.init(
-			timerModel: TimeIntervalModel(from: object),
+			period: object.period,
 			timerEnabled: object.timerEnabled
 		)
 	}
