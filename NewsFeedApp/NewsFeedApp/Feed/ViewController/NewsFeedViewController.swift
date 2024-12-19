@@ -132,7 +132,7 @@ private extension NewsFeedViewController {
 		])
 
 		NSLayoutConstraint.activate([
-			errorView.topAnchor.constraint(equalTo: view.topAnchor),
+			errorView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 			errorView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 			errorView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 			errorView.leadingAnchor.constraint(equalTo: view.leadingAnchor)

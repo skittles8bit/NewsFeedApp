@@ -13,26 +13,37 @@ protocol ErrorViewDelegate: AnyObject {
 
 final class ErrorView: UIView {
 
+	private lazy var stackView: UIStackView = {
+		let stackView = UIStackView(arrangedSubviews: [title, updateButton])
+		stackView.axis = .vertical
+		stackView.spacing = 16
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		return stackView
+	}()
+
 	private lazy var title: UILabel = {
 		let label = UILabel()
-		label.textColor = .black
-		label.font = .systemFont(ofSize: 24, weight: .bold)
+		label.font = .systemFont(ofSize: 24, weight: .semibold)
 		label.textAlignment = .center
 		label.numberOfLines = 0
-		label.text = "Ошибка парсинга данных"
+		label.text = "Ooops...\nЧто-то пошло не так"
 		return label
 	}()
 
 	private lazy var updateButton: UIButton = {
 		let button = UIButton()
 		button.setTitle("Попробовать снова", for: .normal)
-		button.setTitleColor(.black, for: .normal)
+		button.setTitleColor(.white, for: .normal)
 		button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
 		let action = UIAction { [weak self] _ in
 			guard let self else { return }
 			delegate?.update()
 		}
 		button.addAction(action, for: .touchUpInside)
+		button.layer.cornerRadius = 8
+		button.layer.masksToBounds = true
+		button.backgroundColor = .systemBlue
+		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
 	}()
 
@@ -53,18 +64,16 @@ final class ErrorView: UIView {
 private extension ErrorView {
 
 	func setup() {
-		addSubviews(title, updateButton)
+		addSubview(stackView)
 		backgroundColor = .systemBackground
 		NSLayoutConstraint.activate([
-			title.centerXAnchor.constraint(equalTo: centerXAnchor),
-			title.centerYAnchor.constraint(equalTo: centerYAnchor),
-			title.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-			title.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
+			stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+			stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+			stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+			stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
 		])
 		NSLayoutConstraint.activate([
-			updateButton.leadingAnchor.constraint(equalTo: title.leadingAnchor),
-			updateButton.trailingAnchor.constraint(equalTo: title.trailingAnchor),
-			updateButton.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 20)
+			updateButton.heightAnchor.constraint(equalToConstant: 50)
 		])
 	}
 }

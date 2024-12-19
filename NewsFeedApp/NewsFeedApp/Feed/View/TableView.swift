@@ -48,7 +48,10 @@ class TableView: UIView {
 		var snapshot = NSDiffableDataSourceSnapshot<Int, NewsFeedModelDTO>()
 		snapshot.appendSections([.zero])
 		snapshot.appendItems(items)
-		dataSource?.apply(snapshot, animatingDifferences: true, completion: { [weak self] in
+		dataSource?.apply(
+			snapshot,
+			animatingDifferences: false,
+			completion: { [weak self] in
 			guard let self else { return }
 			refreshControl.endRefreshing()
 		})
