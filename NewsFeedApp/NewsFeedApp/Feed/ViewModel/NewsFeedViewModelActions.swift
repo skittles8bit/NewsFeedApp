@@ -10,8 +10,8 @@ import Combine
 struct NewsFeedViewModelActions {
 
 	enum Events {
-		case refreshDidTap
-		case settingsDidTap
+		case didUpdate
+		case didTapSettings
 	}
 
 	let lifecycle = PassthroughSubject<Lifecycle, Never>()

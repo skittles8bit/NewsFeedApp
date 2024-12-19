@@ -11,21 +11,11 @@ final class NewsFeedViewController: UIViewController {
 
 	private let viewModel: NewsFeedViewModelActionsAndData
 
-	private lazy var tableView: UITableView = {
-		let tableView = UITableView()
-		tableView.backgroundColor = .systemBackground
-		tableView.translatesAutoresizingMaskIntoConstraints = false
-		tableView.dataSource = self
+	private lazy var tableView: TableView = {
+		let tableView = TableView()
 		tableView.delegate = self
-		tableView.register(NewsCell.self, forCellReuseIdentifier: "NewsCell")
-		tableView.refreshControl = refreshControl
+		tableView.translatesAutoresizingMaskIntoConstraints = false
 		return tableView
-	}()
-
-	private lazy var refreshControl: UIRefreshControl = {
-		let refreshControl = UIRefreshControl()
-		refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
-		return refreshControl
 	}()
 
 	private lazy var loadView: LoadView = {
@@ -72,32 +62,10 @@ final class NewsFeedViewController: UIViewController {
 	}
 }
 
-// MARK: - UITableViewDataSource, UITableViewDelegate
+extension NewsFeedViewController: TableViewDelegate {
 
-extension NewsFeedViewController: UITableViewDataSource, UITableViewDelegate {
-
-	func tableView(
-		_ tableView: UITableView,
-		numberOfRowsInSection section: Int
-	) -> Int {
-		return viewModel.data.newsFeedItems.count
-	}
-	
-	func tableView(
-		_ tableView: UITableView,
-		cellForRowAt indexPath: IndexPath
-	) -> UITableViewCell {
-		guard
-			let cell = tableView.dequeueReusableCell(
-				withIdentifier: "NewsCell",
-				for: indexPath
-			) as? NewsCell
-		else {
-			return UITableViewCell()
-		}
-		let item = viewModel.data.newsFeedItems[indexPath.row]
-		cell.setup(with: item)
-		return cell
+	func didUpdate() {
+		viewModel.viewActions.events.send(.didUpdate)
 	}
 }
 
@@ -106,7 +74,7 @@ extension NewsFeedViewController: UITableViewDataSource, UITableViewDelegate {
 extension NewsFeedViewController: ErrorViewDelegate {
 
 	func update() {
-		viewModel.viewActions.events.send(.refreshDidTap)
+		viewModel.viewActions.events.send(.didUpdate)
 	}
 }
 
@@ -119,10 +87,9 @@ private extension NewsFeedViewController {
 			.receive(on: DispatchQueue.main)
 			.sink { [weak self] in
 				guard let self else { return }
-				refreshControl.endRefreshing()
 				loadView.isHidden = true
 				loadView.stopAnimation()
-				tableView.reloadSections(IndexSet(integer: 0), with: .fade)
+				tableView.updateSnapshot(with: viewModel.data.newsFeedItems)
 			}.store(in: &subscriptions)
 		viewModel.data.loadingPublisher
 			.receive(on: DispatchQueue.main)
@@ -173,11 +140,11 @@ private extension NewsFeedViewController {
 
 	@objc
 	func refresh() {
-		viewModel.viewActions.events.send(.refreshDidTap)
+		viewModel.viewActions.events.send(.didUpdate)
 	}
 
 	@objc
 	func settings() {
-		viewModel.viewActions.events.send(.settingsDidTap)
+		viewModel.viewActions.events.send(.didTapSettings)
 	}
 }

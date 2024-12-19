@@ -69,9 +69,9 @@ private extension NewsFeedViewModel {
 			.sink { [weak self] event in
 				guard let self else { return }
 				switch event {
-				case .refreshDidTap:
+				case .didUpdate:
 					fetchNewsFeed()
-				case .settingsDidTap:
+				case .didTapSettings:
 					performSettingsSubject.send()
 				}
 			}.store(in: &subscriptions)
