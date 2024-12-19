@@ -69,6 +69,10 @@ final class NewsFeedViewController: UIViewController {
 
 extension NewsFeedViewController: TableViewDelegate {
 
+	func didTap(with index: Int) {
+		viewModel.viewActions.events.send(.didTapArticle(index))
+	}
+
 	func didUpdate() {
 		viewModel.viewActions.events.send(.didUpdate)
 	}

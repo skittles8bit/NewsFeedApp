@@ -30,6 +30,21 @@ extension String {
 		)
 	}
 
+	// " "
+	static var space: String {
+		" "
+	}
+
+	// ☑
+	static var checkMark: String {
+		"\u{2611}"
+	}
+
+	// ""
+	static var empty: String {
+		""
+	}
+
 	func extractDomain() -> String? {
 		guard let url = URL(string: self) else { return nil }
 

@@ -8,7 +8,7 @@
 import RealmSwift
 
 protocol StorageServiceProtocol {
-	func save(objects: [Object])
+	func saveOrUpdate(object: Object)
 	func deleteAllCache()
 	func fetch<T: Object>(by type: T.Type) -> [T]
 
@@ -27,11 +27,14 @@ final class StorageService {
 
 extension StorageService: StorageServiceProtocol {
 
-	func save(objects: [Object]) {
+	func saveOrUpdate(object: Object) {
+		guard let storage = try? Realm() else { return }
 		do {
-			objects.forEach {
-				save(object: $0)
+			try storage.write {
+				storage.add(object, update: .modified)
 			}
+		} catch {
+			print(error)
 		}
 	}
 
@@ -61,20 +64,6 @@ extension StorageService: StorageServiceProtocol {
 			period: settingsService.newsUpdateInterval,
 			timerEnabled: settingsService.isNewsUpdateEnabled
 		)
-	}
-}
-
-private extension StorageService {
-
-	func save(object: Object) {
-		guard let storage = try? Realm() else { return }
-		do {
-			try storage.write {
-				storage.add(object, update: .all)
-			}
-		} catch {
-			print(error)
-		}
 	}
 }
 

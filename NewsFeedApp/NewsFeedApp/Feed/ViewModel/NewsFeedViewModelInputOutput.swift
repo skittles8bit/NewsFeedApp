@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Foundation
 
 protocol NewsFeedViewModelInputOutput {
 	var input: NewsFeedViewModelInput { get }
@@ -17,4 +18,6 @@ struct NewsFeedViewModelInput {}
 struct NewsFeedViewModelOutput {
 	/// Переход в настройки
 	let performSettingsPublisher: AnyPublisher<Void, Never>
+	/// Переход на детальную информацию о статье
+	let performArticleDetailPublisher: AnyPublisher<URL, Never>
 }

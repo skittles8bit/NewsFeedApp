@@ -9,6 +9,7 @@ import UIKit
 
 protocol TableViewDelegate: AnyObject {
 	func didUpdate()
+	func didTap(with index: Int)
 }
 
 class TableView: UIView {
@@ -19,6 +20,7 @@ class TableView: UIView {
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 		tableView.register(NewsCell.self, forCellReuseIdentifier: "NewsCell")
 		tableView.refreshControl = refreshControl
+		tableView.delegate = self
 		return tableView
 	}()
 
@@ -50,11 +52,24 @@ class TableView: UIView {
 		snapshot.appendItems(items)
 		dataSource?.apply(
 			snapshot,
-			animatingDifferences: false,
+			animatingDifferences: true,
 			completion: { [weak self] in
 			guard let self else { return }
 			refreshControl.endRefreshing()
 		})
+	}
+}
+
+// MARK: - UITableViewDelegate
+
+extension TableView: UITableViewDelegate {
+
+	func tableView(
+		_ tableView: UITableView,
+		didSelectRowAt indexPath: IndexPath
+	) {
+		delegate?.didTap(with: indexPath.row)
+		tableView.deselectRow(at: indexPath, animated: true)
 	}
 }
 
@@ -86,6 +101,7 @@ private extension TableView {
 			cell.setup(with: item)
 			return cell
 		}
+		dataSource?.defaultRowAnimation = .fade
 	}
 
 	@objc

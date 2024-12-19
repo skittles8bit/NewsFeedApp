@@ -9,23 +9,27 @@ import UIKit
 
 struct NewsFeedModelDTO {
 
+	let id: String
 	let title: String?
 	let description: String?
 	let link: String?
 	let publicationDate: Date?
 	let imageURL: String?
 	let channel: String?
+	var isArticleReaded: Bool
 }
 
 extension NewsFeedModelDTO {
 
 	init(from object: NewsFeedObject) {
+		id = object.id
 		title = object.title
 		description = object.title
 		link = object.link
 		publicationDate = object.publicationDate
 		imageURL = object.imageURL
 		channel = object.channel
+		isArticleReaded = object.isArticleReaded
 	}
 }
 

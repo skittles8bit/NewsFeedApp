@@ -5,6 +5,7 @@
 //  Created by Aliaksandr Karenski on 17.12.24.
 //
 
+import SafariServices
 import UIKit
 
 protocol NewsFeedCoordinatorProtocol {
@@ -56,6 +57,12 @@ private extension NewsFeedCoordinator {
 				guard let self else { return }
 				showSettings()
 			}.store(in: &subscriptions)
+		assembly.viewModel.output.performArticleDetailPublisher
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] url in
+				guard let self else { return }
+				showArticleDetail(with: url)
+			}.store(in: &subscriptions)
 	}
 
 	func showSettings() {
@@ -66,5 +73,11 @@ private extension NewsFeedCoordinator {
 			navigationController: navigationController
 		)
 		coordinator.start()
+	}
+
+	func showArticleDetail(with url: URL) {
+		let safariViewController = SFSafariViewController(url: url)
+		safariViewController.dismissButtonStyle = .close
+		navigationController.pushViewController(safariViewController, animated: true)
 	}
 }

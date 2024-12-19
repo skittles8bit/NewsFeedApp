@@ -15,6 +15,7 @@ protocol RSSParserServiceProtocol {
 final class RSSParserService: NSObject {
 
 	private var currentElement = ""
+	private var currentGuid = ""
 	private var currentTitle = ""
 	private var currentDescription = ""
 	private var currentLink = ""
@@ -50,9 +51,9 @@ extension RSSParserService: XMLParserDelegate {
 		currentElement = elementName
 		switch currentElement {
 		case RSSTagNames.item.rawValue:
-			currentTitle = ""
-			currentDescription = ""
-			currentLink = ""
+			currentTitle = .empty
+			currentDescription = .empty
+			currentLink = .empty
 			currentImageURL = nil
 			currentPubDate = nil
 		case RSSTagNames.enclosure.rawValue:
@@ -82,6 +83,8 @@ extension RSSParserService: XMLParserDelegate {
 		case RSSTagNames.pubDate.rawValue:
 			guard !string.clearString.isEmpty else { return }
 			currentPubDate = DateFormatter.newsDateFormatter.date(from: string)
+		case RSSTagNames.guid.rawValue:
+			currentGuid.append(string)
 		default:
 			break
 		}
@@ -96,12 +99,14 @@ extension RSSParserService: XMLParserDelegate {
 		switch elementName {
 		case RSSTagNames.item.rawValue:
 			let item = NewsFeedModelDTO(
+				id: currentGuid,
 				title: currentTitle.clearString,
 				description: currentDescription.clearString,
 				link: currentLink.clearString,
 				publicationDate: currentPubDate,
 				imageURL: currentImageURL?.clearString,
-				channel: currentLink.clearString.extractDomain() ?? ""
+				channel: currentLink.clearString.extractDomain() ?? "",
+				isArticleReaded: false
 			)
 			items.append(item)
 		default:
@@ -122,5 +127,6 @@ private extension RSSParserService {
 		case enclosure
 		case mediaContent = "media:content"
 		case channel
+		case guid
 	}
 }

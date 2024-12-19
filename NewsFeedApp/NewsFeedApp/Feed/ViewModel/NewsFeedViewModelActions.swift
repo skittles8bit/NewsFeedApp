@@ -12,6 +12,7 @@ struct NewsFeedViewModelActions {
 	enum Events {
 		case didUpdate
 		case didTapSettings
+		case didTapArticle(Int)
 	}
 
 	let lifecycle = PassthroughSubject<Lifecycle, Never>()

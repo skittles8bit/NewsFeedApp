@@ -16,17 +16,20 @@ class NewsFeedObject: Object {
 	@Persisted var link: String? // Ссылка на новость
 	@Persisted var imageURL: String? // Ссылка на картинку
 	@Persisted var channel: String? // Источник новостей
+	@Persisted var isArticleReaded: Bool = false // Прочитана ли статья
 }
 
 extension NewsFeedObject {
 
 	convenience init(from newsFeed: NewsFeedModelDTO) {
 		self.init()
+		id = newsFeed.id
 		title = newsFeed.title
 		subtitle = newsFeed.description
 		publicationDate = newsFeed.publicationDate
 		link = newsFeed.link
 		imageURL = newsFeed.imageURL
 		channel = newsFeed.channel
+		isArticleReaded = newsFeed.isArticleReaded
 	}
 }

@@ -15,8 +15,8 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 
 	/// Зависимости
 	struct Dependencies {
-		let newsRepository: NewsFeedRepository
-		let settingsRepository: SettingsRepository
+		let newsRepository: NewsFeedRepositoryProtocol
+		let settingsRepository: SettingsRepositoryProtocol
 	}
 
 	let input = NewsFeedViewModelInput()
@@ -29,8 +29,11 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 	private let loadingSubject = PassthroughSubject<Void, Never>()
 	private let errorSubject = PassthroughSubject<Void, Never>()
 	private let performSettingsSubject = PassthroughSubject<Void, Never>()
+	private let performArticleDetailSubject = PassthroughSubject<URL, Never>()
 
 	private var timer: NewsTimerProtocol?
+
+	private var isLoading: Bool = false
 
 	private var subscriptions = Subscriptions()
 
@@ -40,7 +43,8 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 	init(dependencies: Dependencies) {
 		self.dependencies = dependencies
 		output = NewsFeedViewModelOutput(
-			performSettingsPublisher: performSettingsSubject.eraseToAnyPublisher()
+			performSettingsPublisher: performSettingsSubject.eraseToAnyPublisher(),
+			performArticleDetailPublisher: performArticleDetailSubject.eraseToAnyPublisher()
 		)
 		data = NewsFeedViewModelData(
 			loadingPublisher: loadingSubject.eraseToAnyPublisher(),
@@ -61,8 +65,9 @@ private extension NewsFeedViewModel {
 				guard let self else { return }
 				switch lifecycle {
 				case .didLoad:
-					fetchNewsFeed()
+					loadNewsFeed()
 				case .willAppear:
+					fetchNewsFeed()
 					fetchSettings()
 				case .willDisappear:
 					timer?.stop()
@@ -78,31 +83,32 @@ private extension NewsFeedViewModel {
 					loadNewsFeed()
 				case .didTapSettings:
 					performSettingsSubject.send()
+				case let .didTapArticle(index):
+					performArticleDetails(with: index)
 				}
 			}.store(in: &subscriptions)
 	}
 
 	func fetchNewsFeed() {
-		loadingSubject.send()
-		Task {
-			guard let news = await self.dependencies.newsRepository.fetchNewsFeed() else {
-				errorSubject.send()
-				return
-			}
-			data.newsFeedItems = news
-			reloadDataSubject.send()
+		guard !isLoading else { return }
+		let objects = dependencies.newsRepository.fetchNewsFeed()
+		guard let objects, objects.count > .zero else {
+			loadNewsFeed()
+			return
 		}
+		data.newsFeedItems = objects
+		reloadDataSubject.send()
 	}
 
 	func loadNewsFeed() {
+		guard !isLoading else { return }
 		loadingSubject.send()
+		isLoading = true
 		Task {
-			guard let news = await self.dependencies.newsRepository.loadNews() else {
-				errorSubject.send()
-				return
-			}
-			data.newsFeedItems = news
-			reloadDataSubject.send()
+			guard let news = await dependencies.newsRepository.loadNews() else { return }
+			news.forEach { dependencies.newsRepository.saveObject(with: $0) }
+			isLoading = false
+			fetchNewsFeed()
 		}
 	}
 
@@ -114,12 +120,25 @@ private extension NewsFeedViewModel {
 				guard let self else { return }
 				loadNewsFeed()
 			}
+			let period = settings.period <= 10 ? 10 : settings.period
 			timer = NewsTimer(
-				interval: TimeInterval(settings.period),
+				interval: TimeInterval(period),
 				updateHandler: handler
 			)
 		} else {
 			timer?.stop()
 		}
+	}
+
+	func performArticleDetails(with index: Int) {
+		guard
+			let link = data.newsFeedItems[index].link,
+			let url = URL(string: link)
+		else {
+			return
+		}
+		data.newsFeedItems[index].isArticleReaded = true
+		dependencies.newsRepository.saveObject(with: data.newsFeedItems[index])
+		performArticleDetailSubject.send(url)
 	}
 }
