@@ -18,6 +18,7 @@ final class TimerPickerView: UIView {
 	private lazy var pickerView: UIPickerView = {
 		let pickerView = UIPickerView()
 		pickerView.translatesAutoresizingMaskIntoConstraints = false
+		pickerView.backgroundColor = .systemBackground
 		return pickerView
 	}()
 
@@ -25,7 +26,6 @@ final class TimerPickerView: UIView {
 
 	init() {
 		super.init(frame: .zero)
-
 		setup()
 	}
 
@@ -42,6 +42,8 @@ final class TimerPickerView: UIView {
 	}
 }
 
+// MARK: - UIPickerViewDataSource
+
 extension TimerPickerView: UIPickerViewDataSource {
 
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -57,26 +59,42 @@ extension TimerPickerView: UIPickerViewDataSource {
 
 extension TimerPickerView: UIPickerViewDelegate {
 
-	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+	func pickerView(
+		_ pickerView: UIPickerView,
+		titleForRow row: Int,
+		forComponent component: Int
+	) -> String? {
 		return "\(periods[row]) сек"
 	}
 
-	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+	func pickerView(
+		_ pickerView: UIPickerView,
+		didSelectRow row: Int,
+		inComponent component: Int
+	) {
 		delegate?.didSelectTimer(period: periods[row])
 	}
 }
 
+// MARK: - Private
+
 private extension TimerPickerView {
+
+	enum Constants {
+		static let pickerViewHeight: CGFloat = 150
+		static let cornerRadius: CGFloat = 10
+		static let borderWidth: CGFloat = 1
+	}
 
 	func setup() {
 		pickerView.delegate = self
 		pickerView.dataSource = self
 
 		// Настройка внешнего вида
-		pickerView.backgroundColor = .white
-		pickerView.layer.cornerRadius = 10
-		pickerView.layer.borderWidth = 1
-		pickerView.layer.borderColor = UIColor.lightGray.cgColor
+		pickerView.layer.cornerRadius = Constants.cornerRadius
+		pickerView.layer.borderWidth = Constants.borderWidth
+		pickerView.layer.borderColor = UIColor.systemBlue.cgColor
+		pickerView.setValue(UIColor.systemBlue, forKey: "textColor")
 
 		addSubview(pickerView)
 
@@ -84,7 +102,8 @@ private extension TimerPickerView {
 			pickerView.topAnchor.constraint(equalTo: topAnchor),
 			pickerView.leadingAnchor.constraint(equalTo: leadingAnchor),
 			pickerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-			pickerView.bottomAnchor.constraint(equalTo: bottomAnchor)
+			pickerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+			pickerView.heightAnchor.constraint(equalToConstant: Constants.pickerViewHeight)
 		])
 	}
 }
