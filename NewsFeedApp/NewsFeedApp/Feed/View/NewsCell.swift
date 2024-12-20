@@ -29,9 +29,9 @@ final class NewsCell: UITableViewCell {
 
 	private lazy var showMoreInfoButton: UIButton = {
 		let button = UIButton()
-		button.setTitle("Показать подробно", for: .normal)
+		button.setTitle("Показать описание", for: .normal)
 		button.setTitleColor(.systemBlue, for: .normal)
-		button.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
+		button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
 		let action = UIAction { [weak self] _ in
 			guard let self else { return }
 			descriptionLabel.isHidden.toggle()
