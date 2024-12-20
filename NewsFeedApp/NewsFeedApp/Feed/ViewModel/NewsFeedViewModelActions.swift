@@ -18,8 +18,6 @@ struct NewsFeedViewModelActions {
 		case didTapSettings
 		/// Нажата ячейка
 		case didTapArticle(Int)
-		/// Нажата кнопка Показать описание
-		case didTapMoreButton(Int)
 	}
 
 	/// Методы жизненного цикла вью контроллера

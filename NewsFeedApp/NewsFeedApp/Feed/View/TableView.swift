@@ -15,10 +15,6 @@ protocol TableViewDelegate: AnyObject {
 	///  - Parameters:
 	///   - index: Индекс ячейки
 	func didTap(with index: Int)
-	/// Нажата кнопка Показать описание
-	///  - Parameters:
-	///   - index: Индекс ячейки
-	func didTapMoreButton(with index: Int)
 }
 
 /// Класс кастомной таблицы
@@ -44,7 +40,7 @@ final class TableView: UIView {
 		return refreshControl
 	}()
 
-	private var dataSource: UITableViewDiffableDataSource<Int, NewsFeedModelDTO>?
+	private var dataSource: UITableViewDiffableDataSource<Int, NewsCellViewModel>?
 
 	/// Делегат таблицы
 	weak var delegate: TableViewDelegate?
@@ -64,8 +60,8 @@ final class TableView: UIView {
 	/// Применить изменения
 	///  - Parameters:
 	///   - items: Массив моделей ленты новостей
-	func applySnapshot(with items: [NewsFeedModelDTO]) {
-		var snapshot = NSDiffableDataSourceSnapshot<Int, NewsFeedModelDTO>()
+	func applySnapshot(with items: [NewsCellViewModel]) {
+		var snapshot = NSDiffableDataSourceSnapshot<Int, NewsCellViewModel>()
 		snapshot.appendSections([.zero])
 		snapshot.appendItems(items)
 		dataSource?.apply(
@@ -117,7 +113,7 @@ private extension TableView {
 	}
 
 	func configureDataSource() {
-		dataSource = UITableViewDiffableDataSource<Int, NewsFeedModelDTO>(tableView: tableView) { (tableView, indexPath, item) in
+		dataSource = UITableViewDiffableDataSource<Int, NewsCellViewModel>(tableView: tableView) { (tableView, indexPath, item) in
 			guard
 				let cell = tableView.dequeueReusableCell(
 					withIdentifier: "NewsCell",
@@ -127,7 +123,6 @@ private extension TableView {
 				return UITableViewCell()
 			}
 			cell.setup(with: item)
-			cell.delegate = self
 			return cell
 		}
 		dataSource?.defaultRowAnimation = .fade
@@ -135,19 +130,6 @@ private extension TableView {
 
 	@objc
 	func didUpdate() {
-
-	}
-}
-
-// MARK: - NewsCellDelegate
-
-extension TableView: NewsCellDelegate {
-
-	func didTapShowMoreInfoButton(for cell: NewsCell) {
-		if let indexPath = tableView.indexPath(for: cell) {
-			delegate?.didTapMoreButton(with: indexPath.row)
-		}
-		tableView.beginUpdates()
-		tableView.endUpdates()
+		delegate?.didUpdate()
 	}
 }

@@ -11,17 +11,43 @@ import UIKit
 protocol SettingsCellDelegate: AnyObject {
 	/// Значение тоггла изменено
 	///  - Parameters:
-	///   - value: Значение
-	func switchValueChanged(_ value: Bool)
+	///   - type: Тип ячейки
+	///   - isOn: Значение тоггла
+	func switchValueChanged(
+		type: SettingsCellViewModel.SettingsCellType?,
+		isOn: Bool
+	)
+}
+
+struct SettingsCellViewModel {
+
+	enum SettingsCellType {
+		case timer
+		case description
+	}
+
+	let title: String
+	let subtitle: String?
+	let isOn: Bool
+	let type: SettingsCellType
 }
 
 /// Ячейка настроек
 final class SettingsCell: UIView {
 
-	private lazy var leftLabel: UILabel = {
+	private lazy var titleLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .label
 		label.font = .boldSystemFont(ofSize: 14)
+		label.textAlignment = .left
+		label.numberOfLines = .zero
+		return label
+	}()
+
+	private lazy var subtitleLabel: UILabel = {
+		let label = UILabel()
+		label.textColor = .secondaryLabel
+		label.font = .systemFont(ofSize: 12)
 		label.textAlignment = .left
 		label.numberOfLines = .zero
 		return label
@@ -34,11 +60,23 @@ final class SettingsCell: UIView {
 		return switchControl
 	}()
 
-	private lazy var stackView: UIStackView = {
-		let stackView = UIStackView(arrangedSubviews: [leftLabel, switchControl])
-		stackView.distribution = .equalSpacing
+	private lazy var leftStackView: UIStackView = {
+		let stackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		stackView.axis = .vertical
+		stackView.spacing = 8
 		return stackView
 	}()
+
+	private lazy var stackView: UIStackView = {
+		let stackView = UIStackView(arrangedSubviews: [leftStackView, switchControl])
+		stackView.distribution = .equalSpacing
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		stackView.spacing = 16
+		return stackView
+	}()
+
+	private var model: SettingsCellViewModel?
 
 	/// Делегат ячейки
 	weak var delegate: SettingsCellDelegate?
@@ -56,9 +94,12 @@ final class SettingsCell: UIView {
 	///  - Parameters:
 	///   - leftText: Текст для левого лейбла
 	///   - switchValue: Значение тоггла
-	func setup(leftText: String, switchValue: Bool) {
-		leftLabel.text = leftText
-		switchControl.isOn = switchValue
+	func setup(with model: SettingsCellViewModel?) {
+		guard let model else { return }
+		self.model = model
+		titleLabel.text = model.title
+		subtitleLabel.text = model.subtitle
+		switchControl.isOn = model.isOn
 	}
 }
 
@@ -68,7 +109,6 @@ private extension SettingsCell {
 
 	func setup() {
 		addSubview(stackView)
-		stackView.translatesAutoresizingMaskIntoConstraints = false
 		stackView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
 		stackView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
 		stackView.topAnchor.constraint(equalTo: topAnchor).isActive = true
@@ -77,6 +117,6 @@ private extension SettingsCell {
 
 	@objc
 	func switchValueChanged(switchControl: UISwitch) {
-		delegate?.switchValueChanged(switchControl.isOn)
+		delegate?.switchValueChanged(type: model?.type, isOn: switchControl.isOn)
 	}
 }

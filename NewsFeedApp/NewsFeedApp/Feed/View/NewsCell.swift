@@ -7,14 +7,6 @@
 
 import UIKit
 
-/// Делегат ячейки ленты новостей
-protocol NewsCellDelegate: AnyObject {
-	/// Нажата кнопка Показать описание
-	///  - Parameters:
-	///   - cell: Ячейка новостной ленты
-	func didTapShowMoreInfoButton(for cell: NewsCell)
-}
-
 /// Ячейка новостной ленты
 final class NewsCell: UITableViewCell {
 
@@ -32,26 +24,12 @@ final class NewsCell: UITableViewCell {
 		return label
 	}()
 
-	private lazy var showMoreInfoButton: UIButton = {
-		let button = UIButton()
-		button.setTitle("Показать описание", for: .normal)
-		button.setTitleColor(.systemBlue, for: .normal)
-		button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
-		let action = UIAction { [weak self] _ in
-			guard let self else { return }
-			descriptionLabel.isHidden = false
-			showMoreInfoButton.isHidden = true
-			delegate?.didTapShowMoreInfoButton(for: self)
-		}
-		button.addAction(action, for: .touchUpInside)
-		return button
-	}()
-
 	private lazy var newsImageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.contentMode = .scaleAspectFill
 		imageView.clipsToBounds = true
 		imageView.translatesAutoresizingMaskIntoConstraints = false
+		imageView.layer.cornerRadius = 8
 		return imageView
 	}()
 
@@ -70,7 +48,7 @@ final class NewsCell: UITableViewCell {
 		return stackView
 	}()
 
-	private lazy var mainStackView: UIStackView = {
+	private lazy var contentStackView: UIStackView = {
 		let stackView = UIStackView()
 		stackView.spacing = 8
 		stackView.distribution = .fillProportionally
@@ -79,9 +57,6 @@ final class NewsCell: UITableViewCell {
 	}()
 
 	private var stackViewTrailingConstraint: NSLayoutConstraint?
-
-	/// Делегат ячейки
-	weak var delegate: NewsCellDelegate?
 
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -99,31 +74,26 @@ final class NewsCell: UITableViewCell {
 		descriptionLabel.text = nil
 		newsImageView.image = nil
 		publicationDateLabel.text = nil
-		showMoreInfoButton.isHidden = true
-		descriptionLabel.isHidden = true
 	}
 
 	/// Настройка ячейки
 	///  - Parameters:
 	///   - item: Модель данных ленты новостей
-	func setup(with item: NewsFeedModelDTO) {
-		titleLabel.text = item.title
-		descriptionLabel.text = item.description
-		showMoreInfoButton.isHidden = item.description == .empty || item.isDescriptionExpanded
-		descriptionLabel.isHidden = !item.isDescriptionExpanded
-		if let imageURL = item.imageURL {
-			newsImageView.setImage(from: imageURL)
-		} else {
-			stackViewTrailingConstraint = stackView.trailingAnchor.constraint(
-				equalTo: contentView.trailingAnchor,
-				constant: -Constants.insent
-			)
-			stackViewTrailingConstraint?.isActive = true
-			newsImageView.constraints.forEach { $0.isActive = false }
+	func setup(with model: NewsCellViewModel) {
+		titleLabel.text = model.item.title
+		if model.isShowDescriptionIsEnabled {
+			descriptionLabel.text = model.item.description
 		}
-		if let publicationDate = item.publicationDate {
-			let checkMark: String = item.isArticleReaded ? .checkMark : .empty
-			publicationDateLabel.text = (item.channel ?? .empty)
+		newsImageView.image = Constants.stubImage
+		if let imageURL = model.item.imageURL {
+			ImageDownloadService.shared.downloadImage(from: imageURL) { [weak self] image in
+				guard let self else { return }
+				newsImageView.image = image
+			}
+		}
+		if let publicationDate = model.item.publicationDate {
+			let checkMark: String = model.item.isArticleReaded ? .checkMark : .empty
+			publicationDateLabel.text = (model.item.channel ?? .empty)
 			+ " | "
 			+ publicationDate.formatted()
 			+ .space
@@ -139,6 +109,7 @@ private extension NewsCell {
 	enum Constants {
 		static let insent: CGFloat = 16
 		static let imageSize: CGFloat = 70
+		static let stubImage: UIImage? = UIImage(named: "placeholder-image")
 	}
 
 	func setup() {
@@ -148,7 +119,6 @@ private extension NewsCell {
 		stackView.addArrangedSubviews(
 			titleLabel,
 			descriptionLabel,
-			showMoreInfoButton,
 			publicationDateLabel
 		)
 		NSLayoutConstraint.activate(
@@ -176,12 +146,12 @@ private extension NewsCell {
 					constant: 8
 				),
 				newsImageView.centerYAnchor.constraint(
-					equalTo: stackView.centerYAnchor
+					equalTo: contentView.centerYAnchor
 				),
 				newsImageView.trailingAnchor.constraint(
 					equalTo: contentView.trailingAnchor,
 					constant: -Constants.insent
-				),
+				)
 			]
 		)
 	}

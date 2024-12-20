@@ -72,14 +72,16 @@ extension StorageService: StorageServiceProtocol {
 	}
 
 	func saveSettings(settings: SettingsModelDTO) {
-		settingsStorageService.setNewsUpdate(settings.timerEnabled)
-		settingsStorageService.setNewsUpdateInterval(settings.period)
+		settingsStorageService.setNewsUpdate(settings.timerIsEnabled)
+		settingsStorageService.setNewsUpdateInterval(settings.interval)
+		settingsStorageService.setShowDescription(settings.showDescriptionIsEnabled)
 	}
 
 	func fetchSettings() -> SettingsModelDTO {
 		.init(
-			period: settingsStorageService.newsUpdateInterval,
-			timerEnabled: settingsStorageService.isNewsUpdateEnabled
+			interval: settingsStorageService.newsUpdateInterval,
+			timerIsEnabled: settingsStorageService.isNewsUpdateEnabled,
+			showDescriptionIsEnabled: settingsStorageService.isShowDescriptionEnabled
 		)
 	}
 }

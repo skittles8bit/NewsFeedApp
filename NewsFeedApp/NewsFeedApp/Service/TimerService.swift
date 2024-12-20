@@ -8,13 +8,15 @@
 import Foundation
 
 /// Протокол таймера
-protocol NewsTimerProtocol {
+protocol TimerServiceProtocol {
+	/// Запустить
 	func start()
+	/// Остановить
 	func stop()
 }
 
 /// Таймер
-final class NewsTimer {
+final class TimerService {
 
 	private var timer: Timer?
 	private var interval: TimeInterval
@@ -36,7 +38,7 @@ final class NewsTimer {
 
 // MARK: - NewsTimerProtocol
 
-extension NewsTimer: NewsTimerProtocol {
+extension TimerService: TimerServiceProtocol {
 
 	func start() {
 		stop()

@@ -17,7 +17,6 @@ class NewsFeedObject: Object {
 	@Persisted var imageURL: String? // Ссылка на картинку
 	@Persisted var channel: String? // Источник новостей
 	@Persisted var isArticleReaded: Bool = false // Прочитана ли статья
-	@Persisted var isDescriptionExpanded: Bool = false // Развернуто ли описание
 }
 
 extension NewsFeedObject {
@@ -32,6 +31,5 @@ extension NewsFeedObject {
 		imageURL = newsFeed.imageURL
 		channel = newsFeed.channel
 		isArticleReaded = newsFeed.isArticleReaded
-		isDescriptionExpanded = newsFeed.isDescriptionExpanded
 	}
 }

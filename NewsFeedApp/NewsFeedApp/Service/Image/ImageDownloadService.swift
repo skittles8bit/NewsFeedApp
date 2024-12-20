@@ -8,7 +8,7 @@
 import UIKit
 
 /// Сервис загрузки новостей
-class ImageDownloadService {
+final class ImageDownloadService {
 
 	private let operationQueue: OperationQueue
 

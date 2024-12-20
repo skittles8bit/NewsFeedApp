@@ -17,7 +17,7 @@ struct SettingsViewModelActions {
 		/// Значение таймера изменено
 		case timerDidChange(Int)
 		/// Значение тоггла изменено
-		case timerStateDidChange(Bool)
+		case settingsToggleDidChange(SettingsCellViewModel.SettingsCellType, Bool)
 	}
 
 	/// Методы жизненного цикла вью контроллера

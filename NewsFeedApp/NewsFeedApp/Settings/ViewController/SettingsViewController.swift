@@ -20,9 +20,14 @@ final class SettingsViewController: UIViewController {
 		return stackView
 	}()
 
-	private lazy var settingsCell: SettingsCell = {
+	private lazy var updateNewsSettingCell: SettingsCell = {
 		let cell = SettingsCell()
-		cell.translatesAutoresizingMaskIntoConstraints = false
+		cell.delegate = self
+		return cell
+	}()
+
+	private lazy var showDescriptionSettingsCell: SettingsCell = {
+		let cell = SettingsCell()
 		cell.delegate = self
 		return cell
 	}()
@@ -92,8 +97,12 @@ extension SettingsViewController: TimerPickerViewDelegate {
 
 extension SettingsViewController: SettingsCellDelegate {
 
-	func switchValueChanged(_ value: Bool) {
-		viewModel.viewActions.events.send(.timerStateDidChange(value))
+	func switchValueChanged(
+		type: SettingsCellViewModel.SettingsCellType?,
+		isOn: Bool
+	) {
+		guard let type else { return }
+		viewModel.viewActions.events.send(.settingsToggleDidChange(type, isOn))
 	}
 }
 
@@ -109,8 +118,9 @@ private extension SettingsViewController {
 	func setup() {
 		view.backgroundColor = .systemBackground
 		title = "Настройки"
-		stackView.addArrangedSubview(settingsCell)
+		stackView.addArrangedSubview(updateNewsSettingCell)
 		stackView.addArrangedSubview(pickerView)
+		stackView.addArrangedSubview(showDescriptionSettingsCell)
 		view.addSubview(stackView)
 		NSLayoutConstraint.activate([
 			stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.insent),
@@ -140,9 +150,9 @@ private extension SettingsViewController {
 	func bind() {
 		viewModel.data.updateSettingsCellPublisher
 			.receive(on: DispatchQueue.main)
-			.sink { [weak self] model in
+			.sink { [weak self] models in
 				guard let self else { return }
-				settingsCell.setup(leftText: model.title, switchValue: model.isEnabled)
+				setupSettingCells(with: models)
 			}.store(in: &subscriptions)
 
 		viewModel.data.pickerViewStatePublisher
@@ -153,6 +163,18 @@ private extension SettingsViewController {
 				pickerView.isUserInteractionEnabled = model.isEnabled
 				pickerView.setup(with: model.period)
 			}.store(in: &subscriptions)
+	}
+
+	func setupSettingCells(with models: [SettingsCellViewModel]) {
+		models.forEach { [weak self] in
+			guard let self else { return }
+			switch $0.type {
+			case .timer:
+				updateNewsSettingCell.setup(with: $0)
+			case .description:
+				showDescriptionSettingsCell.setup(with: $0)
+			}
+		}
 	}
 
 	@objc func clearCache() {

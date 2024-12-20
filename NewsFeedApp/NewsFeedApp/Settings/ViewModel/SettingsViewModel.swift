@@ -30,12 +30,13 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 
 	private(set) lazy var viewActions = SettingsViewModelActions()
 
-	private let updateSettingsCellSubject = PassthroughSubject<(title: String, isEnabled: Bool), Never>()
+	private let updateSettingsCellSubject = PassthroughSubject<[SettingsCellViewModel], Never>()
 	private let pickerViewStateSubject = PassthroughSubject<SettingsPickerViewStateModel, Never>()
 	private let alertShowSubject = PassthroughSubject<AlertModel, Never>()
 
-	private var period: Int = Constants.defaultPeriodValue
-	private var timerEnabled: Bool = false
+	private var interval: Int = Constants.defaultPeriodValue
+	private var timerIsEnabled: Bool = false
+	private var showDescriptionIsEnabled: Bool = false
 
 	private let dependencies: Dependencies
 
@@ -83,13 +84,18 @@ private extension SettingsViewModel {
 				case .clearCacheDidTap:
 					clearCache()
 				case let .timerDidChange(time):
-					period = time
-				case let .timerStateDidChange(value):
-					timerEnabled = value
+					interval = time
+				case .settingsToggleDidChange(let type, let switchToogleState):
+					switch type {
+					case .timer:
+						timerIsEnabled = switchToogleState
+					case .description:
+						showDescriptionIsEnabled = switchToogleState
+					}
 					pickerViewStateSubject.send(
 						.init(
-							period: period,
-							isEnabled: timerEnabled
+							period: interval,
+							isEnabled: timerIsEnabled
 						)
 					)
 				}
@@ -113,21 +119,35 @@ private extension SettingsViewModel {
 	}
 
 	func saveSettings() {
-		period = timerEnabled ? period : Constants.defaultPeriodValue
-		let settings = SettingsModelDTO(period: period, timerEnabled: timerEnabled)
+		interval = timerIsEnabled ? interval : Constants.defaultPeriodValue
+		let settings = SettingsModelDTO(
+			interval: interval,
+			timerIsEnabled: timerIsEnabled,
+			showDescriptionIsEnabled: showDescriptionIsEnabled
+		)
 		dependencies.repository.saveSettings(settings)
 	}
 
 	func getSettings() {
 		let settings = dependencies.repository.fetchSettings()
-		timerEnabled = settings?.timerEnabled ?? false
-		period = settings?.period ?? Constants.defaultPeriodValue
-		let model: (String, Bool) = ("Активировать обновление новостей \nпо таймеру", timerEnabled)
-		updateSettingsCellSubject.send(model)
+		let updateCellModel: SettingsCellViewModel = .init(
+			title: "Динамическое обновление ленты",
+			subtitle: "При включенном тоггле обновление ленты происходит с интервалом, указанным в поле ввода",
+			isOn: settings?.timerIsEnabled ?? false,
+			type: .timer
+		)
+		let showDescriptionCellModel: SettingsCellViewModel = .init(
+			title: "Краткое описание новости",
+			subtitle: "Новость будет отображаться с кратким описанием",
+			isOn: false,
+			type: .description
+		)
+
+		updateSettingsCellSubject.send([updateCellModel, showDescriptionCellModel])
 		pickerViewStateSubject.send(
 			.init(
-				period: period,
-				isEnabled: timerEnabled
+				period: settings?.interval ?? Constants.defaultPeriodValue,
+				isEnabled: settings?.timerIsEnabled ?? false
 			)
 		)
 	}

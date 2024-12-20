@@ -18,7 +18,6 @@ struct NewsFeedModelDTO {
 	let imageURL: String?
 	let channel: String?
 	var isArticleReaded: Bool
-	var isDescriptionExpanded: Bool
 }
 
 extension NewsFeedModelDTO {
@@ -35,7 +34,6 @@ extension NewsFeedModelDTO {
 		imageURL = object.imageURL
 		channel = object.channel
 		isArticleReaded = object.isArticleReaded
-		isDescriptionExpanded = object.isDescriptionExpanded
 	}
 }
 

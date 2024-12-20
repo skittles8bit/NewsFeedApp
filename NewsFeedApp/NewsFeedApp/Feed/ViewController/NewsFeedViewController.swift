@@ -38,7 +38,7 @@ final class NewsFeedViewController: UIViewController {
 			image: Constants.settingsImage,
 			style: .plain,
 			target: self,
-			action: #selector(settings)
+			action: #selector(settingsDidTap)
 		)
 		settingsBarButtonItem.tintColor = .systemBlue
 		return settingsBarButtonItem
@@ -75,10 +75,6 @@ final class NewsFeedViewController: UIViewController {
 
 extension NewsFeedViewController: TableViewDelegate {
 
-	func didTapMoreButton(with index: Int) {
-		viewModel.viewActions.events.send(.didTapMoreButton(index))
-	}
-
 	func didTap(with index: Int) {
 		viewModel.viewActions.events.send(.didTapArticle(index))
 	}
@@ -109,9 +105,9 @@ private extension NewsFeedViewController {
 	func bind() {
 		viewModel.data.applySnapshotPublisher
 			.receive(on: DispatchQueue.main)
-			.sink { [weak self] in
+			.sink { [weak self] models in
 				guard let self else { return }
-				tableView.applySnapshot(with: viewModel.data.newsFeedItems)
+				tableView.applySnapshot(with: models)
 			}.store(in: &subscriptions)
 		viewModel.data.reloadDataPublisher
 			.receive(on: DispatchQueue.main)
@@ -169,7 +165,7 @@ private extension NewsFeedViewController {
 	}
 
 	@objc
-	func settings() {
+	func settingsDidTap() {
 		viewModel.viewActions.events.send(.didTapSettings)
 	}
 }

@@ -16,7 +16,7 @@ struct NewsFeedViewModelData {
 	/// Паблишер показа ошибки
 	let errorPublisher: AnyPublisher<Void, Never>
 	/// Паблишер применения изменений
-	let applySnapshotPublisher: AnyPublisher<Void, Never>
+	let applySnapshotPublisher: AnyPublisher<[NewsCellViewModel], Never>
 	/// Массив новостей
 	var newsFeedItems: [NewsFeedModelDTO]
 }

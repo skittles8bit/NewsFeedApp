@@ -37,11 +37,12 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 	private let errorSubject = PassthroughSubject<Void, Never>()
 	private let performSettingsSubject = PassthroughSubject<Void, Never>()
 	private let performArticleDetailSubject = PassthroughSubject<URL, Never>()
-	private let applySnapshotSubject = PassthroughSubject<Void, Never>()
+	private let applySnapshotSubject = PassthroughSubject<[NewsCellViewModel], Never>()
 
-	private var timer: NewsTimerProtocol?
+	private var timer: TimerServiceProtocol?
 
 	private var isLoading: Bool = false
+	private var settings: SettingsModelDTO?
 
 	private var subscriptions = Subscriptions()
 
@@ -76,10 +77,10 @@ private extension NewsFeedViewModel {
 				guard let self else { return }
 				switch lifecycle {
 				case .didLoad:
-					fetchNewsFeed()
+					break
 				case .willAppear:
-					fetchNewsFeed()
 					fetchSettings()
+					fetchNewsFeed()
 				case .willDisappear:
 					timer?.stop()
 				}
@@ -96,8 +97,6 @@ private extension NewsFeedViewModel {
 					performSettingsSubject.send()
 				case let .didTapArticle(index):
 					performArticleDetails(with: index)
-				case let .didTapMoreButton(index):
-					updateDescriptionExpand(with: index)
 				}
 			}.store(in: &subscriptions)
 	}
@@ -110,7 +109,17 @@ private extension NewsFeedViewModel {
 			return
 		}
 		data.newsFeedItems = objects
-		applySnapshotSubject.send()
+		applySnapshot()
+	}
+
+	func applySnapshot() {
+		let models = data.newsFeedItems.compactMap { newsModel in
+			NewsCellViewModel(
+				item: newsModel,
+				isShowDescriptionIsEnabled: settings?.showDescriptionIsEnabled ?? false
+			)
+		}
+		applySnapshotSubject.send(models)
 		reloadDataSubject.send()
 	}
 
@@ -120,24 +129,32 @@ private extension NewsFeedViewModel {
 		isLoading = true
 		Task {
 			guard let news = await dependencies.newsRepository.loadNews() else { return }
-			dependencies.newsRepository.removeAll()
-			news.forEach { dependencies.newsRepository.saveObject(with: $0) }
-			isLoading = false
-			fetchNewsFeed()
+			handleNews(with: news)
 		}
 	}
 
+	func handleNews(with news: [NewsFeedModelDTO]) {
+		dependencies.newsRepository.removeAll()
+		news.forEach { dependencies.newsRepository.saveObject(with: $0) }
+		isLoading = false
+		fetchNewsFeed()
+	}
+
 	func fetchSettings() {
-		let settings = dependencies.settingsRepository.fetchSettings()
+		settings = dependencies.settingsRepository.fetchSettings()
+		handleSettings(with: settings)
+	}
+
+	func handleSettings(with settings: SettingsModelDTO?) {
 		guard let settings else { return }
-		if settings.timerEnabled {
+		if settings.timerIsEnabled {
 			let handler: () -> Void = { [weak self] in
 				guard let self else { return }
 				loadNewsFeed()
 			}
-			let period = settings.period <= 10 ? 10 : settings.period
-			timer = NewsTimer(
-				interval: TimeInterval(period),
+			let interval = settings.interval <= 10 ? 10 : settings.interval
+			timer = TimerService(
+				interval: TimeInterval(interval),
 				updateHandler: handler
 			)
 		} else {
@@ -155,11 +172,5 @@ private extension NewsFeedViewModel {
 		data.newsFeedItems[index].isArticleReaded = true
 		dependencies.newsRepository.saveObject(with: data.newsFeedItems[index])
 		performArticleDetailSubject.send(url)
-	}
-
-	func updateDescriptionExpand(with index: Int) {
-		data.newsFeedItems[index].isDescriptionExpanded = true
-		dependencies.newsRepository.saveObject(with: data.newsFeedItems[index])
-		applySnapshotSubject.send()
 	}
 }

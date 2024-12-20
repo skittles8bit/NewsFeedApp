@@ -11,19 +11,22 @@ import Foundation
 struct SettingsModelDTO {
 
 	/// Доступно ли обновление по таймеру
-	var timerEnabled: Bool { _timerEnabled }
+	var timerIsEnabled: Bool { _timerIsEnabled }
 	/// Интервал обновления
-	var period: Int { _period }
+	var interval: Int { _interval }
+	var showDescriptionIsEnabled: Bool { _showDescriptionIsEnabled }
 
-	private let _period: Int
-	private let _timerEnabled: Bool
+	private let _interval: Int
+	private let _timerIsEnabled: Bool
+	private let _showDescriptionIsEnabled: Bool
 
 	/// Инициализатор
 	///  - Parameters:
-	///   - period: Интервал обновления
-	///   - timerEnabled: Доступно ли обновление по таймеру
-	init(period: Int, timerEnabled: Bool) {
-		_period = period
-		_timerEnabled = timerEnabled
+	///   - interval: Интервал обновления
+	///   - timerIsEnabled: Доступно ли обновление по таймеру
+	init(interval: Int, timerIsEnabled: Bool, showDescriptionIsEnabled: Bool) {
+		_interval = interval
+		_timerIsEnabled = timerIsEnabled
+		_showDescriptionIsEnabled = showDescriptionIsEnabled
 	}
 }

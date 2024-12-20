@@ -10,7 +10,7 @@ import Combine
 /// Данные вью модели настроек
 struct SettingsViewModelData {
 	/// Обновления ячейки настроек
-	let updateSettingsCellPublisher: AnyPublisher<(title: String, isEnabled: Bool), Never>
+	let updateSettingsCellPublisher: AnyPublisher<[SettingsCellViewModel], Never>
 	/// Обновление состояния пикер вью
 	let pickerViewStatePublisher: AnyPublisher<SettingsPickerViewStateModel, Never>
 }
