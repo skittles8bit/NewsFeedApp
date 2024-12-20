@@ -9,7 +9,7 @@ import RealmSwift
 
 protocol StorageServiceProtocol {
 	func saveOrUpdate(object: Object)
-	func deleteAllCache()
+	func deleteAll()
 	func fetch<T: Object>(by type: T.Type) -> [T]
 
 	func saveSettings(settings: SettingsModelDTO)
@@ -38,7 +38,7 @@ extension StorageService: StorageServiceProtocol {
 		}
 	}
 
-	func deleteAllCache() {
+	func deleteAll() {
 		guard let storage = try? Realm() else { return }
 		do {
 			try storage.write {

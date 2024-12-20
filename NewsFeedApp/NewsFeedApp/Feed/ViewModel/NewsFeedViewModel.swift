@@ -65,7 +65,7 @@ private extension NewsFeedViewModel {
 				guard let self else { return }
 				switch lifecycle {
 				case .didLoad:
-					loadNewsFeed()
+					fetchNewsFeed()
 				case .willAppear:
 					fetchNewsFeed()
 					fetchSettings()
@@ -106,6 +106,7 @@ private extension NewsFeedViewModel {
 		isLoading = true
 		Task {
 			guard let news = await dependencies.newsRepository.loadNews() else { return }
+			dependencies.newsRepository.removeAll()
 			news.forEach { dependencies.newsRepository.saveObject(with: $0) }
 			isLoading = false
 			fetchNewsFeed()

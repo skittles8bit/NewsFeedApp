@@ -11,6 +11,7 @@ protocol NewsFeedRepositoryProtocol {
 	func fetchNewsFeed() -> [NewsFeedModelDTO]?
 	func loadNews() async -> [NewsFeedModelDTO]?
 	func saveObject(with model: NewsFeedModelDTO)
+	func removeAll()
 }
 
 final class NewsFeedRepository {
@@ -42,6 +43,10 @@ extension NewsFeedRepository: NewsFeedRepositoryProtocol {
 			print("Ошибка при загрузке или разборе RSS: \(error)")
 			return nil
 		}
+	}
+
+	func removeAll() {
+		storage.deleteAll()
 	}
 
 	func saveObject(with model: NewsFeedModelDTO) {

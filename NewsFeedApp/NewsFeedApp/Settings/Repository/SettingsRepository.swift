@@ -34,6 +34,6 @@ extension SettingsRepository: SettingsRepositoryProtocol {
 
 	func clearAllCache() {
 		ImageLoader.shared.clearCache()
-		storage.deleteAllCache()
+		storage.deleteAll()
 	}
 }
