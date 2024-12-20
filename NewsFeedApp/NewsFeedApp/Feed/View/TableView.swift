@@ -7,13 +7,22 @@
 
 import UIKit
 
+/// Делегат таблицы
 protocol TableViewDelegate: AnyObject {
+	/// Обновление таблицы
 	func didUpdate()
+	/// Нажата ячейка
+	///  - Parameters:
+	///   - index: Индекс ячейки
 	func didTap(with index: Int)
+	/// Нажата кнопка Показать описание
+	///  - Parameters:
+	///   - index: Индекс ячейки
 	func didTapMoreButton(with index: Int)
 }
 
-class TableView: UIView {
+/// Класс кастомной таблицы
+final class TableView: UIView {
 
 	private lazy var tableView: UITableView = {
 		let tableView = UITableView(frame: bounds, style: .plain)
@@ -27,12 +36,17 @@ class TableView: UIView {
 
 	private lazy var refreshControl: UIRefreshControl = {
 		let refreshControl = UIRefreshControl()
-		refreshControl.addTarget(self, action: #selector(didUpdate), for: .valueChanged)
+		let action = UIAction { [weak self] _ in
+			guard let self else { return }
+			delegate?.didUpdate()
+		}
+		refreshControl.addAction(action, for: .valueChanged)
 		return refreshControl
 	}()
 
 	private var dataSource: UITableViewDiffableDataSource<Int, NewsFeedModelDTO>?
 
+	/// Делегат таблицы
 	weak var delegate: TableViewDelegate?
 
 	override init(frame: CGRect) {
@@ -47,6 +61,9 @@ class TableView: UIView {
 		configureDataSource()
 	}
 
+	/// Применить изменения
+	///  - Parameters:
+	///   - items: Массив моделей ленты новостей
 	func applySnapshot(with items: [NewsFeedModelDTO]) {
 		var snapshot = NSDiffableDataSourceSnapshot<Int, NewsFeedModelDTO>()
 		snapshot.appendSections([.zero])
@@ -61,6 +78,7 @@ class TableView: UIView {
 		)
 	}
 
+	/// Перезагрузить таблицу
 	func reloadTableView() {
 		tableView.reloadData()
 	}
@@ -117,9 +135,11 @@ private extension TableView {
 
 	@objc
 	func didUpdate() {
-		delegate?.didUpdate()
+
 	}
 }
+
+// MARK: - NewsCellDelegate
 
 extension TableView: NewsCellDelegate {
 

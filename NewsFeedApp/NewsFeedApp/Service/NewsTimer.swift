@@ -7,17 +7,23 @@
 
 import Foundation
 
+/// Протокол таймера
 protocol NewsTimerProtocol {
 	func start()
 	func stop()
 }
 
+/// Таймер
 final class NewsTimer {
 
 	private var timer: Timer?
 	private var interval: TimeInterval
 	private var updateHandler: (() -> Void)
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - interval: Период обновления таймера
+	///   - updateHandler: Хэндлер обновления таймера
 	init(
 		interval: TimeInterval,
 		updateHandler: @escaping () -> Void

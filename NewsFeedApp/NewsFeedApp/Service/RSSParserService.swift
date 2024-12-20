@@ -7,11 +7,13 @@
 
 import Foundation
 
+/// Протокол парсера RSS
 protocol RSSParserServiceProtocol {
 	var items: [NewsFeedModelDTO] { get }
 	func parseRSS(at urlString: String) async throws
 }
 
+/// Парсер данных RSS
 final class RSSParserService: NSObject {
 
 	private var currentElement = ""
@@ -21,8 +23,11 @@ final class RSSParserService: NSObject {
 	private var currentImageURL: String?
 	private var currentPubDate: Date?
 
+	/// Новости
 	var items = [NewsFeedModelDTO]()
 }
+
+// MARK: - RSSParserServiceProtocol
 
 extension RSSParserService: RSSParserServiceProtocol {
 
@@ -37,6 +42,8 @@ extension RSSParserService: RSSParserServiceProtocol {
 		parser.parse()
 	}
 }
+
+// MARK: - XMLParserDelegate
 
 extension RSSParserService: XMLParserDelegate {
 
@@ -117,6 +124,8 @@ extension RSSParserService: XMLParserDelegate {
 		}
 	}
 }
+
+// MARK: - Private
 
 private extension RSSParserService {
 

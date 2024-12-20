@@ -7,18 +7,32 @@
 
 import Foundation
 
+/// Протокол репозитория ленты новостей
 protocol NewsFeedRepositoryProtocol {
+	/// Получение новостей из
+	///  - returns: Массив новостей
 	func fetchNewsFeed() -> [NewsFeedModelDTO]?
+	/// Загрузка новостей
+	///  - returns: Массив новостей
 	func loadNews() async -> [NewsFeedModelDTO]?
+	/// Сохранение объекта в БД
+	///  - Parameters:
+	///   - model: Модель данных ленты новостей
 	func saveObject(with model: NewsFeedModelDTO)
+	/// Удаление всех объектов из БД
 	func removeAll()
 }
 
+/// Класс репозитория ленты новостей
 final class NewsFeedRepository {
 
 	private let storage: StorageServiceProtocol
 	private let apiService: APIServiceProtocol
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - storage: Сервис хранения данных
+	///   - apiService: Серсис загрузки API
 	init(
 		storage: StorageServiceProtocol,
 		apiService: APIServiceProtocol
@@ -27,6 +41,8 @@ final class NewsFeedRepository {
 		self.apiService = apiService
 	}
 }
+
+// MARK: - NewsFeedRepositoryProtocol
 
 extension NewsFeedRepository: NewsFeedRepositoryProtocol {
 

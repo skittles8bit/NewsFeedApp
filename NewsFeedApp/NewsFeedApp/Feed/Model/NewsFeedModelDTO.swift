@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Модель данных ленты новостей
 struct NewsFeedModelDTO {
 
 	let id: String
@@ -22,6 +23,9 @@ struct NewsFeedModelDTO {
 
 extension NewsFeedModelDTO {
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - object: Объект данных БД
 	init(from object: NewsFeedObject) {
 		id = object.id
 		title = object.title
@@ -35,6 +39,8 @@ extension NewsFeedModelDTO {
 	}
 }
 
+// MARK: - Hashable
+
 extension NewsFeedModelDTO: Hashable {
 
 	func hash(into hasher: inout Hasher) {
@@ -45,6 +51,8 @@ extension NewsFeedModelDTO: Hashable {
 		hasher.combine(imageURL)
 	}
 }
+
+// MARK: - Equatable
 
 extension NewsFeedModelDTO: Equatable {
 

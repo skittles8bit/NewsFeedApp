@@ -7,19 +7,27 @@
 
 import Foundation
 
+/// Протокол сервиса работы с нетворкингом
 protocol APIServiceProtocol {
-
+	/// Получить rss новостную ленту
+	///  - returns: Массив новостей
 	func fetchAndParseRSSFeeds() async throws -> [NewsFeedModelDTO]
 }
 
+/// Сервиса работы с нетворкингом
 final class APIService {
 
 	private let rssParser: RSSParserServiceProtocol
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - rssParser: Сервис работы с RSS данными
 	init(rssParser: RSSParserServiceProtocol) {
 		self.rssParser = rssParser
 	}
 }
+
+// MARK: - APIServiceProtocol
 
 extension APIService: APIServiceProtocol {
 
@@ -53,6 +61,8 @@ extension APIService: APIServiceProtocol {
 		}
 	}
 }
+
+// MARK: - Private
 
 private extension APIService {
 

@@ -1,5 +1,5 @@
 //
-//  SettingsService.swift
+//  SettingsStorageService.swift
 //  NewsFeedApp
 //
 //  Created by Aliaksandr Karenski on 19.12.24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SettingsServiceProtocol {
+protocol SettingsStorageServiceProtocol {
 	var isNewsUpdateEnabled: Bool { get }
 	var newsUpdateInterval: Int { get }
 
@@ -15,7 +15,7 @@ protocol SettingsServiceProtocol {
 	func setNewsUpdateInterval(_ interval: Int)
 }
 
-final class SettingsService {
+final class SettingsStorageService {
 
 	private let userDefaults: UserDefaults
 
@@ -26,7 +26,7 @@ final class SettingsService {
 
 // MARK: - SettingsServiceProtocol
 
-extension SettingsService: SettingsServiceProtocol {
+extension SettingsStorageService: SettingsStorageServiceProtocol {
 
 	var isNewsUpdateEnabled: Bool {
 		userDefaults.bool(forKey: Keys.newsUpdateEnabled.rawValue)
@@ -45,7 +45,7 @@ extension SettingsService: SettingsServiceProtocol {
 	}
 }
 
-private extension SettingsService {
+private extension SettingsStorageService {
 
 	enum Keys: String {
 		case newsUpdateEnabled

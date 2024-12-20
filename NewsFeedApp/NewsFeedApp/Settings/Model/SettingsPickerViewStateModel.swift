@@ -7,7 +7,10 @@
 
 import Foundation
 
+/// Модель для пикер вью
 struct SettingsPickerViewStateModel {
+	/// Интервал обновления
 	let period: Int
+	/// Доступен ли
 	let isEnabled: Bool
 }

@@ -7,10 +7,15 @@
 
 import UIKit
 
+/// Делегат пикер вью
 protocol TimerPickerViewDelegate: AnyObject {
+	/// Установлено новое значение
+	///  - Parameters:
+	///   - period: Интервал
 	func didSelectTimer(period: Int)
 }
 
+/// Пикер вью
 final class TimerPickerView: UIView {
 
 	private let periods = [10, 15, 20, 25, 30]
@@ -22,8 +27,10 @@ final class TimerPickerView: UIView {
 		return pickerView
 	}()
 
+	/// Делегат вью
 	weak var delegate: TimerPickerViewDelegate?
 
+	/// Инициализатор
 	init() {
 		super.init(frame: .zero)
 		setup()
@@ -33,7 +40,10 @@ final class TimerPickerView: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-	func configure(with period: Int){
+	/// Конфигурация вью
+	///  - Parameters:
+	///   - perios: Интервал
+	func setup(with period: Int){
 		pickerView.selectRow(
 			periods.firstIndex(of: period) ?? .zero,
 			inComponent: .zero,

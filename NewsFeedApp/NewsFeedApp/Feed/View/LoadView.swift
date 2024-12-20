@@ -7,6 +7,15 @@
 
 import UIKit
 
+/// Протокол вью заглушки загрузки данных
+protocol LoadViewProtocol: AnyObject {
+	/// Активировать индикатор загрузки
+	func startAnimation()
+	/// Скрыть индикатор загрузки
+	func stopAnimation()
+}
+
+/// Вью заглушка загрузки данных
 final class LoadView: UIView {
 
 	private lazy var activityIndicator: UIActivityIndicatorView = {
@@ -24,6 +33,11 @@ final class LoadView: UIView {
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
+}
+
+// MARK: - LoadViewProtocol
+
+extension LoadView: LoadViewProtocol {
 
 	func startAnimation() {
 		activityIndicator.startAnimating()
@@ -33,6 +47,8 @@ final class LoadView: UIView {
 		activityIndicator.stopAnimating()
 	}
 }
+
+// MARK: - Private
 
 private extension LoadView {
 

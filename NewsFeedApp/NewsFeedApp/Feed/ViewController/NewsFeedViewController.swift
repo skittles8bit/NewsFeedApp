@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Вью контроллер ленты новостей
 final class NewsFeedViewController: UIViewController {
 
 	private let viewModel: NewsFeedViewModelActionsAndData
@@ -45,6 +46,9 @@ final class NewsFeedViewController: UIViewController {
 
 	private var subscriptions = Subscriptions()
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - viewModel: Вьюмодел ленты новостей
 	init(with viewModel: NewsFeedViewModelActionsAndData) {
 		self.viewModel = viewModel
 		super.init(nibName: nil, bundle: nil)
@@ -66,6 +70,8 @@ final class NewsFeedViewController: UIViewController {
 		viewModel.viewActions.lifecycle.send(.willAppear)
 	}
 }
+
+// MARK: - TableViewDelegate
 
 extension NewsFeedViewController: TableViewDelegate {
 
@@ -160,11 +166,6 @@ private extension NewsFeedViewController {
 
 	func setupRightBarButtonItem() {
 		navigationItem.rightBarButtonItem = settingsBarButtonItem
-	}
-
-	@objc
-	func refresh() {
-		viewModel.viewActions.events.send(.didUpdate)
 	}
 
 	@objc

@@ -7,4 +7,5 @@
 
 import Combine
 
+/// Элиас для сборщика подписок
 typealias Subscriptions = Set<AnyCancellable>

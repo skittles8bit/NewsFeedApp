@@ -7,25 +7,39 @@
 
 import UIKit
 
+/// Модель модального вью
 struct AlertModel {
 
+	/// Состояния
 	enum State {
+		/// Подтверждение
 		case conformation
+		/// Завершение
 		case done
 	}
 
+	/// Состояния экшена
 	enum ActionState {
+		/// Очистить
 		case clear
+		/// Отмена
 		case cancel
 	}
 
+	/// Заголовок
 	let title: String?
+	/// Описание
 	let message: String
+	/// Действия
 	let actions: [UIAlertAction]
 }
 
 extension AlertModel {
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - state: Состояние
+	///   - action: Экшн по нажатию кнопки
 	init(with state: State, action: ((ActionState) -> Void)? = nil ) {
 		switch state {
 		case .conformation:

@@ -9,6 +9,8 @@ import Foundation
 
 extension Sequence where Element: Hashable {
 
+	/// Уникальные эдементы в массиве
+	///  - returns: Уникальные элементы
 	func uniqued() -> [Element] {
 		var set = Set<Element>()
 		return filter { set.insert($0).inserted }

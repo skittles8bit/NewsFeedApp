@@ -7,10 +7,15 @@
 
 import UIKit
 
+/// Делегат ячейки ленты новостей
 protocol NewsCellDelegate: AnyObject {
+	/// Нажата кнопка Показать описание
+	///  - Parameters:
+	///   - cell: Ячейка новостной ленты
 	func didTapShowMoreInfoButton(for cell: NewsCell)
 }
 
+/// Ячейка новостной ленты
 final class NewsCell: UITableViewCell {
 
 	private lazy var titleLabel: UILabel = {
@@ -75,6 +80,7 @@ final class NewsCell: UITableViewCell {
 
 	private var stackViewTrailingConstraint: NSLayoutConstraint?
 
+	/// Делегат ячейки
 	weak var delegate: NewsCellDelegate?
 
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -97,6 +103,9 @@ final class NewsCell: UITableViewCell {
 		descriptionLabel.isHidden = true
 	}
 
+	/// Настройка ячейки
+	///  - Parameters:
+	///   - item: Модель данных ленты новостей
 	func setup(with item: NewsFeedModelDTO) {
 		titleLabel.text = item.title
 		descriptionLabel.text = item.description

@@ -7,10 +7,12 @@
 
 import UIKit
 
+/// Делегат вью обработки ошибки
 protocol ErrorViewDelegate: AnyObject {
 	func update()
 }
 
+/// Вью обработки ошибки
 final class ErrorView: UIView {
 
 	private lazy var stackView: UIStackView = {
@@ -47,6 +49,7 @@ final class ErrorView: UIView {
 		return button
 	}()
 
+	/// Делегат вью
 	weak var delegate: ErrorViewDelegate?
 
 	override init(frame: CGRect) {

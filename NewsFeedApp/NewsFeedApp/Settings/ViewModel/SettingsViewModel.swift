@@ -8,21 +8,29 @@
 import Combine
 import Foundation
 
+/// Элиас протоколов вью модели настроек
 typealias SettingsViewModelProtocol =
 SettingsViewModelInputOutput & SettingsViewModelActionsAndData
 
+/// Вью модель настроек
 final class SettingsViewModel: SettingsViewModelProtocol {
 
+	/// Зависимости
 	struct Dependencies {
+		/// Репозиторий настроек
 		let repository: SettingsRepositoryProtocol
 	}
 
+	/// Входные данные
 	let input: SettingsViewModelInput = .init()
+	/// Выходные данные
 	let output: SettingsViewModelOutput
+	/// Данные вью модели
 	let data: SettingsViewModelData
+
 	private(set) lazy var viewActions = SettingsViewModelActions()
 
-	private let switchStateSubject = PassthroughSubject<Bool, Never>()
+	private let updateSettingsCellSubject = PassthroughSubject<(title: String, isEnabled: Bool), Never>()
 	private let pickerViewStateSubject = PassthroughSubject<SettingsPickerViewStateModel, Never>()
 	private let alertShowSubject = PassthroughSubject<AlertModel, Never>()
 
@@ -33,10 +41,13 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 
 	private var subscriptions = Subscriptions()
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - dependencies: Зависимости вью модели
 	init(dependencies: Dependencies) {
 		self.dependencies = dependencies
 		self.data = SettingsViewModelData(
-			switchStatePublisher: switchStateSubject.eraseToAnyPublisher(),
+			updateSettingsCellPublisher: updateSettingsCellSubject.eraseToAnyPublisher(),
 			pickerViewStatePublisher: pickerViewStateSubject.eraseToAnyPublisher()
 		)
 		self.output = SettingsViewModelOutput(
@@ -45,6 +56,8 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 		bind()
 	}
 }
+
+// MARK: - Private
 
 private extension SettingsViewModel {
 
@@ -109,7 +122,8 @@ private extension SettingsViewModel {
 		let settings = dependencies.repository.fetchSettings()
 		timerEnabled = settings?.timerEnabled ?? false
 		period = settings?.period ?? Constants.defaultPeriodValue
-		switchStateSubject.send(timerEnabled)
+		let model: (String, Bool) = ("Активировать обновление новостей \nпо таймеру", timerEnabled)
+		updateSettingsCellSubject.send(model)
 		pickerViewStateSubject.send(
 			.init(
 				period: period,

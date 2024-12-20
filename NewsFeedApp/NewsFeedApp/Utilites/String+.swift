@@ -9,18 +9,22 @@ import Foundation
 
 extension String {
 
+	/// Только текст
 	var clearString: String {
 		self.stripOutHtml.removeControlCharacters.removeWhiteSpaces
 	}
 
+	/// Удаляет все управляюшие символы
 	var removeControlCharacters: String {
 		self.trimmingCharacters(in: .controlCharacters)
 	}
 
+	/// Удаляет пробелы и новые строки
 	var removeWhiteSpaces: String {
 		self.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 
+	/// Удаляет теги HTML
 	var stripOutHtml: String {
 		self.replacingOccurrences(
 			of: "<[^>]+>",
@@ -30,21 +34,22 @@ extension String {
 		)
 	}
 
-	// " "
+	/// " "
 	static var space: String {
 		" "
 	}
 
-	// ☑
+	/// ☑
 	static var checkMark: String {
 		"\u{2611}"
 	}
 
-	// ""
+	/// ""
 	static var empty: String {
 		""
 	}
 
+	/// Получение источника
 	func extractDomain() -> String? {
 		guard let url = URL(string: self) else { return nil }
 

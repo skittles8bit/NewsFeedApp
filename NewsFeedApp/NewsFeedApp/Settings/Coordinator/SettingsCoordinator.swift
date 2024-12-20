@@ -7,13 +7,18 @@
 
 import UIKit
 
+/// Протокол координатора настроек
 protocol SettingsCoordinatorProtocol {
+	/// Старт координатора
 	func start()
 }
 
+/// Координатор настроек
 final class SettingsCoordinator: SettingsCoordinatorProtocol {
 
+	/// Зависимости
 	struct Dependencies {
+		/// Сервис хранения данных
 		let storage: StorageServiceProtocol
 	}
 
@@ -22,6 +27,10 @@ final class SettingsCoordinator: SettingsCoordinatorProtocol {
 
 	private var subscriptions = Subscriptions()
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - dependencies: Зависимости координатора
+	///   - navigationController: Презентер
 	init(
 		dependencies: Dependencies,
 		navigationController: UINavigationController
@@ -35,6 +44,8 @@ final class SettingsCoordinator: SettingsCoordinatorProtocol {
 		navigationController.pushViewController(assembly.view, animated: true)
 	}
 }
+
+// MARK: - Private
 
 private extension SettingsCoordinator {
 

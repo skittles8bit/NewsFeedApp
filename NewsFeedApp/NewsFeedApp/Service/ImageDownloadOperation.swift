@@ -7,13 +7,19 @@
 
 import UIKit
 
+/// Класс обвертка над operation
 final class ImageDownloadOperation: Operation, @unchecked Sendable {
 
+	/// Ссылка на картинку
 	let url: URL
+	/// Картинка
 	var image: UIImage?
 
 	private let imageCache: ImageCache = ImageCache.shared
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - url: Ссылка на картинку
 	init(url: URL) {
 		self.url = url
 	}

@@ -5,14 +5,20 @@
 //  Created by Aliaksandr Karenski on 13.12.24.
 //
 
-import UIKit
 import RealmSwift
+import UIKit
 
+/// Сборщик ленты новостей
 final class NewsFeedAssembly {
 
+	/// Вью контроллер
 	let view: UIViewController
+	/// Вью модель
 	let viewModel: NewsFeedViewModelInputOutput
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - dependencies: Зависимости координатора
 	init(dependencies: NewsFeedCoordinator.Dependencies) {
 		let model = NewsFeedViewModel(
 			dependencies: NewsFeedViewModel.Dependencies(

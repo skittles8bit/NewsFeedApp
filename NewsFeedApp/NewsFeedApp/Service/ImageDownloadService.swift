@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Сервис загрузки новостей
 class ImageDownloadService {
 
 	private let operationQueue: OperationQueue
@@ -18,6 +19,10 @@ class ImageDownloadService {
 		operationQueue.maxConcurrentOperationCount = 4
 	}
 
+	/// Загрузить картинку
+	///  - Parameters:
+	///   - urlString: Ссылка на картинку в формате String
+	///   - completion: Блок с картинкой
 	func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
 		guard let url = URL(string: urlString) else { return }
 		let operation = ImageDownloadOperation(url: url)

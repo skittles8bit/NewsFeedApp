@@ -7,7 +7,10 @@
 
 import Foundation
 
+/// Протокол данных и экшенов вьюмодели
 protocol SettingsViewModelActionsAndData {
+	/// Данные вьюмодели
 	var data: SettingsViewModelData { get }
+	/// Экшены вью
 	var viewActions: SettingsViewModelActions { get }
 }

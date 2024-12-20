@@ -8,19 +8,26 @@
 import Combine
 import Foundation
 
+/// Элиас протоколов вьюмодели ленты новостей
 typealias NewsViewModelProtocol =
 NewsFeedViewModelActionsAndData & NewsFeedViewModelInputOutput
 
+/// Вью модель ленты новостей
 final class NewsFeedViewModel: NewsViewModelProtocol {
 
-	/// Зависимости
+	/// Зависимости вьюмодели
 	struct Dependencies {
+		/// Репозиторий ленты новостей
 		let newsRepository: NewsFeedRepositoryProtocol
+		/// Репозиторий настроек
 		let settingsRepository: SettingsRepositoryProtocol
 	}
 
+	/// Входные данные
 	let input = NewsFeedViewModelInput()
+	/// Выходные данные
 	let output: NewsFeedViewModelOutput
+	/// Данные вьюмодели
 	var data: NewsFeedViewModelData
 
 	private(set) lazy var viewActions = NewsFeedViewModelActions()
@@ -57,6 +64,8 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 		bind()
 	}
 }
+
+// MARK: - Private
 
 private extension NewsFeedViewModel {
 

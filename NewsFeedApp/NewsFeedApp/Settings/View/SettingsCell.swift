@@ -7,16 +7,20 @@
 
 import UIKit
 
+/// Делегат ячейки настроек
 protocol SettingsCellDelegate: AnyObject {
+	/// Значение тоггла изменено
+	///  - Parameters:
+	///   - value: Значение
 	func switchValueChanged(_ value: Bool)
 }
 
+/// Ячейка настроек
 final class SettingsCell: UIView {
 
 	private lazy var leftLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .label
-		label.text = "Активировать обновление новостей \nпо таймеру"
 		label.font = .boldSystemFont(ofSize: 14)
 		label.textAlignment = .left
 		label.numberOfLines = .zero
@@ -36,6 +40,7 @@ final class SettingsCell: UIView {
 		return stackView
 	}()
 
+	/// Делегат ячейки
 	weak var delegate: SettingsCellDelegate?
 
 	override init(frame: CGRect) {
@@ -47,10 +52,17 @@ final class SettingsCell: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-	func setup(switchValue: Bool) {
+	/// Настройка ячейки
+	///  - Parameters:
+	///   - leftText: Текст для левого лейбла
+	///   - switchValue: Значение тоггла
+	func setup(leftText: String, switchValue: Bool) {
+		leftLabel.text = leftText
 		switchControl.isOn = switchValue
 	}
 }
+
+// MARK: - Private
 
 private extension SettingsCell {
 

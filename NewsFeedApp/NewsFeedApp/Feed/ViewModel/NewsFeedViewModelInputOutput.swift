@@ -8,13 +8,18 @@
 import Combine
 import Foundation
 
+/// Протокол входных и выходных данных
 protocol NewsFeedViewModelInputOutput {
+	/// Входные данные
 	var input: NewsFeedViewModelInput { get }
+	/// Выходные данные
 	var output: NewsFeedViewModelOutput { get }
 }
 
+/// Структура входных данных
 struct NewsFeedViewModelInput {}
 
+/// Структура выходных данных
 struct NewsFeedViewModelOutput {
 	/// Переход в настройки
 	let performSettingsPublisher: AnyPublisher<Void, Never>

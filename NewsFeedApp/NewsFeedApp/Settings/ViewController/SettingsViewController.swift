@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Вью контроллер настроек
 final class SettingsViewController: UIViewController {
 
 	private let viewModel: SettingsViewModelActionsAndData
@@ -49,6 +50,9 @@ final class SettingsViewController: UIViewController {
 
 	private var subscriptions = Subscriptions()
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - viewModel: Вью модель настроек
 	init(viewModel: SettingsViewModelActionsAndData) {
 		self.viewModel = viewModel
 		super.init(nibName: nil, bundle: nil)
@@ -75,6 +79,8 @@ final class SettingsViewController: UIViewController {
 	}
 }
 
+// MARK: - TimerPickerViewDelegate
+
 extension SettingsViewController: TimerPickerViewDelegate {
 
 	func didSelectTimer(period: Int) {
@@ -82,12 +88,16 @@ extension SettingsViewController: TimerPickerViewDelegate {
 	}
 }
 
+// MARK: - SettingsCellDelegate
+
 extension SettingsViewController: SettingsCellDelegate {
 
 	func switchValueChanged(_ value: Bool) {
 		viewModel.viewActions.events.send(.timerStateDidChange(value))
 	}
 }
+
+// MARK: - Private
 
 private extension SettingsViewController {
 
@@ -128,11 +138,11 @@ private extension SettingsViewController {
 	}
 
 	func bind() {
-		viewModel.data.switchStatePublisher
+		viewModel.data.updateSettingsCellPublisher
 			.receive(on: DispatchQueue.main)
-			.sink { [weak self] isEnabled in
+			.sink { [weak self] model in
 				guard let self else { return }
-				settingsCell.setup(switchValue: isEnabled)
+				settingsCell.setup(leftText: model.title, switchValue: model.isEnabled)
 			}.store(in: &subscriptions)
 
 		viewModel.data.pickerViewStatePublisher
@@ -141,7 +151,7 @@ private extension SettingsViewController {
 				guard let self else { return }
 				pickerView.alpha = model.isEnabled ? 1 : 0.5
 				pickerView.isUserInteractionEnabled = model.isEnabled
-				pickerView.configure(with: model.period)
+				pickerView.setup(with: model.period)
 			}.store(in: &subscriptions)
 	}
 

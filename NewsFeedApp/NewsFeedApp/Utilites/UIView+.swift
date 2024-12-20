@@ -10,7 +10,7 @@ import UIKit
 extension UIView {
 	/// Добавление нескольких сабвью
 	///  - Parameters:
-	///   - views: вьюшки
+	///   - views: Вьюшки
 	func addSubviews(_ views: UIView...) {
 		views.forEach { addSubview($0) }
 	}

@@ -7,20 +7,33 @@
 
 import Foundation
 
+/// Протокол репозитория настроек
 protocol SettingsRepositoryProtocol {
+	/// Получение настроек
+	///  - returns: Настройки
 	func fetchSettings() -> SettingsModelDTO?
+	/// Сохранения настроек
+	///  - Parameters:
+	///   - settings: Модель данных настроек
 	func saveSettings(_ settings: SettingsModelDTO)
+	/// Очистить весь кэш приложения
 	func clearAllCache()
 }
 
+/// Репозиторий настроек
 final class SettingsRepository {
 
 	private let storage: StorageServiceProtocol
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - storage: Сервис хранения данных
 	init(storage: StorageServiceProtocol) {
 		self.storage = storage
 	}
 }
+
+// MARK: - SettingsRepositoryProtocol
 
 extension SettingsRepository: SettingsRepositoryProtocol {
 

@@ -8,12 +8,16 @@
 import SafariServices
 import UIKit
 
+/// Протокол запуска координатора ленты новостей
 protocol NewsFeedCoordinatorProtocol {
+	/// Метод старта координатора
 	func start()
 }
 
+/// Координатор ленты новостей
 final class NewsFeedCoordinator: NewsFeedCoordinatorProtocol {
 
+	/// Зависимости координатора
 	struct Dependencies {
 		let storage: StorageServiceProtocol
 	}
@@ -33,6 +37,10 @@ final class NewsFeedCoordinator: NewsFeedCoordinatorProtocol {
 
 	private var subscriptions = Subscriptions()
 
+	/// Инициализатор
+	///  - Parameters:
+	///   - dependencies: Зависиммости координатора
+	///   - navigationController: Презентер
 	init(
 		dependencies: Dependencies,
 		navigationController: UINavigationController
@@ -47,6 +55,8 @@ final class NewsFeedCoordinator: NewsFeedCoordinatorProtocol {
 		navigationController.pushViewController(assembly.view, animated: true)
 	}
 }
+
+// MARK: - Private
 
 private extension NewsFeedCoordinator {
 

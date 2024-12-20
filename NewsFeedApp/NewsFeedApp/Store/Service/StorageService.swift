@@ -7,21 +7,38 @@
 
 import RealmSwift
 
+/// Протокол сервиса работы с БД
 protocol StorageServiceProtocol {
+	/// Сохранить или обновить объект
+	///  - Parameters:
+	///   - object: Объект
 	func saveOrUpdate(object: Object)
+	/// Удалить все записи
 	func deleteAll()
+	/// Получение объекта
+	///  - Parameters:
+	///   - type: Тип объекта
+	///  - returns: Объект из БД
 	func fetch<T: Object>(by type: T.Type) -> [T]
-
+	/// Сохранение настроек приложения
+	///  - Parameters:
+	///   - settings: Модель данных настроек
 	func saveSettings(settings: SettingsModelDTO)
+	/// Получение настроек
+	///  - returns: Модель данных настроек
 	func fetchSettings() -> SettingsModelDTO
 }
 
+/// Сервис работы с БД
 final class StorageService {
 
-	private let settingsService: SettingsServiceProtocol
+	private let settingsStorageService: SettingsStorageServiceProtocol
 
-	init(settingsService: SettingsServiceProtocol = SettingsService()) {
-		self.settingsService = settingsService
+	/// Инициализатор
+	///  - Parameters:
+	///   - settingsStorageService: Сервис сохранения настроек
+	init(settingsStorageService: SettingsStorageServiceProtocol = SettingsStorageService()) {
+		self.settingsStorageService = settingsStorageService
 	}
 }
 
@@ -55,14 +72,14 @@ extension StorageService: StorageServiceProtocol {
 	}
 
 	func saveSettings(settings: SettingsModelDTO) {
-		settingsService.setNewsUpdate(settings.timerEnabled)
-		settingsService.setNewsUpdateInterval(settings.period)
+		settingsStorageService.setNewsUpdate(settings.timerEnabled)
+		settingsStorageService.setNewsUpdateInterval(settings.period)
 	}
 
 	func fetchSettings() -> SettingsModelDTO {
 		.init(
-			period: settingsService.newsUpdateInterval,
-			timerEnabled: settingsService.isNewsUpdateEnabled
+			period: settingsStorageService.newsUpdateInterval,
+			timerEnabled: settingsStorageService.isNewsUpdateEnabled
 		)
 	}
 }
