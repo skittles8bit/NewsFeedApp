@@ -60,12 +60,20 @@ final class NewsCell: UITableViewCell {
 		let stackView = UIStackView()
 		stackView.axis = .vertical
 		stackView.spacing = 4
-		stackView.distribution = .fill
+		stackView.distribution = .fillProportionally
 		stackView.translatesAutoresizingMaskIntoConstraints = false
 		return stackView
 	}()
 
-	private var imageHeightConstraint: NSLayoutConstraint?
+	private lazy var mainStackView: UIStackView = {
+		let stackView = UIStackView()
+		stackView.spacing = 8
+		stackView.distribution = .fillProportionally
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		return stackView
+	}()
+
+	private var stackViewTrailingConstraint: NSLayoutConstraint?
 
 	weak var delegate: NewsCellDelegate?
 
@@ -95,10 +103,14 @@ final class NewsCell: UITableViewCell {
 		showMoreInfoButton.isHidden = item.description == .empty || item.isDescriptionExpanded
 		descriptionLabel.isHidden = !item.isDescriptionExpanded
 		if let imageURL = item.imageURL {
-			imageHeightConstraint?.isActive = true
 			newsImageView.setImage(from: imageURL)
 		} else {
-			imageHeightConstraint?.isActive = false
+			stackViewTrailingConstraint = stackView.trailingAnchor.constraint(
+				equalTo: contentView.trailingAnchor,
+				constant: -Constants.insent
+			)
+			stackViewTrailingConstraint?.isActive = true
+			newsImageView.constraints.forEach { $0.isActive = false }
 		}
 		if let publicationDate = item.publicationDate {
 			let checkMark: String = item.isArticleReaded ? .checkMark : .empty
@@ -117,18 +129,19 @@ private extension NewsCell {
 
 	enum Constants {
 		static let insent: CGFloat = 16
-		static let imageHeight: CGFloat = 300
+		static let imageSize: CGFloat = 70
 	}
 
 	func setup() {
 		selectionStyle = .none
 		backgroundColor = .systemBackground
-		contentView.addSubview(stackView)
-		stackView.addArrangedSubview(titleLabel)
-		stackView.addArrangedSubview(descriptionLabel)
-		stackView.addArrangedSubview(showMoreInfoButton)
-		stackView.addArrangedSubview(newsImageView)
-		stackView.addArrangedSubview(publicationDateLabel)
+		contentView.addSubviews(stackView, newsImageView)
+		stackView.addArrangedSubviews(
+			titleLabel,
+			descriptionLabel,
+			showMoreInfoButton,
+			publicationDateLabel
+		)
 		NSLayoutConstraint.activate(
 			[
 				stackView.topAnchor.constraint(
@@ -142,15 +155,25 @@ private extension NewsCell {
 				stackView.leadingAnchor.constraint(
 					equalTo: contentView.leadingAnchor,
 					constant: Constants.insent
+				)
+			]
+		)
+		NSLayoutConstraint.activate(
+			[
+				newsImageView.widthAnchor.constraint(equalToConstant: Constants.imageSize),
+				newsImageView.heightAnchor.constraint(equalToConstant: Constants.imageSize),
+				newsImageView.leadingAnchor.constraint(
+					equalTo: stackView.trailingAnchor,
+					constant: 8
 				),
-				stackView.trailingAnchor.constraint(
+				newsImageView.centerYAnchor.constraint(
+					equalTo: stackView.centerYAnchor
+				),
+				newsImageView.trailingAnchor.constraint(
 					equalTo: contentView.trailingAnchor,
 					constant: -Constants.insent
 				),
 			]
-		)
-		imageHeightConstraint = newsImageView.heightAnchor.constraint(
-			equalToConstant: Constants.imageHeight
 		)
 	}
 }

@@ -77,6 +77,10 @@ extension TableView: UITableViewDelegate {
 		delegate?.didTap(with: indexPath.row)
 		tableView.deselectRow(at: indexPath, animated: true)
 	}
+
+	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+		UITableView.automaticDimension
+	}
 }
 
 // MARK: - Private
