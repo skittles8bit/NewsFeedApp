@@ -33,7 +33,7 @@ extension SettingsRepository: SettingsRepositoryProtocol {
 	}
 
 	func clearAllCache() {
-		ImageLoader.shared.clearCache()
+		ImageCache.shared.clearMemoryCache()
 		storage.deleteAll()
 	}
 }

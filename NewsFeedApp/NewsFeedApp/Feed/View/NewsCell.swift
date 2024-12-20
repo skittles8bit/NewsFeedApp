@@ -71,11 +71,7 @@ final class NewsCell: UITableViewCell {
 		descriptionLabel.text = item.description
 		if let imageURL = item.imageURL {
 			imageHeightConstraint?.isActive = true
-			newsImageView.image = Constants.placeholderImage
-			ImageLoader.shared.loadImage(from: imageURL) { [weak self] image in
-				guard let self else { return }
-				newsImageView.image = image
-			}
+			newsImageView.setImage(from: imageURL)
 		} else {
 			imageHeightConstraint?.isActive = false
 		}
@@ -97,7 +93,6 @@ private extension NewsCell {
 	enum Constants {
 		static let insent: CGFloat = 16
 		static let imageHeight: CGFloat = 300
-		static let placeholderImage: UIImage? = UIImage(named: "placeholder-image")
 	}
 
 	func setup() {
