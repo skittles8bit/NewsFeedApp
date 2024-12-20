@@ -14,13 +14,14 @@ protocol AppCoordinatorProtocol {
 final class AppCoordinator: AppCoordinatorProtocol {
 
 	private lazy var newsFeedCoordinator: NewsFeedCoordinatorProtocol = {
+		let storageService = StorageService()
 		let assembly = NewsFeedAssembly(
 			dependencies: .init(
-				storage: StorageService()
+				storage: storageService
 			)
 		)
 		let coordinator = assembly.newsFeedCoordinator(
-			dependencies: .init(storage: StorageService()),
+			dependencies: .init(storage: storageService),
 			navigationController: navigationController
 		)
 		return coordinator

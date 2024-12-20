@@ -37,6 +37,7 @@ final class SettingsCoordinator: SettingsCoordinatorProtocol {
 }
 
 private extension SettingsCoordinator {
+
 	func bind() {
 		assembly.viewModel.output.showAlertPublisher
 			.receive(on: DispatchQueue.main)
