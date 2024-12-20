@@ -78,6 +78,7 @@ private extension NewsFeedCoordinator {
 	func showArticleDetail(with url: URL) {
 		let safariViewController = SFSafariViewController(url: url)
 		safariViewController.dismissButtonStyle = .close
+		safariViewController.configuration.entersReaderIfAvailable = true
 		let vc = navigationController.viewControllers.first {
 			$0 is NewsFeedViewController
 		}
