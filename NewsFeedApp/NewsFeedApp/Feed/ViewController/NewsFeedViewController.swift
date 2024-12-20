@@ -103,7 +103,7 @@ private extension NewsFeedViewController {
 				guard let self else { return }
 				loadView.isHidden = true
 				loadView.stopAnimation()
-				tableView.updateSnapshot(with: viewModel.data.newsFeedItems)
+				tableView.applySnapshot(with: viewModel.data.newsFeedItems)
 			}.store(in: &subscriptions)
 		viewModel.data.loadingPublisher
 			.receive(on: DispatchQueue.main)

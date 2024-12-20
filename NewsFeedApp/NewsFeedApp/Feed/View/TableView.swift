@@ -46,7 +46,7 @@ class TableView: UIView {
 		configureDataSource()
 	}
 
-	func updateSnapshot(with items: [NewsFeedModelDTO]) {
+	func applySnapshot(with items: [NewsFeedModelDTO]) {
 		var snapshot = NSDiffableDataSourceSnapshot<Int, NewsFeedModelDTO>()
 		snapshot.appendSections([.zero])
 		snapshot.appendItems(items)
@@ -54,9 +54,11 @@ class TableView: UIView {
 			snapshot,
 			animatingDifferences: true,
 			completion: { [weak self] in
-			guard let self else { return }
-			refreshControl.endRefreshing()
-		})
+				guard let self else { return }
+				refreshControl.endRefreshing()
+			}
+		)
+		tableView.reloadData()
 	}
 }
 
