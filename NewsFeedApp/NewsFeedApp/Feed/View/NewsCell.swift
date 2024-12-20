@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol NewsCellDelegate: AnyObject {
+	func didTapShowMoreInfoButton(for cell: NewsCell)
+}
+
 final class NewsCell: UITableViewCell {
 
 	private lazy var titleLabel: UILabel = {
@@ -21,6 +25,21 @@ final class NewsCell: UITableViewCell {
 		label.font = .systemFont(ofSize: 14)
 		label.numberOfLines = .zero
 		return label
+	}()
+
+	private lazy var showMoreInfoButton: UIButton = {
+		let button = UIButton()
+		button.setTitle("Показать подробно", for: .normal)
+		button.setTitleColor(.systemBlue, for: .normal)
+		button.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
+		let action = UIAction { [weak self] _ in
+			guard let self else { return }
+			descriptionLabel.isHidden.toggle()
+			showMoreInfoButton.isHidden = true
+			delegate?.didTapShowMoreInfoButton(for: self)
+		}
+		button.addAction(action, for: .touchUpInside)
+		return button
 	}()
 
 	private lazy var newsImageView: UIImageView = {
@@ -48,6 +67,8 @@ final class NewsCell: UITableViewCell {
 
 	private var imageHeightConstraint: NSLayoutConstraint?
 
+	weak var delegate: NewsCellDelegate?
+
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		setup()
@@ -64,11 +85,17 @@ final class NewsCell: UITableViewCell {
 		descriptionLabel.text = nil
 		newsImageView.image = nil
 		publicationDateLabel.text = nil
+		showMoreInfoButton.isHidden = false
+		descriptionLabel.isHidden = true
 	}
 
 	func setup(with item: NewsFeedModelDTO) {
 		titleLabel.text = item.title
 		descriptionLabel.text = item.description
+		if item.isDescriptionExpanded {
+			showMoreInfoButton.isHidden = true
+			descriptionLabel.isHidden = false
+		}
 		if let imageURL = item.imageURL {
 			imageHeightConstraint?.isActive = true
 			newsImageView.setImage(from: imageURL)
@@ -101,6 +128,7 @@ private extension NewsCell {
 		contentView.addSubview(stackView)
 		stackView.addArrangedSubview(titleLabel)
 		stackView.addArrangedSubview(descriptionLabel)
+		stackView.addArrangedSubview(showMoreInfoButton)
 		stackView.addArrangedSubview(newsImageView)
 		stackView.addArrangedSubview(publicationDateLabel)
 		NSLayoutConstraint.activate(

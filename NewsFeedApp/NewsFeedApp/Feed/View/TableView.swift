@@ -10,6 +10,7 @@ import UIKit
 protocol TableViewDelegate: AnyObject {
 	func didUpdate()
 	func didTap(with index: Int)
+	func didTapMoreButton(with index: Int)
 }
 
 class TableView: UIView {
@@ -58,6 +59,9 @@ class TableView: UIView {
 				refreshControl.endRefreshing()
 			}
 		)
+	}
+
+	func reloadTableView() {
 		tableView.reloadData()
 	}
 }
@@ -101,6 +105,7 @@ private extension TableView {
 				return UITableViewCell()
 			}
 			cell.setup(with: item)
+			cell.delegate = self
 			return cell
 		}
 		dataSource?.defaultRowAnimation = .fade
@@ -109,5 +114,16 @@ private extension TableView {
 	@objc
 	func didUpdate() {
 		delegate?.didUpdate()
+	}
+}
+
+extension TableView: NewsCellDelegate {
+
+	func didTapShowMoreInfoButton(for cell: NewsCell) {
+		if let indexPath = tableView.indexPath(for: cell) {
+			delegate?.didTapMoreButton(with: indexPath.row)
+		}
+		tableView.beginUpdates()
+		tableView.endUpdates()
 	}
 }

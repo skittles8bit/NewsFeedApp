@@ -30,6 +30,7 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 	private let errorSubject = PassthroughSubject<Void, Never>()
 	private let performSettingsSubject = PassthroughSubject<Void, Never>()
 	private let performArticleDetailSubject = PassthroughSubject<URL, Never>()
+	private let applySnapshotSubject = PassthroughSubject<Void, Never>()
 
 	private var timer: NewsTimerProtocol?
 
@@ -50,6 +51,7 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 			loadingPublisher: loadingSubject.eraseToAnyPublisher(),
 			reloadDataPublisher: reloadDataSubject.eraseToAnyPublisher(),
 			errorPublisher: errorSubject.eraseToAnyPublisher(),
+			applySnapshotPublisher: applySnapshotSubject.eraseToAnyPublisher(),
 			newsFeedItems: []
 		)
 		bind()
@@ -85,6 +87,8 @@ private extension NewsFeedViewModel {
 					performSettingsSubject.send()
 				case let .didTapArticle(index):
 					performArticleDetails(with: index)
+				case let .didTapMoreButton(index):
+					updateDescriptionExpand(with: index)
 				}
 			}.store(in: &subscriptions)
 	}
@@ -97,6 +101,7 @@ private extension NewsFeedViewModel {
 			return
 		}
 		data.newsFeedItems = objects
+		applySnapshotSubject.send()
 		reloadDataSubject.send()
 	}
 
@@ -141,5 +146,11 @@ private extension NewsFeedViewModel {
 		data.newsFeedItems[index].isArticleReaded = true
 		dependencies.newsRepository.saveObject(with: data.newsFeedItems[index])
 		performArticleDetailSubject.send(url)
+	}
+
+	func updateDescriptionExpand(with index: Int) {
+		data.newsFeedItems[index].isDescriptionExpanded = true
+		dependencies.newsRepository.saveObject(with: data.newsFeedItems[index])
+		applySnapshotSubject.send()
 	}
 }

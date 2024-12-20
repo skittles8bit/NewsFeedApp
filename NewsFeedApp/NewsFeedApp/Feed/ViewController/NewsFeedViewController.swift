@@ -69,6 +69,10 @@ final class NewsFeedViewController: UIViewController {
 
 extension NewsFeedViewController: TableViewDelegate {
 
+	func didTapMoreButton(with index: Int) {
+		viewModel.viewActions.events.send(.didTapMoreButton(index))
+	}
+
 	func didTap(with index: Int) {
 		viewModel.viewActions.events.send(.didTapArticle(index))
 	}
@@ -97,13 +101,19 @@ private extension NewsFeedViewController {
 	}
 
 	func bind() {
+		viewModel.data.applySnapshotPublisher
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] in
+				guard let self else { return }
+				tableView.applySnapshot(with: viewModel.data.newsFeedItems)
+			}.store(in: &subscriptions)
 		viewModel.data.reloadDataPublisher
 			.receive(on: DispatchQueue.main)
 			.sink { [weak self] in
 				guard let self else { return }
 				loadView.isHidden = true
 				loadView.stopAnimation()
-				tableView.applySnapshot(with: viewModel.data.newsFeedItems)
+				tableView.reloadTableView()
 			}.store(in: &subscriptions)
 		viewModel.data.loadingPublisher
 			.receive(on: DispatchQueue.main)

@@ -103,7 +103,8 @@ extension RSSParserService: XMLParserDelegate {
 				publicationDate: currentPubDate,
 				imageURL: currentImageURL?.clearString,
 				channel: currentLink.clearString.extractDomain() ?? "",
-				isArticleReaded: false
+				isArticleReaded: false,
+				isDescriptionExpanded: false
 			)
 			items.append(item)
 		default:
