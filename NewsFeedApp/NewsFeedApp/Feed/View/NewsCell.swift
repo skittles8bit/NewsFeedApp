@@ -34,7 +34,7 @@ final class NewsCell: UITableViewCell {
 		button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
 		let action = UIAction { [weak self] _ in
 			guard let self else { return }
-			descriptionLabel.isHidden.toggle()
+			descriptionLabel.isHidden = false
 			showMoreInfoButton.isHidden = true
 			delegate?.didTapShowMoreInfoButton(for: self)
 		}
@@ -85,17 +85,15 @@ final class NewsCell: UITableViewCell {
 		descriptionLabel.text = nil
 		newsImageView.image = nil
 		publicationDateLabel.text = nil
-		showMoreInfoButton.isHidden = false
+		showMoreInfoButton.isHidden = true
 		descriptionLabel.isHidden = true
 	}
 
 	func setup(with item: NewsFeedModelDTO) {
 		titleLabel.text = item.title
 		descriptionLabel.text = item.description
-		if item.isDescriptionExpanded {
-			showMoreInfoButton.isHidden = true
-			descriptionLabel.isHidden = false
-		}
+		showMoreInfoButton.isHidden = item.description == .empty || item.isDescriptionExpanded
+		descriptionLabel.isHidden = !item.isDescriptionExpanded
 		if let imageURL = item.imageURL {
 			imageHeightConstraint?.isActive = true
 			newsImageView.setImage(from: imageURL)

@@ -25,7 +25,7 @@ extension NewsFeedModelDTO {
 	init(from object: NewsFeedObject) {
 		id = object.id
 		title = object.title
-		description = object.title
+		description = object.subtitle
 		link = object.link
 		publicationDate = object.publicationDate
 		imageURL = object.imageURL
