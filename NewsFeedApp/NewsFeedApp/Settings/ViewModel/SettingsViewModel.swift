@@ -18,12 +18,13 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 	}
 
 	let input: SettingsViewModelInput = .init()
-	let output: SettingsViewModelOutput = .init()
+	let output: SettingsViewModelOutput
 	let data: SettingsViewModelData
 	private(set) lazy var viewActions = SettingsViewModelActions()
 
 	private let switchStateSubject = PassthroughSubject<Bool, Never>()
 	private let pickerViewStateSubject = PassthroughSubject<SettingsPickerViewStateModel, Never>()
+	private let alertShowSubject = PassthroughSubject<AlertModel, Never>()
 
 	private var period: Int = Constants.defaultPeriodValue
 	private var timerEnabled: Bool = false
@@ -37,6 +38,9 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 		self.data = SettingsViewModelData(
 			switchStatePublisher: switchStateSubject.eraseToAnyPublisher(),
 			pickerViewStatePublisher: pickerViewStateSubject.eraseToAnyPublisher()
+		)
+		self.output = SettingsViewModelOutput(
+			showAlertPublisher: alertShowSubject.eraseToAnyPublisher()
 		)
 		bind()
 	}
@@ -81,7 +85,18 @@ private extension SettingsViewModel {
 	}
 
 	func clearCache() {
-		dependencies.repository.clearAllCache()
+		let model = AlertModel(with: .conformation) { [weak self] actionState in
+			guard let self else { return }
+			switch actionState {
+			case .clear:
+				dependencies.repository.clearAllCache()
+				let model = AlertModel(with: .done)
+				alertShowSubject.send(model)
+			default:
+				break
+			}
+		}
+		alertShowSubject.send(model)
 	}
 
 	func saveSettings() {

@@ -82,6 +82,11 @@ extension RSSParserService: XMLParserDelegate {
 		case RSSTagNames.pubDate.rawValue:
 			guard !string.clearString.isEmpty else { return }
 			currentPubDate = DateFormatter.newsDateFormatter.date(from: string)
+		case RSSTagNames.image.rawValue:
+			guard currentImageURL == nil else {
+				return
+			}
+			currentImageURL = string
 		default:
 			break
 		}
@@ -126,5 +131,6 @@ private extension RSSParserService {
 		case mediaContent = "media:content"
 		case channel
 		case guid
+		case image
 	}
 }

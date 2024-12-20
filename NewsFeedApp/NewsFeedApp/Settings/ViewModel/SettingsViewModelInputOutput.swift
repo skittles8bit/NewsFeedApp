@@ -13,4 +13,6 @@ protocol SettingsViewModelInputOutput {
 }
 
 struct SettingsViewModelInput {}
-struct SettingsViewModelOutput {}
+struct SettingsViewModelOutput {
+	let showAlertPublisher: AnyPublisher<AlertModel, Never>
+}

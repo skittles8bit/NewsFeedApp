@@ -28,9 +28,31 @@ final class SettingsCoordinator: SettingsCoordinatorProtocol {
 	) {
 		self.navigationController = navigationController
 		self.assembly = SettingsAssembly(dependencies: dependencies)
+		bind()
 	}
 
 	func start() {
 		navigationController.pushViewController(assembly.view, animated: true)
+	}
+}
+
+private extension SettingsCoordinator {
+	func bind() {
+		assembly.viewModel.output.showAlertPublisher
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] model in
+				guard let self else { return }
+				showAlert(with: model)
+			}.store(in: &subscriptions)
+	}
+
+	func showAlert(with model: AlertModel) {
+		let alert = UIAlertController(
+			title: model.title,
+			message: model.message,
+			preferredStyle: .alert
+		)
+		model.actions.forEach { alert.addAction($0) }
+		navigationController.present(alert, animated: true)
 	}
 }

@@ -66,13 +66,7 @@ private extension NewsFeedCoordinator {
 	}
 
 	func showSettings() {
-		let coordinator = SettingsCoordinator(
-			dependencies: .init(
-				storage: dependencies.storage
-			),
-			navigationController: navigationController
-		)
-		coordinator.start()
+		settingsCoordinator.start()
 	}
 
 	func showArticleDetail(with url: URL) {

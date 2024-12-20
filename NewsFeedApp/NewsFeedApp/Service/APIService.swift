@@ -28,6 +28,7 @@ extension APIService: APIServiceProtocol {
 
 		let news = [
 			Constants.vedomosti,
+			Constants.cbsnews,
 			Constants.nytimes,
 			Constants.lenta
 		]
@@ -58,6 +59,7 @@ private extension APIService {
 	enum Constants {
 		static let nytimes = "https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml"
 		static let vedomosti = "https://www.vedomosti.ru/rss/news.xml"
+		static let cbsnews = "https://www.cbsnews.com/latest/rss/main"
 		static let lenta = "https://www.lenta.ru/rss/articles/russia"
 	}
 }
