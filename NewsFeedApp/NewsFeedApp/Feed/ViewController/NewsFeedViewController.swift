@@ -65,6 +65,11 @@ final class NewsFeedViewController: UIViewController {
 		bind()
 	}
 
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		viewModel.viewActions.lifecycle.send(.didAppear)
+	}
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		viewModel.viewActions.lifecycle.send(.willAppear)

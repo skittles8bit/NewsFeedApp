@@ -13,14 +13,16 @@ final class NewsCell: UITableViewCell {
 	private lazy var titleLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 16, weight: .bold)
-		label.numberOfLines = .zero
+		label.numberOfLines = 3
+		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
 
 	private lazy var descriptionLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 14)
-		label.numberOfLines = .zero
+		label.numberOfLines = 5
+		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
 
@@ -36,27 +38,9 @@ final class NewsCell: UITableViewCell {
 	private lazy var publicationDateLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 12, weight: .bold)
+		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
-
-	private lazy var stackView: UIStackView = {
-		let stackView = UIStackView()
-		stackView.axis = .vertical
-		stackView.spacing = 4
-		stackView.distribution = .fillProportionally
-		stackView.translatesAutoresizingMaskIntoConstraints = false
-		return stackView
-	}()
-
-	private lazy var contentStackView: UIStackView = {
-		let stackView = UIStackView()
-		stackView.spacing = 8
-		stackView.distribution = .fillProportionally
-		stackView.translatesAutoresizingMaskIntoConstraints = false
-		return stackView
-	}()
-
-	private var stackViewTrailingConstraint: NSLayoutConstraint?
 
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -80,7 +64,13 @@ final class NewsCell: UITableViewCell {
 	///  - Parameters:
 	///   - item: Модель данных ленты новостей
 	func setup(with model: NewsCellViewModel) {
-		titleLabel.text = model.item.title
+		guard
+			let title = model.item.title,
+			let publicationDate = model.item.publicationDate
+		else {
+			return
+		}
+		titleLabel.text = title
 		if model.isShowDescriptionIsEnabled {
 			descriptionLabel.text = model.item.description
 		}
@@ -91,14 +81,13 @@ final class NewsCell: UITableViewCell {
 				newsImageView.image = image
 			}
 		}
-		if let publicationDate = model.item.publicationDate {
-			let checkMark: String = model.item.isArticleReaded ? .checkMark : .empty
-			publicationDateLabel.text = (model.item.channel ?? .empty)
-			+ " | "
-			+ publicationDate.formatted()
-			+ .space
-			+ checkMark
-		}
+
+		let checkMark: String = model.item.isArticleReaded ? .checkMark : .empty
+		publicationDateLabel.text = (model.item.channel ?? .empty)
+		+ " | "
+		+ publicationDate.formatted()
+		+ .space
+		+ checkMark
 	}
 }
 
@@ -108,6 +97,7 @@ private extension NewsCell {
 
 	enum Constants {
 		static let insent: CGFloat = 16
+		static let spacing: CGFloat = 8
 		static let imageSize: CGFloat = 70
 		static let stubImage: UIImage? = UIImage(named: "placeholder-image")
 	}
@@ -115,25 +105,50 @@ private extension NewsCell {
 	func setup() {
 		selectionStyle = .none
 		backgroundColor = .systemBackground
-		contentView.addSubviews(stackView, newsImageView)
-		stackView.addArrangedSubviews(
-			titleLabel,
-			descriptionLabel,
-			publicationDateLabel
-		)
+		contentView.addSubviews(titleLabel, descriptionLabel, publicationDateLabel, newsImageView)
 		NSLayoutConstraint.activate(
 			[
-				stackView.topAnchor.constraint(
+				titleLabel.leadingAnchor.constraint(
+					equalTo: contentView.leadingAnchor,
+					constant: Constants.insent
+				),
+				titleLabel.topAnchor.constraint(
 					equalTo: contentView.topAnchor,
 					constant: Constants.insent
 				),
-				stackView.bottomAnchor.constraint(
-					equalTo: contentView.bottomAnchor,
-					constant: -Constants.insent
-				),
-				stackView.leadingAnchor.constraint(
+				titleLabel.bottomAnchor.constraint(
+					equalTo: descriptionLabel.topAnchor,
+					constant: -Constants.spacing
+				)
+			]
+		)
+		NSLayoutConstraint.activate(
+			[
+				descriptionLabel.leadingAnchor.constraint(
 					equalTo: contentView.leadingAnchor,
 					constant: Constants.insent
+				),
+				descriptionLabel.trailingAnchor.constraint(
+					equalTo: titleLabel.trailingAnchor
+				),
+				descriptionLabel.bottomAnchor.constraint(
+					equalTo: publicationDateLabel.topAnchor,
+					constant: -Constants.spacing
+				)
+			]
+		)
+		NSLayoutConstraint.activate(
+			[
+				publicationDateLabel.leadingAnchor.constraint(
+					equalTo: contentView.leadingAnchor,
+					constant: Constants.insent
+				),
+				publicationDateLabel.trailingAnchor.constraint(
+					equalTo: descriptionLabel.trailingAnchor
+				),
+				publicationDateLabel.bottomAnchor.constraint(
+					equalTo: contentView.bottomAnchor,
+					constant: -Constants.insent
 				)
 			]
 		)
@@ -142,7 +157,7 @@ private extension NewsCell {
 				newsImageView.widthAnchor.constraint(equalToConstant: Constants.imageSize),
 				newsImageView.heightAnchor.constraint(equalToConstant: Constants.imageSize),
 				newsImageView.leadingAnchor.constraint(
-					equalTo: stackView.trailingAnchor,
+					equalTo: titleLabel.trailingAnchor,
 					constant: 8
 				),
 				newsImageView.centerYAnchor.constraint(

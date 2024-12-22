@@ -139,7 +139,7 @@ private extension SettingsViewModel {
 		let showDescriptionCellModel: SettingsCellViewModel = .init(
 			title: "Краткое описание новости",
 			subtitle: "Новость будет отображаться с кратким описанием",
-			isOn: false,
+			isOn: settings?.showDescriptionIsEnabled ?? false,
 			type: .description
 		)
 

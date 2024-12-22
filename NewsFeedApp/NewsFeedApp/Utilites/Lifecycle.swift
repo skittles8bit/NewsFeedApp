@@ -10,6 +10,8 @@ enum Lifecycle {
 	case didLoad
 	/// Вью появится
 	case willAppear
+	/// Вью появилась
+	case didAppear
 	/// Вью исчезнет
 	case willDisappear
 }

@@ -25,3 +25,13 @@ extension NewsCellViewModel: Hashable {
 		hasher.combine(isShowDescriptionIsEnabled)
 	}
 }
+
+// MARK: - Equatable
+
+extension NewsCellViewModel: Equatable {
+
+	static func == (lhs: NewsCellViewModel, rhs: NewsCellViewModel) -> Bool {
+		lhs.item == rhs.item
+		&& lhs.isShowDescriptionIsEnabled == rhs.isShowDescriptionIsEnabled
+	}
+}

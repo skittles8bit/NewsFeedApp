@@ -42,11 +42,14 @@ extension NewsFeedModelDTO {
 extension NewsFeedModelDTO: Hashable {
 
 	func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
 		hasher.combine(title)
 		hasher.combine(description)
 		hasher.combine(link)
 		hasher.combine(publicationDate)
 		hasher.combine(imageURL)
+		hasher.combine(channel)
+		hasher.combine(isArticleReaded)
 	}
 }
 
@@ -55,10 +58,13 @@ extension NewsFeedModelDTO: Hashable {
 extension NewsFeedModelDTO: Equatable {
 
 	static func == (lhs: NewsFeedModelDTO, rhs: NewsFeedModelDTO) -> Bool {
-		lhs.title == rhs.title
+		lhs.id == rhs.id
+		&& lhs.title == rhs.title
 		&& lhs.description == rhs.description
 		&& lhs.link == rhs.link
 		&& lhs.publicationDate == rhs.publicationDate
 		&& lhs.imageURL == rhs.imageURL
+		&& lhs.channel == rhs.channel
+		&& lhs.isArticleReaded == rhs.isArticleReaded
 	}
 }

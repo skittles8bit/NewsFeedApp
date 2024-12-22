@@ -77,8 +77,11 @@ private extension NewsFeedViewModel {
 				guard let self else { return }
 				switch lifecycle {
 				case .didLoad:
-					break
+					fetchSettings()
+					fetchNewsFeed()
 				case .willAppear:
+					break
+				case .didAppear:
 					fetchSettings()
 					fetchNewsFeed()
 				case .willDisappear:
