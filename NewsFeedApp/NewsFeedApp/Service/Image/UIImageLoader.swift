@@ -7,11 +7,12 @@
 
 import UIKit
 
-class UIImageLoader {
+/// Сервис загрузки картинки для ячейки
+final class UIImageLoader {
 
 	static let loader = UIImageLoader()
 
-	private let imageLoader = ImageLoader()
+	private let imageLoader: ImageLoaderProtocol = ImageLoader()
 	private var uuidMap = [UIImageView: UUID]()
 
 	private init() {}
