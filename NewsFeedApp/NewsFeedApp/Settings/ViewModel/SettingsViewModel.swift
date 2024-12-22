@@ -71,8 +71,14 @@ private extension SettingsViewModel {
 			.receive(on: DispatchQueue.main)
 			.sink { [weak self] lifecycle in
 				guard let self else { return }
-				if case .didLoad = lifecycle {
+				switch lifecycle {
+				case .didLoad,
+						.didAppear:
 					getUserSettings()
+				case .willAppear:
+					break
+				case .willDisappear:
+					break
 				}
 			}.store(in: &subscriptions)
 
@@ -83,24 +89,32 @@ private extension SettingsViewModel {
 				switch event {
 				case .clearCacheDidTap:
 					clearCache()
+					return
 				case let .timerDidChange(time):
 					interval = time
 				case .settingsToggleDidChange(let type, let switchToogleState):
-					switch type {
-					case .timer:
-						timerIsEnabled = switchToogleState
-					case .description:
-						showDescriptionIsEnabled = switchToogleState
-					}
-					pickerViewStateSubject.send(
-						.init(
-							period: interval,
-							isEnabled: timerIsEnabled
-						)
-					)
+					handleToggleState(with: type, and: switchToogleState)
 				}
 				saveUserSettings()
 			}.store(in: &subscriptions)
+	}
+
+	func handleToggleState(
+		with type: SettingsCellViewModel.SettingsCellType,
+		and switchToogleState: Bool
+	) {
+		switch type {
+		case .timer:
+			timerIsEnabled = switchToogleState
+		case .description:
+			showDescriptionIsEnabled = switchToogleState
+		}
+		pickerViewStateSubject.send(
+			.init(
+				period: interval,
+				isEnabled: timerIsEnabled
+			)
+		)
 	}
 
 	func clearCache() {
