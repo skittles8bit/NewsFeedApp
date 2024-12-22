@@ -18,6 +18,8 @@ struct SettingsViewModelActions {
 		case timerDidChange(Int)
 		/// Значение тоггла изменено
 		case settingsToggleDidChange(SettingsCellViewModel.SettingsCellType, Bool)
+		/// Нажата кнопка источника новостей
+		case newsSourceDidTap
 	}
 
 	/// Методы жизненного цикла вью контроллера

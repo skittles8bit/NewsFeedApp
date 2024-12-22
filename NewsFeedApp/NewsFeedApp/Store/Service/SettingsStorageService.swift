@@ -11,10 +11,9 @@ protocol SettingsStorageServiceProtocol {
 	var isNewsUpdateEnabled: Bool { get }
 	var newsUpdateInterval: Int { get }
 	var isShowDescriptionEnabled: Bool { get}
+	var isNewsSourceEnabled: Bool { get }
 
-	func setNewsUpdate(_ isEnabled: Bool)
-	func setNewsUpdateInterval(_ interval: Int)
-	func setShowDescription(_ showDescription: Bool)
+	func setValue<T: Sendable>(_ value: T, for key: SettingsStorageService.Keys)
 }
 
 final class SettingsStorageService {
@@ -42,24 +41,21 @@ extension SettingsStorageService: SettingsStorageServiceProtocol {
 		userDefaults.bool(forKey: Keys.isShowDescriptionEnabled.rawValue)
 	}
 
-	func setNewsUpdate(_ isEnabled: Bool) {
-		userDefaults.set(isEnabled, forKey: Keys.isNewsUpdateIsEnabled.rawValue)
+	var isNewsSourceEnabled: Bool {
+		userDefaults.bool(forKey: Keys.isNewsSourceEnabled.rawValue)
 	}
 
-	func setNewsUpdateInterval(_ interval: Int) {
-		userDefaults.set(interval, forKey: Keys.newsUpdateInterval.rawValue)
-	}
-
-	func setShowDescription(_ showDescription: Bool) {
-		userDefaults.set(showDescription, forKey: Keys.isShowDescriptionEnabled.rawValue)
+	func setValue<T: Sendable>(_ value: T, for key: Keys) {
+		userDefaults.set(value, forKey: key.rawValue)
 	}
 }
 
-private extension SettingsStorageService {
+extension SettingsStorageService {
 
 	enum Keys: String {
 		case isNewsUpdateIsEnabled
 		case newsUpdateInterval
 		case isShowDescriptionEnabled
+		case isNewsSourceEnabled
 	}
 }

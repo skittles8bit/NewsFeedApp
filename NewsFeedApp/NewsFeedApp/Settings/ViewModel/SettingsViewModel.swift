@@ -33,10 +33,13 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 	private let updateSettingsCellSubject = PassthroughSubject<[SettingsCellViewModel], Never>()
 	private let pickerViewStateSubject = PassthroughSubject<SettingsPickerViewStateModel, Never>()
 	private let alertShowSubject = PassthroughSubject<AlertModel, Never>()
+	private let newsSourceButtonStateSubject = PassthroughSubject<Bool, Never>()
+	private let showNewsSourceSubject = PassthroughSubject<Void, Never>()
 
 	private var interval: Int = Constants.defaultPeriodValue
 	private var timerIsEnabled: Bool = false
 	private var showDescriptionIsEnabled: Bool = false
+	private var newsSourceIsEnabled: Bool = false
 
 	private let dependencies: Dependencies
 
@@ -49,10 +52,12 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 		self.dependencies = dependencies
 		self.data = SettingsViewModelData(
 			updateSettingsCellPublisher: updateSettingsCellSubject.eraseToAnyPublisher(),
-			pickerViewStatePublisher: pickerViewStateSubject.eraseToAnyPublisher()
+			pickerViewStatePublisher: pickerViewStateSubject.eraseToAnyPublisher(),
+			newsSourceButtonStatePublisher: newsSourceButtonStateSubject.eraseToAnyPublisher()
 		)
 		self.output = SettingsViewModelOutput(
-			showAlertPublisher: alertShowSubject.eraseToAnyPublisher()
+			showAlertPublisher: alertShowSubject.eraseToAnyPublisher(),
+			showNewsSourcePublisher: showNewsSourceSubject.eraseToAnyPublisher()
 		)
 		bind()
 	}
@@ -94,6 +99,8 @@ private extension SettingsViewModel {
 					interval = time
 				case .settingsToggleDidChange(let type, let switchToogleState):
 					handleToggleState(with: type, and: switchToogleState)
+				case .newsSourceDidTap:
+					showNewsSourceSubject.send()
 				}
 				saveUserSettings()
 			}.store(in: &subscriptions)
@@ -106,15 +113,18 @@ private extension SettingsViewModel {
 		switch type {
 		case .timer:
 			timerIsEnabled = switchToogleState
+			pickerViewStateSubject.send(
+				.init(
+					period: interval,
+					isEnabled: timerIsEnabled
+				)
+			)
 		case .description:
 			showDescriptionIsEnabled = switchToogleState
+		case .newsSource:
+			newsSourceIsEnabled = switchToogleState
+			newsSourceButtonStateSubject.send(switchToogleState)
 		}
-		pickerViewStateSubject.send(
-			.init(
-				period: interval,
-				isEnabled: timerIsEnabled
-			)
-		)
 	}
 
 	func clearCache() {
@@ -137,13 +147,18 @@ private extension SettingsViewModel {
 		let settings = SettingsModelDTO(
 			interval: interval,
 			timerIsEnabled: timerIsEnabled,
-			showDescriptionIsEnabled: showDescriptionIsEnabled
+			showDescriptionIsEnabled: showDescriptionIsEnabled,
+			newsSourceIsEnabled: newsSourceIsEnabled
 		)
 		dependencies.repository.saveSettings(settings)
 	}
 
 	func getUserSettings() {
 		let settings = dependencies.repository.fetchSettings()
+		handleUserSettings(settings)
+	}
+
+	func handleUserSettings(_ settings: SettingsModelDTO?) {
 		let updateCellModel: SettingsCellViewModel = .init(
 			title: "Динамическое обновление ленты",
 			subtitle: "При включенном тоггле обновление ленты происходит с интервалом, указанным в поле ввода",
@@ -156,8 +171,14 @@ private extension SettingsViewModel {
 			isOn: settings?.showDescriptionIsEnabled ?? false,
 			type: .description
 		)
-
-		updateSettingsCellSubject.send([updateCellModel, showDescriptionCellModel])
+		let newsSource: SettingsCellViewModel = .init(
+			title: "Источник новостей",
+			subtitle: "Обновление ленты новостей будет происходит по указанному источнику новостей",
+			isOn: settings?.newsSourceIsEnabled ?? false,
+			type: .newsSource
+		)
+		updateSettingsCellSubject.send([updateCellModel, showDescriptionCellModel, newsSource])
+		newsSourceButtonStateSubject.send(settings?.newsSourceIsEnabled ?? false)
 		pickerViewStateSubject.send(
 			.init(
 				period: settings?.interval ?? Constants.defaultPeriodValue,

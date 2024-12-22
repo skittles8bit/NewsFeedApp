@@ -24,6 +24,7 @@ struct SettingsCellViewModel {
 	enum SettingsCellType {
 		case timer
 		case description
+		case newsSource
 	}
 
 	let title: String

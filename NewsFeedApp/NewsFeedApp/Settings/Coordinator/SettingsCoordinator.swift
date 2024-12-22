@@ -56,6 +56,12 @@ private extension SettingsCoordinator {
 				guard let self else { return }
 				showAlert(with: model)
 			}.store(in: &subscriptions)
+		assembly.viewModel.output.showNewsSourcePublisher
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] in
+				guard let self else { return }
+				showNewsSource()
+			}.store(in: &subscriptions)
 	}
 
 	func showAlert(with model: AlertModel) {
@@ -66,5 +72,10 @@ private extension SettingsCoordinator {
 		)
 		model.actions.forEach { alert.addAction($0) }
 		navigationController.present(alert, animated: true)
+	}
+
+	func showNewsSource() {
+		let vc = UIViewController()
+		navigationController.pushViewController(vc, animated: true)
 	}
 }

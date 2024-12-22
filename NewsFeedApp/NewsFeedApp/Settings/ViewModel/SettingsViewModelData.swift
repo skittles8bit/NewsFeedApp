@@ -13,4 +13,6 @@ struct SettingsViewModelData {
 	let updateSettingsCellPublisher: AnyPublisher<[SettingsCellViewModel], Never>
 	/// Обновление состояния пикер вью
 	let pickerViewStatePublisher: AnyPublisher<SettingsPickerViewStateModel, Never>
+	/// Обновление состояния кнопки источника новостей
+	let newsSourceButtonStatePublisher: AnyPublisher<Bool, Never>
 }

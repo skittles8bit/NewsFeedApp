@@ -44,7 +44,34 @@ final class SettingsViewController: UIViewController {
 		let button = UIButton(type: .system)
 		button.setTitle(Constants.buttonTitle, for: .normal)
 		button.titleLabel?.font = .boldSystemFont(ofSize: 16)
-		button.addTarget(self, action: #selector(clearCache), for: .touchUpInside)
+		let action = UIAction { [weak self] _ in
+			guard let self else { return }
+			viewModel.viewActions.events.send(.clearCacheDidTap)
+		}
+		button.addAction(action, for: .touchUpInside)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.backgroundColor = .systemBlue
+		button.layer.cornerRadius = 10
+		button.clipsToBounds = true
+		button.setTitleColor(.white, for: .normal)
+		return button
+	}()
+
+	private lazy var newsSourceCell: SettingsCell = {
+		let cell = SettingsCell()
+		cell.delegate = self
+		return cell
+	}()
+
+	private lazy var newsSourceButton: UIButton = {
+		let button = UIButton(type: .system)
+		button.setTitle("Источник новостей", for: .normal)
+		button.titleLabel?.font = .boldSystemFont(ofSize: 16)
+		let action = UIAction { [weak self] _ in
+			guard let self else { return }
+			viewModel.viewActions.events.send(.newsSourceDidTap)
+		}
+		button.addAction(action, for: .touchUpInside)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		button.backgroundColor = .systemBlue
 		button.layer.cornerRadius = 10
@@ -120,16 +147,25 @@ private extension SettingsViewController {
 	func setup() {
 		view.backgroundColor = .systemBackground
 		title = Constants.title
+		view.addSubviews(stackView, newsSourceButton, clearCacheButton)
 		stackView.addArrangedSubview(updateNewsSettingCell)
 		stackView.addArrangedSubview(pickerView)
 		stackView.addArrangedSubview(showDescriptionSettingsCell)
-		view.addSubview(stackView)
+		stackView.addArrangedSubview(newsSourceCell)
 		NSLayoutConstraint.activate([
 			stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.inset),
 			stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.inset),
 			stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.inset),
 		])
-		view.addSubview(clearCacheButton)
+		NSLayoutConstraint.activate([
+			newsSourceButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
+			newsSourceButton.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
+			newsSourceButton.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+			newsSourceButton.topAnchor.constraint(
+				equalTo: stackView.bottomAnchor,
+				constant: Constants.inset
+			)
+		])
 		NSLayoutConstraint.activate(
 			[
 				clearCacheButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
@@ -165,6 +201,14 @@ private extension SettingsViewController {
 				pickerView.isUserInteractionEnabled = model.isEnabled
 				pickerView.setup(with: model.period)
 			}.store(in: &subscriptions)
+
+		viewModel.data.newsSourceButtonStatePublisher
+			.receive(on: DispatchQueue.main)
+			.sink { [weak self] isEnabled in
+				guard let self else { return }
+				newsSourceButton.alpha = isEnabled ? 1 : 0.5
+				newsSourceButton.isUserInteractionEnabled = isEnabled
+			}.store(in: &subscriptions)
 	}
 
 	func setupSettingCells(with models: [SettingsCellViewModel]) {
@@ -175,11 +219,9 @@ private extension SettingsViewController {
 				updateNewsSettingCell.setup(with: $0)
 			case .description:
 				showDescriptionSettingsCell.setup(with: $0)
+			case .newsSource:
+				newsSourceCell.setup(with: $0)
 			}
 		}
-	}
-
-	@objc func clearCache() {
-		viewModel.viewActions.events.send(.clearCacheDidTap)
 	}
 }

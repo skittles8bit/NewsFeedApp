@@ -22,4 +22,6 @@ struct SettingsViewModelInput {}
 struct SettingsViewModelOutput {
 	/// Паблишер показа диалогового окна
 	let showAlertPublisher: AnyPublisher<AlertModel, Never>
+	/// Паблишер показа источника новостей
+	let showNewsSourcePublisher: AnyPublisher<Void, Never>
 }
