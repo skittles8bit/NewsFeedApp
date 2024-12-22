@@ -89,7 +89,7 @@ final class NewsCell: UITableViewCell {
 private extension NewsCell {
 
 	enum Constants {
-		static let insent: CGFloat = 16
+		static let inset: CGFloat = 16
 		static let spacing: CGFloat = 8
 		static let imageSize: CGFloat = 70
 		static let stubImage: UIImage? = UIImage(named: "placeholder-image")
@@ -103,11 +103,11 @@ private extension NewsCell {
 			[
 				titleLabel.leadingAnchor.constraint(
 					equalTo: contentView.leadingAnchor,
-					constant: Constants.insent
+					constant: Constants.inset
 				),
 				titleLabel.topAnchor.constraint(
 					equalTo: contentView.topAnchor,
-					constant: Constants.insent
+					constant: Constants.inset
 				),
 				titleLabel.bottomAnchor.constraint(
 					equalTo: descriptionLabel.topAnchor,
@@ -119,7 +119,7 @@ private extension NewsCell {
 			[
 				descriptionLabel.leadingAnchor.constraint(
 					equalTo: contentView.leadingAnchor,
-					constant: Constants.insent
+					constant: Constants.inset
 				),
 				descriptionLabel.trailingAnchor.constraint(
 					equalTo: titleLabel.trailingAnchor
@@ -134,14 +134,14 @@ private extension NewsCell {
 			[
 				publicationDateLabel.leadingAnchor.constraint(
 					equalTo: contentView.leadingAnchor,
-					constant: Constants.insent
+					constant: Constants.inset
 				),
 				publicationDateLabel.trailingAnchor.constraint(
 					equalTo: descriptionLabel.trailingAnchor
 				),
 				publicationDateLabel.bottomAnchor.constraint(
 					equalTo: contentView.bottomAnchor,
-					constant: -Constants.insent
+					constant: -Constants.inset
 				)
 			]
 		)
@@ -158,7 +158,7 @@ private extension NewsCell {
 				),
 				newsImageView.trailingAnchor.constraint(
 					equalTo: contentView.trailingAnchor,
-					constant: -Constants.insent
+					constant: -Constants.inset
 				)
 			]
 		)

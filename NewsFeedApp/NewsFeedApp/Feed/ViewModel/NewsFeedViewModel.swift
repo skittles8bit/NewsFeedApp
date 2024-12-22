@@ -76,12 +76,12 @@ private extension NewsFeedViewModel {
 				guard let self else { return }
 				switch lifecycle {
 				case .didLoad:
-					fetchSettings()
+					fetchUserSettings()
 					fetchNewsFeed()
 				case .willAppear:
 					break
 				case .didAppear:
-					fetchSettings()
+					fetchUserSettings()
 					fetchNewsFeed()
 				case .willDisappear:
 					timer?.stop()
@@ -142,7 +142,7 @@ private extension NewsFeedViewModel {
 		fetchNewsFeed()
 	}
 
-	func fetchSettings() {
+	func fetchUserSettings() {
 		data.userSettings = dependencies.settingsRepository.fetchSettings()
 		handleSettings(with: data.userSettings)
 	}

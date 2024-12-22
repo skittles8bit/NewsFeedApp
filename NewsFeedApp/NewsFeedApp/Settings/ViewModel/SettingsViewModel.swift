@@ -72,7 +72,7 @@ private extension SettingsViewModel {
 			.sink { [weak self] lifecycle in
 				guard let self else { return }
 				if case .didLoad = lifecycle {
-					getSettings()
+					getUserSettings()
 				}
 			}.store(in: &subscriptions)
 
@@ -99,7 +99,7 @@ private extension SettingsViewModel {
 						)
 					)
 				}
-				saveSettings()
+				saveUserSettings()
 			}.store(in: &subscriptions)
 	}
 
@@ -118,7 +118,7 @@ private extension SettingsViewModel {
 		alertShowSubject.send(model)
 	}
 
-	func saveSettings() {
+	func saveUserSettings() {
 		interval = timerIsEnabled ? interval : Constants.defaultPeriodValue
 		let settings = SettingsModelDTO(
 			interval: interval,
@@ -128,7 +128,7 @@ private extension SettingsViewModel {
 		dependencies.repository.saveSettings(settings)
 	}
 
-	func getSettings() {
+	func getUserSettings() {
 		let settings = dependencies.repository.fetchSettings()
 		let updateCellModel: SettingsCellViewModel = .init(
 			title: "Динамическое обновление ленты",

@@ -111,21 +111,22 @@ extension SettingsViewController: SettingsCellDelegate {
 private extension SettingsViewController {
 
 	enum Constants {
-		static let insent: CGFloat = 16
+		static let inset: CGFloat = 16
 		static let buttonHeight: CGFloat = 50
+		static let title: String = "Настройки"
 	}
 
 	func setup() {
 		view.backgroundColor = .systemBackground
-		title = "Настройки"
+		title = Constants.title
 		stackView.addArrangedSubview(updateNewsSettingCell)
 		stackView.addArrangedSubview(pickerView)
 		stackView.addArrangedSubview(showDescriptionSettingsCell)
 		view.addSubview(stackView)
 		NSLayoutConstraint.activate([
-			stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.insent),
-			stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.insent),
-			stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.insent),
+			stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.inset),
+			stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.inset),
+			stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.inset),
 		])
 		view.addSubview(clearCacheButton)
 		NSLayoutConstraint.activate(
@@ -133,15 +134,15 @@ private extension SettingsViewController {
 				clearCacheButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
 				clearCacheButton.leadingAnchor.constraint(
 					equalTo: view.leadingAnchor,
-					constant: Constants.insent
+					constant: Constants.inset
 				),
 				clearCacheButton.trailingAnchor.constraint(
 					equalTo: view.trailingAnchor,
-					constant: -Constants.insent
+					constant: -Constants.inset
 				),
 				clearCacheButton.bottomAnchor.constraint(
 					equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-					constant: -Constants.insent
+					constant: -Constants.inset
 				)
 			]
 		)
