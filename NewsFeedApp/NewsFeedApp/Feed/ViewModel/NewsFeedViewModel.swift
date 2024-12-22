@@ -42,7 +42,6 @@ final class NewsFeedViewModel: NewsViewModelProtocol {
 	private var timer: TimerServiceProtocol?
 
 	private var isLoading: Bool = false
-	private var settings: SettingsModelDTO?
 
 	private var subscriptions = Subscriptions()
 
@@ -119,7 +118,7 @@ private extension NewsFeedViewModel {
 		let models = data.newsFeedItems.compactMap { newsModel in
 			NewsCellViewModel(
 				item: newsModel,
-				isShowDescriptionIsEnabled: settings?.showDescriptionIsEnabled ?? false
+				isShowDescriptionIsEnabled: data.userSettings?.showDescriptionIsEnabled ?? false
 			)
 		}
 		applySnapshotSubject.send(models)
@@ -144,8 +143,8 @@ private extension NewsFeedViewModel {
 	}
 
 	func fetchSettings() {
-		settings = dependencies.settingsRepository.fetchSettings()
-		handleSettings(with: settings)
+		data.userSettings = dependencies.settingsRepository.fetchSettings()
+		handleSettings(with: data.userSettings)
 	}
 
 	func handleSettings(with settings: SettingsModelDTO?) {

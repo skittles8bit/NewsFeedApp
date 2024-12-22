@@ -19,4 +19,6 @@ struct NewsFeedViewModelData {
 	let applySnapshotPublisher: AnyPublisher<[NewsCellViewModel], Never>
 	/// Массив новостей
 	var newsFeedItems: [NewsFeedModelDTO]
+	/// Настройки пользователя
+	var userSettings: SettingsModelDTO?
 }
