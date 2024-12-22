@@ -22,8 +22,20 @@ final class SettingsCoordinator: SettingsCoordinatorProtocol {
 		let storage: StorageServiceProtocol
 	}
 
+	private lazy var newsSourceCoordinator: NewsSourceCoordinatorProtocol = {
+		let storage = dependencies.storage
+		let dependencies = NewsSourceCoordinator.Dependencies(storage: storage)
+		let assembly = NewsSourceAsssembly(dependencies: dependencies)
+		let coordinator = assembly.makeNewsSourceCoordinator(
+			dependencies: dependencies,
+			and: navigationController
+		)
+		return coordinator
+	}()
+
 	private let assembly: SettingsAssembly
 	private let navigationController: UINavigationController
+	private let dependencies: Dependencies
 
 	private var subscriptions = Subscriptions()
 
@@ -35,6 +47,7 @@ final class SettingsCoordinator: SettingsCoordinatorProtocol {
 		dependencies: Dependencies,
 		navigationController: UINavigationController
 	) {
+		self.dependencies = dependencies
 		self.navigationController = navigationController
 		self.assembly = SettingsAssembly(dependencies: dependencies)
 		bind()
@@ -75,7 +88,6 @@ private extension SettingsCoordinator {
 	}
 
 	func showNewsSource() {
-		let vc = UIViewController()
-		navigationController.pushViewController(vc, animated: true)
+		newsSourceCoordinator.start()
 	}
 }

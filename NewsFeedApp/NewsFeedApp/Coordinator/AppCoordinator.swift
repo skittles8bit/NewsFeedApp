@@ -24,7 +24,7 @@ final class AppCoordinator: AppCoordinatorProtocol {
 				storage: storageService
 			)
 		)
-		let coordinator = assembly.newsFeedCoordinator(
+		let coordinator = assembly.makeNewsFeedCoordinator(
 			dependencies: .init(storage: storageService),
 			navigationController: navigationController
 		)

@@ -34,7 +34,7 @@ final class NewsFeedAssembly {
 		view = controller
 	}
 
-	func newsFeedCoordinator(
+	func makeNewsFeedCoordinator(
 		dependencies: NewsFeedCoordinator.Dependencies,
 		navigationController: UINavigationController
 	) -> NewsFeedCoordinator {
