@@ -2,63 +2,52 @@
 //  ImageLoader.swift
 //  NewsFeedApp
 //
-//  Created by Aliaksandr Karenski on 22.12.24.
+//  Created by Aliaksandr Karenski on 23.12.24.
 //
 
 import UIKit
 
 final class ImageLoader {
 
-	private var latestTaskId: String = .empty
-	private var latestTask: URLSessionDataTask?
+	private var cache = ImageCache.shared
+	private var runningRequests = [UUID: URLSessionDataTask]()
 
-	private let imageCache: ImageCache = ImageCache.shared
-
-	private let session: URLSession = {
-		let session =  URLSession(configuration: .default)
-		return session
-	}()
-
-	func configure(from imgPath: String, completionHandler: @escaping ((UIImage?) -> ()) ) {
-		if let image = imageCache.cacheImage(with: imgPath) {
-			completionHandler(image)
-			return
+	func loadImage(_ url: URL, _ completion: @escaping (Result<UIImage, Error>) -> Void) -> UUID? {
+		if let image = cache.cacheImage(with: url.absoluteString) {
+			completion(.success(image))
+			return nil
 		}
 
-		guard let url = URL(string: imgPath) else { return }
+		let uuid = UUID()
 
-		latestTaskId = UUID().uuidString
-		let checkTaskId = latestTaskId
+		let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+			guard let self else { return }
 
-		(latestTask != nil) ? latestTask?.cancel() : ()
+			defer {
+				runningRequests.removeValue(forKey: uuid)
+			}
 
-		latestTask = session.dataTask(with: url) { (data, response, error) in
-			if let err = error {
-				DispatchQueue.main.async {
-					if self.latestTaskId == checkTaskId {
-						completionHandler(nil)
-					}
-				}
-				print(err)
+			if let data = data, let image = UIImage(data: data) {
+				cache.saveImage(image, with: url.absoluteString)
+				completion(.success(image))
 				return
 			}
 
-			DispatchQueue.main.async {
-				guard
-					let data,
-					let image = UIImage(data: data)
-				else {
-					if self.latestTaskId == checkTaskId {
-						completionHandler(nil)
-					}
-					return
-				}
-				if self.latestTaskId == checkTaskId {
-					self.imageCache.saveImage(image, with: imgPath)
-					completionHandler(image)
-				}
+			guard let error = error else { return }
+
+			guard (error as NSError).code == NSURLErrorCancelled else {
+				completion(.failure(error))
+				return
 			}
 		}
-		latestTask?.resume()
+		task.resume()
+
+		runningRequests[uuid] = task
+		return uuid
+	}
+
+	func cancelLoad(_ uuid: UUID) {
+		runningRequests[uuid]?.cancel()
+		runningRequests.removeValue(forKey: uuid)
 	}
 }

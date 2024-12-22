@@ -41,7 +41,6 @@ final class TableView: UIView {
 	}()
 
 	private var dataSource: UITableViewDiffableDataSource<Int, NewsCellViewModel>?
-	private var imageLoaderList = [UITableViewCell: ImageLoader]()
 
 	/// Делегат таблицы
 	weak var delegate: TableViewDelegate?
@@ -113,15 +112,6 @@ private extension TableView {
 		])
 	}
 
-	func getImageLoaderList(forReusableCell cell: UITableViewCell) -> ImageLoader {
-		guard let loader = imageLoaderList[cell] else {
-			let loader = ImageLoader()
-			imageLoaderList[cell] = loader
-			return loader
-		}
-		return loader
-	}
-
 	func configureDataSource() {
 		dataSource = UITableViewDiffableDataSource<Int, NewsCellViewModel>(tableView: tableView) { [weak self] (tableView, indexPath, item) in
 			guard
@@ -133,11 +123,7 @@ private extension TableView {
 			else {
 				return UITableViewCell()
 			}
-			let loader = getImageLoaderList(forReusableCell: cell)
 			cell.setup(with: item)
-			loader.configure(from: item.item.imageURL ?? .empty) { image in
-				cell.newsImageView.image = image
-			}
 			return cell
 		}
 		dataSource?.defaultRowAnimation = .fade
