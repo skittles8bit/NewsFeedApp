@@ -26,7 +26,7 @@ final class NewsCell: UITableViewCell {
 		return label
 	}()
 
-	private lazy var newsImageView: UIImageView = {
+	lazy var newsImageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.contentMode = .scaleAspectFill
 		imageView.clipsToBounds = true
@@ -75,13 +75,6 @@ final class NewsCell: UITableViewCell {
 			descriptionLabel.text = model.item.description
 		}
 		newsImageView.image = Constants.stubImage
-		if let imageURL = model.item.imageURL {
-			ImageDownloadService.shared.downloadImage(from: imageURL) { [weak self] image in
-				guard let self else { return }
-				newsImageView.image = image
-			}
-		}
-
 		let checkMark: String = model.item.isArticleReaded ? .checkMark : .empty
 		publicationDateLabel.text = (model.item.channel ?? .empty)
 		+ " | "
