@@ -42,7 +42,7 @@ final class SettingsViewController: UIViewController {
 
 	private lazy var clearCacheButton: UIButton = {
 		let button = UIButton(type: .system)
-		button.setTitle("Очистить кеш", for: .normal)
+		button.setTitle(Constants.buttonTitle, for: .normal)
 		button.titleLabel?.font = .boldSystemFont(ofSize: 16)
 		button.addTarget(self, action: #selector(clearCache), for: .touchUpInside)
 		button.translatesAutoresizingMaskIntoConstraints = false
@@ -114,6 +114,7 @@ private extension SettingsViewController {
 		static let inset: CGFloat = 16
 		static let buttonHeight: CGFloat = 50
 		static let title: String = "Настройки"
+		static let buttonTitle: String = "Очистить кеш"
 	}
 
 	func setup() {
