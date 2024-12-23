@@ -113,10 +113,8 @@ private extension TableView {
 	}
 
 	func configureDataSource() {
-		dataSource = UITableViewDiffableDataSource<Int, NewsCellViewModel>(tableView: tableView) { [weak self] (tableView, indexPath, item) in
-			guard
-				let self,
-				let cell = tableView.dequeueReusableCell(
+		dataSource = UITableViewDiffableDataSource<Int, NewsCellViewModel>(tableView: tableView) { (tableView, indexPath, item) in
+			guard let cell = tableView.dequeueReusableCell(
 					withIdentifier: "NewsCell",
 					for: indexPath
 				) as? NewsCell

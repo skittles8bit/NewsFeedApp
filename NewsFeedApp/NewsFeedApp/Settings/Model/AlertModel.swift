@@ -16,6 +16,10 @@ struct AlertModel {
 		case conformation
 		/// Завершение
 		case done
+		/// Редактирование
+		case editing(String)
+		/// Добавление
+		case adding
 	}
 
 	/// Состояния экшена
@@ -24,12 +28,16 @@ struct AlertModel {
 		case clear
 		/// Отмена
 		case cancel
+		/// Добавить или сохранить
+		case addOrSave
 	}
 
 	/// Заголовок
 	let title: String?
 	/// Описание
 	let message: String
+	/// Поле ввода
+	let textField: UITextField?
 	/// Действия
 	let actions: [UIAlertAction]
 }
@@ -40,7 +48,7 @@ extension AlertModel {
 	///  - Parameters:
 	///   - state: Состояние
 	///   - action: Экшн по нажатию кнопки
-	init(with state: State, action: ((ActionState) -> Void)? = nil ) {
+	init(with state: State, action: ((ActionState) -> Void)? = nil) {
 		switch state {
 		case .conformation:
 			title = "Очистка кэша"
@@ -53,11 +61,40 @@ extension AlertModel {
 					action?(.cancel)
 				}
 			]
+			self.textField = nil
 		case .done:
 			title = nil
 			message = "Очистка кэша произведена"
 			actions = [
 				UIAlertAction(title: "Закрыть", style: .destructive) { _ in
+					action?(.cancel)
+				}
+			]
+			textField = nil
+		case let .editing(text):
+			title = "Редактировать источник"
+			message = "Измените название источника"
+			textField = UITextField()
+			textField?.placeholder = "Название источника"
+			textField?.text = text
+			actions = [
+				UIAlertAction(title: "Сохранить", style: .default) { _ in
+					action?(.addOrSave)
+				},
+				UIAlertAction(title: "Отмена", style: .cancel) { _ in
+					action?(.cancel)
+				}
+			]
+		case .adding:
+			title = "Добавить источник"
+			message = "Введите название источника"
+			textField = UITextField()
+			textField?.placeholder = "Название источника"
+			actions = [
+				UIAlertAction(title: "Сохранить", style: .default) { _ in
+					action?(.addOrSave)
+				},
+				UIAlertAction(title: "Отмена", style: .cancel) { _ in
 					action?(.cancel)
 				}
 			]

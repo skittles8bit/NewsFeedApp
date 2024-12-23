@@ -7,7 +7,7 @@
 
 import RealmSwift
 
-class NewsFeedObject: Object {
+final class NewsFeedObject: Object {
 
 	@Persisted(primaryKey: true) var id: String = UUID().uuidString // Уникальный идентификатор
 	@Persisted var title: String? // Заголовок новости

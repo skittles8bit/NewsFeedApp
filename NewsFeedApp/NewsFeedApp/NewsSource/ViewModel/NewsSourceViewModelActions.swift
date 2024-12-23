@@ -11,7 +11,14 @@ import Combine
 struct NewsSourceViewModelActions {
 
 	/// Энам событий вью
-	enum Events {}
+	enum Events {
+		/// Нажата кнопка сохранить или обновить
+		case didTapSaveOrUpdateButton(Int, String)
+		/// Нажата кнопка добавить новый источник
+		case didTapAddButton(String)
+		/// Удалить источник
+		case didTapDelete(Int)
+	}
 
 	/// Методы жизненного цикла вью контроллера
 	let lifecycle = PassthroughSubject<Lifecycle, Never>()
