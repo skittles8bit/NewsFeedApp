@@ -14,8 +14,10 @@ final class NewsSourceObject: Object {
 }
 
 extension NewsSourceObject {
-	convenience init(name: String) {
+
+	convenience init(id: String, name: String) {
 		self.init()
+		self.id = id
 		self.name = name
 	}
 }

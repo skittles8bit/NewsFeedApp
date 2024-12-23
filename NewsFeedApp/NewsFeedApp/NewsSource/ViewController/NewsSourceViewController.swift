@@ -30,6 +30,11 @@ final class NewsSourceViewController: UIViewController {
 		bind()
 	}
 
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		viewModel.viewActions.lifecycle.send(.willAppear)
+	}
+
 	init(viewModel: NewsSourceViewModelActionsAndData) {
 		self.viewModel = viewModel
 		super.init(nibName: nil, bundle: nil)
@@ -50,7 +55,7 @@ extension NewsSourceViewController: UITableViewDataSource {
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-		cell.textLabel?.text = viewModel.data.newsSources[indexPath.row]
+		cell.textLabel?.text = viewModel.data.newsSources[indexPath.row].source
 		cell.selectionStyle = .none
 		return cell
 	}
@@ -76,7 +81,7 @@ extension NewsSourceViewController: UITableViewDelegate {
 		_ tableView: UITableView,
 		didSelectRowAt indexPath: IndexPath
 	) {
-		let selectedSource = viewModel.data.newsSources[indexPath.row]
+		let selectedSource = viewModel.data.newsSources[indexPath.row].source
 		presentSourceAlert(
 			title: "Редактировать источник",
 			message: "Измените название источника",

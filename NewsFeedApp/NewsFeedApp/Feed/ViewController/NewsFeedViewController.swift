@@ -126,6 +126,7 @@ private extension NewsFeedViewController {
 			.receive(on: DispatchQueue.main)
 			.sink { [weak self] in
 				guard let self else { return }
+				errorView.isHidden = true
 				loadView.isHidden = false
 				loadView.startAnimation()
 			}.store(in: &subscriptions)

@@ -13,8 +13,13 @@ protocol StorageServiceProtocol {
 	///  - Parameters:
 	///   - object: Объект
 	func saveOrUpdate(object: Object)
-	/// Удалить все записи
-	func deleteAll()
+	/// Удалить все записи по типу
+	func deleteAll<T: Object>(by type: T.Type)
+	/// Удалить определенный объект по типу
+	func delete<T: Object>(
+		by type: T.Type,
+		and id: String
+	)
 	/// Получение объекта
 	///  - Parameters:
 	///   - type: Тип объекта
@@ -55,11 +60,28 @@ extension StorageService: StorageServiceProtocol {
 		}
 	}
 
-	func deleteAll() {
+	func deleteAll<T: Object>(by type: T.Type) {
 		guard let storage = try? Realm() else { return }
+		let objects = storage.objects(T.self)
 		do {
 			try storage.write {
-				storage.deleteAll()
+				storage.delete(objects)
+			}
+		} catch {
+			print(error)
+		}
+	}
+
+	func delete<T: Object>(by type: T.Type, and id: String) {
+		guard
+			let storage = try? Realm(),
+			let object = storage.object(ofType: type, forPrimaryKey: id)
+		else {
+			return
+		}
+		do {
+			try storage.write {
+				storage.delete(object)
 			}
 		} catch {
 			print(error)

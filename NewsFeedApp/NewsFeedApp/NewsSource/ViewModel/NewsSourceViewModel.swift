@@ -37,13 +37,26 @@ final class NewsSourceViewModel: NewsSourceViewModelProtocol {
 	init(dependencies: Dependencies) {
 		self.dependencies = dependencies
 		self.data = .init(
-			updatePublisher: updateSubject.eraseToAnyPublisher()
+			updatePublisher: updateSubject.eraseToAnyPublisher(),
+			newsSources: [
+				.init(id: UUID().uuidString, source: Constants.cbsnews),
+				.init(id: UUID().uuidString, source: Constants.lenta),
+				.init(id: UUID().uuidString, source: Constants.nytimes),
+				.init(id: UUID().uuidString, source: Constants.vedomosti)
+			]
 		)
 		bind()
 	}
 }
 
 private extension NewsSourceViewModel {
+
+	enum Constants {
+		static let nytimes = "https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml"
+		static let vedomosti = "https://www.vedomosti.ru/rss/news.xml"
+		static let cbsnews = "https://www.cbsnews.com/latest/rss/main"
+		static let lenta = "https://www.lenta.ru/rss/articles/russia"
+	}
 
 	func bind() {
 		viewActions.lifecycle
@@ -64,26 +77,48 @@ private extension NewsSourceViewModel {
 				guard let self else { return }
 				switch event {
 				case let .didTapAddButton(sourceName):
-					data.newsSources.append(sourceName)
+					addNewsSource(sourceName)
 				case let .didTapDelete(index):
-					data.newsSources.remove(at: index)
+					deleteNewsSource(at: index)
 				case .didTapSaveOrUpdateButton(let index, let sourceName):
-					data.newsSources[index] = sourceName
+					data.newsSources[index].source = sourceName
 				}
-				saveNewsSource()
 			}.store(in: &subscriptions)
 	}
 
 	func fetchNewsSource() {
-		let objects = dependencies.storage.fetch(by: NewsSourceObject.self).compactMap { $0.name }
+		let objects = dependencies.storage.fetch(by: NewsSourceObject.self)
+			.compactMap {
+				NewsSourceModel(id: $0.id, source: $0.name ?? .empty)
+			}
 		guard !objects.isEmpty else { return }
 		data.newsSources = objects
 		updateSubject.send()
 	}
 
-	func saveNewsSource() {
-		data.newsSources.forEach {
-			dependencies.storage.saveOrUpdate(object: NewsSourceObject(name: $0))
-		}
+	func addNewsSource(_ sourceName: String) {
+		let model: NewsSourceModel = .init(
+			id: UUID().uuidString,
+			source: sourceName
+		)
+		data.newsSources.append(model)
+		dependencies.storage.saveOrUpdate(
+			object: NewsSourceObject(id: model.id, name: model.source)
+		)
+	}
+
+	func saveOrUpdateNewsSource(for index: Int, sourceName: String) {
+		let model = data.newsSources[index]
+		dependencies.storage.saveOrUpdate(
+			object: NewsSourceObject(
+				id: model.id,
+				name: model.source
+			)
+		)
+	}
+
+	func deleteNewsSource(at index: Int) {
+		let model = data.newsSources.remove(at: index)
+		dependencies.storage.delete(by: NewsSourceObject.self, and: model.id)
 	}
 }

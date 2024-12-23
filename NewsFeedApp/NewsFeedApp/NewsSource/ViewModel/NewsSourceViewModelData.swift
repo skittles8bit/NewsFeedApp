@@ -6,15 +6,16 @@
 //
 
 import Combine
+import UIKit
+
+struct NewsSourceModel {
+
+	let id: String
+	var source: String
+}
 
 struct NewsSourceViewModelData {
 
 	let updatePublisher: AnyPublisher<Void, Never>
-
-	var newsSources: [String] = [
-		"https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml",
-		"https://www.vedomosti.ru/rss/news.xml",
-		"https://www.cbsnews.com/latest/rss/main",
-		"https://www.lenta.ru/rss/articles/russia"
-	]
+	var newsSources: [NewsSourceModel]
 }

@@ -130,12 +130,22 @@ private extension NewsFeedViewModel {
 		loadingSubject.send()
 		isLoading = true
 		Task {
-			guard let news = await dependencies.newsRepository.loadNews() else { return }
+			dependencies.newsRepository.removeAll()
+			guard
+				let news = await dependencies.newsRepository.loadNews(
+					isSourceEnabled: data.userSettings?.newsSourceIsEnabled ?? false
+				)
+			else {
+				isLoading = false
+				errorSubject.send()
+				return
+			}
 			handleNews(with: news)
 		}
 	}
 
 	func handleNews(with news: [NewsFeedModelDTO]) {
+		isLoading = false
 		dependencies.newsRepository.removeAll()
 		news.forEach { dependencies.newsRepository.saveObject(with: $0) }
 		isLoading = false

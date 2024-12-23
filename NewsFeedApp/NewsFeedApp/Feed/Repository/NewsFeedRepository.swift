@@ -14,7 +14,7 @@ protocol NewsFeedRepositoryProtocol {
 	func fetchNewsFeed() -> [NewsFeedModelDTO]?
 	/// Загрузка новостей
 	///  - returns: Массив новостей
-	func loadNews() async -> [NewsFeedModelDTO]?
+	func loadNews(isSourceEnabled: Bool) async -> [NewsFeedModelDTO]?
 	/// Сохранение объекта в БД
 	///  - Parameters:
 	///   - model: Модель данных ленты новостей
@@ -52,19 +52,20 @@ extension NewsFeedRepository: NewsFeedRepositoryProtocol {
 		}
 	}
 
-	func loadNews() async -> [NewsFeedModelDTO]? {
+	func loadNews(isSourceEnabled: Bool = false) async -> [NewsFeedModelDTO]? {
 		do {
-			var sources: [String] = [
+			let defaultSource: [String] = [
 				Constants.nytimes,
 				Constants.vedomosti,
 				Constants.cbsnews,
 				Constants.lenta
 			]
 			let objects = storage.fetch(by: NewsSourceObject.self)
-			if !objects.isEmpty {
-				sources = objects.compactMap { $0.name }
+			if objects.count > .zero && isSourceEnabled {
+				let sources = objects.compactMap { $0.name }
+				return try await apiService.fetchAndParseRSSFeeds(with: sources)
 			}
-			return try await apiService.fetchAndParseRSSFeeds(with: sources)
+			return try await apiService.fetchAndParseRSSFeeds(with: defaultSource)
 		} catch {
 			print("Ошибка при загрузке или разборе RSS: \(error)")
 			return nil
@@ -72,7 +73,7 @@ extension NewsFeedRepository: NewsFeedRepositoryProtocol {
 	}
 
 	func removeAll() {
-		storage.deleteAll()
+		storage.deleteAll(by: NewsFeedObject.self)
 	}
 
 	func saveObject(with model: NewsFeedModelDTO) {

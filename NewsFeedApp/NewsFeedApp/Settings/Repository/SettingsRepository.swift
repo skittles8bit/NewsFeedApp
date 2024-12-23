@@ -47,6 +47,6 @@ extension SettingsRepository: SettingsRepositoryProtocol {
 
 	func clearAllCache() {
 		ImageCache.shared.clearMemoryCache()
-		storage.deleteAll()
+		storage.deleteAll(by: NewsFeedObject.self)
 	}
 }
