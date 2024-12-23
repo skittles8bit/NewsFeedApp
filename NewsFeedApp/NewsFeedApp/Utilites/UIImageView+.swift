@@ -9,9 +9,9 @@ import UIKit
 
 extension UIImageView {
 
-	func loadImage(at urlString: String) {
+	func loadImage(with id: String, and urlString: String) {
 		guard let url = URL(string: urlString) else { return }
-		UIImageLoader.loader.load(url, for: self)
+		UIImageLoader.loader.load(id: id, url, for: self)
 	}
 
 	func cancelImageLoad() {

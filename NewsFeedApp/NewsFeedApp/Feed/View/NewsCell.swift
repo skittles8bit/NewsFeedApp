@@ -77,7 +77,7 @@ final class NewsCell: UITableViewCell {
 		}
 		newsImageView.image = Constants.stubImage
 		if let imageURL = model.item.imageURL {
-			newsImageView.loadImage(at: imageURL)
+			newsImageView.loadImage(with: model.item.id, and: imageURL)
 		}
 		let checkMark: String = model.item.isArticleReaded ? .checkMark : .empty
 		publicationDateLabel.text = (model.item.channel ?? .empty)

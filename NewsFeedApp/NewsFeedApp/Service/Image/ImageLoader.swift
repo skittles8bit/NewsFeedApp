@@ -14,7 +14,7 @@ protocol ImageLoaderProtocol {
 	///   - url: Ссылка на картинку
 	///   - competion: Картинка
 	///  - returns: UUID картинки
-	func loadImage(_ url: URL, _ completion: @escaping (Result<UIImage, Error>) -> Void) -> UUID?
+	func loadImage(id: String, _ url: URL, _ completion: @escaping (Result<UIImage, Error>) -> Void) -> UUID?
 	/// Отменить загрузку картинка
 	///  - Parameters:
 	///   - uuid: UUID картинки
@@ -32,8 +32,8 @@ final class ImageLoader {
 
 extension ImageLoader: ImageLoaderProtocol {
 
-	func loadImage(_ url: URL, _ completion: @escaping (Result<UIImage, Error>) -> Void) -> UUID? {
-		if let image = cache.cacheImage(with: url.absoluteString) {
+	func loadImage(id: String, _ url: URL, _ completion: @escaping (Result<UIImage, Error>) -> Void) -> UUID? {
+		if let image = cache.cacheImage(with: id) {
 			completion(.success(image))
 			return nil
 		}
@@ -48,7 +48,7 @@ extension ImageLoader: ImageLoaderProtocol {
 			}
 
 			if let data = data, let image = UIImage(data: data) {
-				cache.saveImage(image, with: url.absoluteString)
+				cache.saveImage(image, with: id)
 				completion(.success(image))
 				return
 			}

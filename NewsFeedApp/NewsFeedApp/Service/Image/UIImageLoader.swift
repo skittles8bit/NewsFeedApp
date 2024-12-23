@@ -17,8 +17,8 @@ final class UIImageLoader {
 
 	private init() {}
 
-	func load(_ url: URL, for imageView: UIImageView) {
-		let token = imageLoader.loadImage(url) { [weak self] result in
+	func load(id: String, _ url: URL, for imageView: UIImageView) {
+		let token = imageLoader.loadImage(id: id, url) { [weak self] result in
 			guard let self else { return }
 
 			defer {
