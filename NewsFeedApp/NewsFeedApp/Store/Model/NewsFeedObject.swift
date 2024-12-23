@@ -5,6 +5,7 @@
 //  Created by Aliaksandr Karenski on 18.12.24.
 //
 
+import Foundation
 import RealmSwift
 
 final class NewsFeedObject: Object {
