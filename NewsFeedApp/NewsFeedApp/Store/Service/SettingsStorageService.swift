@@ -13,7 +13,7 @@ protocol SettingsStorageServiceProtocol {
 	var isShowDescriptionEnabled: Bool { get}
 	var isNewsSourceEnabled: Bool { get }
 
-	func setValue<T: Sendable>(_ value: T, for key: SettingsStorageService.Keys)
+	func setValue<T: Encodable>(_ value: T, for key: SettingsStorageService.Keys)
 }
 
 final class SettingsStorageService {

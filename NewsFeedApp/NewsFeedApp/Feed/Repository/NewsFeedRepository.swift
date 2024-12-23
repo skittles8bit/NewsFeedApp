@@ -54,7 +54,17 @@ extension NewsFeedRepository: NewsFeedRepositoryProtocol {
 
 	func loadNews() async -> [NewsFeedModelDTO]? {
 		do {
-			return try await apiService.fetchAndParseRSSFeeds()
+			var sources: [String] = [
+				Constants.nytimes,
+				Constants.vedomosti,
+				Constants.cbsnews,
+				Constants.lenta
+			]
+			let objects = storage.fetch(by: NewsSourceObject.self)
+			if !objects.isEmpty {
+				sources = objects.compactMap { $0.name }
+			}
+			return try await apiService.fetchAndParseRSSFeeds(with: sources)
 		} catch {
 			print("Ошибка при загрузке или разборе RSS: \(error)")
 			return nil
@@ -67,5 +77,17 @@ extension NewsFeedRepository: NewsFeedRepositoryProtocol {
 
 	func saveObject(with model: NewsFeedModelDTO) {
 		storage.saveOrUpdate(object: NewsFeedObject(from: model))
+	}
+}
+
+// MARK: - Private
+
+private extension NewsFeedRepository {
+
+	enum Constants {
+		static let nytimes = "https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml"
+		static let vedomosti = "https://www.vedomosti.ru/rss/news.xml"
+		static let cbsnews = "https://www.cbsnews.com/latest/rss/main"
+		static let lenta = "https://www.lenta.ru/rss/articles/russia"
 	}
 }
