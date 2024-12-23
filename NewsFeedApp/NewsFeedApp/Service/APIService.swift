@@ -43,6 +43,6 @@ extension APIService: APIServiceProtocol {
 			allItems.append(contentsOf: rssParser.items)
 		}
 
-		return allItems
+		return allItems.sortNews()
 	}
 }

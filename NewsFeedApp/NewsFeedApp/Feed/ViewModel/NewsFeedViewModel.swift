@@ -133,6 +133,7 @@ private extension NewsFeedViewModel {
 				return
 			}
 			handleNews(with: news)
+			applySnapshot()
 		}
 	}
 
@@ -147,7 +148,7 @@ private extension NewsFeedViewModel {
 		let newObjects = news.filter { model in
 			data.newsFeedItems.first { model.title == $0.title }?.title != model.title
 		}
-		guard newObjects.count > .zero else {
+		guard !newObjects.isEmpty else {
 			applySnapshot()
 			return
 		}
@@ -185,8 +186,9 @@ private extension NewsFeedViewModel {
 		else {
 			return
 		}
-		data.newsFeedItems[index].isArticleReaded = true
-		dependencies.newsRepository.saveObject(with: data.newsFeedItems[index])
+		var model = data.newsFeedItems[index]
+		model.isArticleReaded = true
+		dependencies.newsRepository.saveObject(with: model)
 		performArticleDetailSubject.send(url)
 	}
 }
