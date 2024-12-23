@@ -38,12 +38,7 @@ final class NewsSourceViewModel: NewsSourceViewModelProtocol {
 		self.dependencies = dependencies
 		self.data = .init(
 			updatePublisher: updateSubject.eraseToAnyPublisher(),
-			newsSources: [
-				.init(id: UUID().uuidString, source: Constants.cbsnews),
-				.init(id: UUID().uuidString, source: Constants.lenta),
-				.init(id: UUID().uuidString, source: Constants.nytimes),
-				.init(id: UUID().uuidString, source: Constants.vedomosti)
-			]
+			newsSources: []
 		)
 		bind()
 	}
@@ -81,7 +76,7 @@ private extension NewsSourceViewModel {
 				case let .didTapDelete(index):
 					deleteNewsSource(at: index)
 				case .didTapSaveOrUpdateButton(let index, let sourceName):
-					data.newsSources[index].source = sourceName
+					saveOrUpdateNewsSource(for: index, sourceName: sourceName)
 				}
 			}.store(in: &subscriptions)
 	}
@@ -91,7 +86,6 @@ private extension NewsSourceViewModel {
 			.compactMap {
 				NewsSourceModel(id: $0.id, source: $0.name ?? .empty)
 			}
-		guard !objects.isEmpty else { return }
 		data.newsSources = objects
 		updateSubject.send()
 	}
@@ -108,13 +102,16 @@ private extension NewsSourceViewModel {
 	}
 
 	func saveOrUpdateNewsSource(for index: Int, sourceName: String) {
-		let model = data.newsSources[index]
-		dependencies.storage.saveOrUpdate(
-			object: NewsSourceObject(
-				id: model.id,
-				name: model.source
+		data.newsSources[index].source = sourceName
+		dependencies.storage.deleteAll(by: NewsSourceObject.self)
+		data.newsSources.forEach {
+			dependencies.storage.saveOrUpdate(
+				object: NewsSourceObject(
+					id: $0.id,
+					name: $0.source
+				)
 			)
-		)
+		}
 	}
 
 	func deleteNewsSource(at index: Int) {

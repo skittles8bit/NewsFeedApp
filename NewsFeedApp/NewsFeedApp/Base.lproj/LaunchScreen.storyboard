@@ -17,18 +17,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RSS Viewer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aVp-xf-mwx">
-                                <rect key="frame" x="131.66666666666666" y="411.66666666666669" width="129.99999999999997" height="29"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RSS-icon" translatesAutoresizingMaskIntoConstraints="NO" id="oer-1m-lJ4">
+                                <rect key="frame" x="146.66666666666666" y="376" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="C83-na-AUk"/>
+                                    <constraint firstAttribute="width" constant="100" id="xey-7t-mfz"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="aVp-xf-mwx" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Eta-7K-enB"/>
-                            <constraint firstItem="aVp-xf-mwx" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="zK0-nL-9es"/>
+                            <constraint firstItem="oer-1m-lJ4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="ZXS-o2-QlW"/>
+                            <constraint firstItem="oer-1m-lJ4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="dHr-qZ-fAz"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -38,6 +39,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="RSS-icon" width="512" height="512"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

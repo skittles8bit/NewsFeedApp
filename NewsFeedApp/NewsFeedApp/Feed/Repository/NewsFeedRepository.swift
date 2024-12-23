@@ -63,7 +63,8 @@ extension NewsFeedRepository: NewsFeedRepositoryProtocol {
 			let objects = storage.fetch(by: NewsSourceObject.self)
 			if objects.count > .zero && isSourceEnabled {
 				let sources = objects.compactMap { $0.name }
-				return try await apiService.fetchAndParseRSSFeeds(with: sources)
+				let news = try await apiService.fetchAndParseRSSFeeds(with: sources)
+				return news
 			}
 			return try await apiService.fetchAndParseRSSFeeds(with: defaultSource)
 		} catch {

@@ -16,3 +16,18 @@ extension Sequence where Element: Hashable {
 		return filter { set.insert($0).inserted }
 	}
 }
+
+extension Array where Element == NewsFeedModelDTO {
+
+	func sortNews() -> [NewsFeedModelDTO] {
+		self.sorted { prev, curr in
+			guard
+				let prevPublicationDate = prev.publicationDate,
+				let currPublicationDate = curr.publicationDate
+			else {
+				return false
+			}
+			return prevPublicationDate > currPublicationDate
+		}
+	}
+}

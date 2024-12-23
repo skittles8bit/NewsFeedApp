@@ -35,7 +35,7 @@ extension RSSParserService: RSSParserServiceProtocol {
 		guard let url = URL(string: urlString) else {
 			throw URLError(.badURL)
 		}
-
+		items.removeAll()
 		let (data, _) = try await URLSession.shared.data(from: url)
 		let parser = XMLParser(data: data)
 		parser.delegate = self

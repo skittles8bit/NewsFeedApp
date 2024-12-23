@@ -77,12 +77,12 @@ private extension NewsFeedViewModel {
 				switch lifecycle {
 				case .didLoad:
 					fetchUserSettings()
-					fetchNewsFeed()
+					loadNewsFeed()
 				case .willAppear:
 					break
 				case .didAppear:
 					fetchUserSettings()
-					fetchNewsFeed()
+					loadNewsFeed()
 				case .willDisappear:
 					timer?.stop()
 				}
@@ -103,19 +103,13 @@ private extension NewsFeedViewModel {
 			}.store(in: &subscriptions)
 	}
 
-	func fetchNewsFeed() {
-		guard !isLoading else { return }
-		let objects = dependencies.newsRepository.fetchNewsFeed()
-		guard let objects, objects.count > .zero else {
-			loadNewsFeed()
-			return
-		}
-		data.newsFeedItems = objects
-		applySnapshot()
+	func fetchNewsFeed() -> [NewsFeedModelDTO] {
+		dependencies.newsRepository.fetchNewsFeed()?.sortNews() ?? []
 	}
 
 	func applySnapshot() {
-		let models = data.newsFeedItems.compactMap { newsModel in
+		let news = data.newsFeedItems.sortNews()
+		let models = news.compactMap { newsModel in
 			NewsCellViewModel(
 				item: newsModel,
 				isShowDescriptionIsEnabled: data.userSettings?.showDescriptionIsEnabled ?? false
@@ -130,26 +124,36 @@ private extension NewsFeedViewModel {
 		loadingSubject.send()
 		isLoading = true
 		Task {
-			dependencies.newsRepository.removeAll()
 			guard
 				let news = await dependencies.newsRepository.loadNews(
 					isSourceEnabled: data.userSettings?.newsSourceIsEnabled ?? false
 				)
 			else {
-				isLoading = false
-				errorSubject.send()
+				handleError()
 				return
 			}
 			handleNews(with: news)
 		}
 	}
 
+	func handleError() {
+		isLoading = false
+		errorSubject.send()
+	}
+
 	func handleNews(with news: [NewsFeedModelDTO]) {
 		isLoading = false
-		dependencies.newsRepository.removeAll()
-		news.forEach { dependencies.newsRepository.saveObject(with: $0) }
-		isLoading = false
-		fetchNewsFeed()
+		data.newsFeedItems = fetchNewsFeed()
+		let newObjects = news.filter { model in
+			data.newsFeedItems.first { model.title == $0.title }?.title != model.title
+		}
+		guard newObjects.count > .zero else {
+			applySnapshot()
+			return
+		}
+		newObjects.forEach { dependencies.newsRepository.saveObject(with: $0) }
+		newObjects.forEach { data.newsFeedItems.append($0) }
+		applySnapshot()
 	}
 
 	func fetchUserSettings() {
