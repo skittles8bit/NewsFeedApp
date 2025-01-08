@@ -6,6 +6,7 @@
 //
 
 import SafariServices
+import SwiftUI
 import UIKit
 
 /// Протокол запуска координатора ленты новостей
@@ -76,6 +77,8 @@ private extension NewsFeedCoordinator {
 	}
 
 	func showSettings() {
+//		let hostingViewController = UIHostingController(rootView: SettingsView())
+//		navigationController.pushViewController(hostingViewController, animated: true)
 		settingsCoordinator.start()
 	}
 

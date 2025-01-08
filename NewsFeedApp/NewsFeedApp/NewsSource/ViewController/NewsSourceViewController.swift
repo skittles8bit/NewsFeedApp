@@ -95,7 +95,7 @@ extension NewsSourceViewController: UITableViewDelegate {
 				)
 			)
 			DispatchQueue.main.async {
-				self.tableView.reloadRows(at: [indexPath], with: .automatic)
+				tableView.reloadRows(at: [indexPath], with: .automatic)
 			}
 		}
 	}

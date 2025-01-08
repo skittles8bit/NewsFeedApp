@@ -21,6 +21,10 @@ final class UIImageLoader {
 		let token = imageLoader.loadImage(id: id, url) { [weak self] result in
 			guard let self else { return }
 
+			/// Используется для гарантированного удаления token из uuidMap, связанного с imageView,
+			/// независимо от того, успешно ли завершилась загрузка изображения или произошла ошибка.
+			/// Этот блок выполняется в конце выполнения текущей функции, что обеспечивает
+			/// аккуратное управление ресурсами и освобождение ненужных ссылок
 			defer {
 				uuidMap.removeValue(forKey: imageView)
 			}
