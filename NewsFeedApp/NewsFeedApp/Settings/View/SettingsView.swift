@@ -5,42 +5,101 @@
 //  Created by Aliaksandr Karenski on 8.01.25.
 //
 
+import Combine
 import SwiftUI
 
+class SettingsViewViewModel: ObservableObject {
+
+	struct Dependencies {
+		let storageService: StorageService
+	}
+
+	@Published var isTimerEnabled: Bool = false {
+		didSet {
+			saveSettings()
+		}
+	}
+	@Published var showDescription: Bool = true {
+		didSet {
+			saveSettings()
+		}
+	}
+	@Published var updateInterval: Int = 30 {
+		didSet {
+			saveSettings()
+		}
+	}
+	@Published var isPickerPresented: Bool = false
+	@Published var showAlert = false
+	@Published var cacheCleared = false
+
+	private let storageService: StorageServiceProtocol
+
+	init(storageService: StorageServiceProtocol) {
+		self.storageService = storageService
+		setSettings()
+	}
+
+	private func setSettings() {
+		let settings = storageService.fetchSettings()
+		isTimerEnabled = settings.timerIsEnabled
+		updateInterval = settings.interval
+		isPickerPresented = settings.timerIsEnabled
+	}
+
+	private func saveSettings() {
+		storageService.saveSettings(
+			settings: .init(
+				interval: updateInterval,
+				timerIsEnabled: isTimerEnabled,
+				showDescriptionIsEnabled: showDescription,
+				newsSourceIsEnabled: false
+			)
+		)
+	}
+}
+
 struct SettingsView: View {
-	@State private var isTimerEnabled: Bool = false
-	@State private var showDescription: Bool = true
-	@State private var updateInterval: Int = 30 // Время обновления в секундах
-	@State private var isPickerPresented: Bool = false
-	@State private var showAlert = false
-	@State private var cacheCleared = false
+
+	@ObservedObject private var viewModel: SettingsViewViewModel
 
 	var body: some View {
 		ZStack {
 			Form {
-				Section {
-					Toggle("Обновлять новости по таймеру", isOn: $isTimerEnabled)
-						.onChange(of: isTimerEnabled) { value in
-							if value {
-								withAnimation {
-									isPickerPresented = true
-								}
-							} else {
-								withAnimation {
-									isPickerPresented = false
+				Group {
+					Section {
+						Toggle("Обновлять новости по таймеру", isOn: $viewModel.isTimerEnabled)
+							.onChange(of: viewModel.isTimerEnabled) { value in
+								if value {
+									withAnimation {
+										viewModel.isPickerPresented = true
+									}
+								} else {
+									withAnimation {
+										viewModel.isPickerPresented = false
+									}
 								}
 							}
+						if viewModel.isPickerPresented {
+							Picker("Интервал обновления", selection: $viewModel.updateInterval) {
+								ForEach([10, 15, 30, 40], id: \.self) { interval in
+									Text("\(interval) секунд")
+								}
+							}
+							.pickerStyle(.wheel)
+							.frame(height: 150)
 						}
-					// Текст внизу секции
-					Text("Вы можете настроить автоматическое обновление новостей.\nУбедитесь, что у вас есть стабильное соединение с интернетом.")
-						.font(.footnote) // Установка размера шрифта для текста
-						.foregroundColor(.gray) // Установка цвета текста
-						.padding(.top, 5) // Отступ сверху
-						.padding(.bottom, 10) // Отступ снизу
+						// Текст внизу секции
+						Text("Вы можете настроить автоматическое обновление новостей.\nУбедитесь, что у вас есть стабильное соединение с интернетом.")
+							.font(.footnote) // Установка размера шрифта для текста
+							.foregroundColor(.gray) // Установка цвета текста
+							.padding(.top, 5) // Отступ сверху
+							.padding(.bottom, 10) // Отступ снизу
+					}
 				}
 
 				Section {
-					Toggle("Показывать описание новости", isOn: $showDescription)
+					Toggle("Показывать описание новости", isOn: $viewModel.showDescription)
 				}
 
 				Section {
@@ -51,12 +110,12 @@ struct SettingsView: View {
 
 				Section {
 					Button(action: {
-						showAlert = true // Показать алерт
+						viewModel.showAlert = true // Показать алерт
 					}) {
 						Text("Очистить кеш")
 							.foregroundColor(.red)
 					}
-					.alert(isPresented: $showAlert) {
+					.alert(isPresented: $viewModel.showAlert) {
 						Alert(
 							title: Text("Подтверждение"),
 							message: Text("Вы уверены, что хотите очистить кеш?"),
@@ -71,60 +130,17 @@ struct SettingsView: View {
 				//						Alert(title: Text("Кеш очищен"))
 				//					}
 			}
-
-			if isPickerPresented {
-				BottomPickerView(
-					updateInterval: $updateInterval,
-					isPresented: $isPickerPresented
-				)
-				.transition(
-					.opacity.animation(.easeInOut)
-				)
-			}
 		}
 	}
 
+	init(viewModel: SettingsViewViewModel) {
+		self.viewModel = viewModel
+	}
 
 	private func clearCache() {
 		// Логика очистки кеша
 		// Например, можно добавить код для удаления данных кеша
-		cacheCleared = true // Установить флаг о том, что кеш очищен
-	}
-}
-
-struct BottomPickerView: View {
-
-	@Binding var updateInterval: Int
-	@Binding var isPresented: Bool
-
-	var body: some View {
-		VStack(spacing: 20) {
-			Text("Выберите интервал обновления")
-				.font(.headline)
-
-			Picker("Интервал обновления", selection: $updateInterval) {
-				ForEach([10, 15, 30, 40], id: \.self) { interval in
-					Text("\(interval) секунд")
-				}
-			}
-			.pickerStyle(.wheel)
-
-			Button("Готово") {
-				withAnimation {
-					isPresented = false
-				}
-			}
-			.padding()
-			.background(Color.blue)
-			.foregroundColor(.white)
-			.cornerRadius(10)
-		}
-		.padding()
-		.background(Color.white)
-		.cornerRadius(12)
-		.shadow(radius: 10)
-		.padding()
-		.transition(.scale.animation(.easeInOut(duration: TimeInterval(0.3))))
+		viewModel.cacheCleared = true // Установить флаг о том, что кеш очищен
 	}
 }
 
@@ -136,8 +152,8 @@ struct AddSourceView: View {
 	}
 }
 
-struct SettingsView_Previews: PreviewProvider {
-	static var previews: some View {
-		SettingsView()
-	}
-}
+//struct SettingsView_Previews: PreviewProvider {
+//	static var previews: some View {
+//		SettingsView()
+//	}
+//}

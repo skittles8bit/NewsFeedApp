@@ -77,9 +77,10 @@ private extension NewsFeedCoordinator {
 	}
 
 	func showSettings() {
-//		let hostingViewController = UIHostingController(rootView: SettingsView())
-//		navigationController.pushViewController(hostingViewController, animated: true)
-		settingsCoordinator.start()
+		let settingsViewModel = SettingsViewViewModel(storageService: dependencies.storage)
+		let hostingViewController = UIHostingController(rootView: SettingsView(viewModel: settingsViewModel))
+		navigationController.pushViewController(hostingViewController, animated: true)
+//		settingsCoordinator.start()
 	}
 
 	func showArticleDetail(with url: URL) {
