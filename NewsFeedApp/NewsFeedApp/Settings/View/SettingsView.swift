@@ -152,8 +152,9 @@ struct AddSourceView: View {
 	}
 }
 
-//struct SettingsView_Previews: PreviewProvider {
-//	static var previews: some View {
-//		SettingsView()
-//	}
-//}
+struct SettingsView_Previews: PreviewProvider {
+	static var previews: some View {
+		let storage: StorageServiceProtocol = StorageService(settingsStorageService: SettingsStorageService())
+		SettingsView(viewModel: .init(storageService: storage))
+	}
+}
