@@ -30,8 +30,18 @@ class SettingsViewViewModel: ObservableObject {
 		}
 	}
 	@Published var isPickerPresented: Bool = false
+	@Published var isNewsSourcePresented: Bool = false
 	@Published var showAlert = false
-	@Published var cacheCleared = false
+	@Published var cacheCleared = false {
+		didSet {
+			clearAllCache()
+		}
+	}
+	@Published var isNewsSourceEnabled: Bool = false {
+		didSet {
+			saveSettings()
+		}
+	}
 
 	private let storageService: StorageServiceProtocol
 
@@ -45,6 +55,8 @@ class SettingsViewViewModel: ObservableObject {
 		isTimerEnabled = settings.timerIsEnabled
 		updateInterval = settings.interval
 		isPickerPresented = settings.timerIsEnabled
+		isNewsSourceEnabled = settings.newsSourceIsEnabled
+		isNewsSourcePresented = settings.newsSourceIsEnabled
 	}
 
 	private func saveSettings() {
@@ -53,9 +65,14 @@ class SettingsViewViewModel: ObservableObject {
 				interval: updateInterval,
 				timerIsEnabled: isTimerEnabled,
 				showDescriptionIsEnabled: showDescription,
-				newsSourceIsEnabled: false
+				newsSourceIsEnabled: isNewsSourceEnabled
 			)
 		)
+	}
+
+	private func clearAllCache() {
+		ImageCache.shared.clearMemoryCache()
+		storageService.deleteAll(by: NewsFeedObject.self)
 	}
 }
 
@@ -103,14 +120,28 @@ struct SettingsView: View {
 				}
 
 				Section {
-					NavigationLink(destination: AddSourceView()) {
-						Text("Добавить источник")
+					Toggle("Источник новостей", isOn: $viewModel.isNewsSourceEnabled)
+						.onChange(of: viewModel.isNewsSourceEnabled) { value in
+							if value {
+								withAnimation {
+									viewModel.isNewsSourcePresented = true
+								}
+							} else {
+								withAnimation {
+									viewModel.isNewsSourcePresented = false
+								}
+							}
+						}
+					if viewModel.isNewsSourcePresented {
+						NavigationLink(destination: AddSourceView()) {
+							Text("Добавить источник")
+						}
 					}
 				}
 
 				Section {
 					Button(action: {
-						viewModel.showAlert = true // Показать алерт
+						viewModel.showAlert = true
 					}) {
 						Text("Очистить кеш")
 							.foregroundColor(.red)
@@ -120,15 +151,29 @@ struct SettingsView: View {
 							title: Text("Подтверждение"),
 							message: Text("Вы уверены, что хотите очистить кеш?"),
 							primaryButton: .destructive(Text("Очистить")) {
-								clearCache() // Функция очистки кеша
+								clearCache()
 							},
 							secondaryButton: .cancel(Text("Отмена"))
 						)
 					}
+					.alert(isPresented: $viewModel.cacheCleared) {
+						Alert(
+							title: Text("Кэш очищен"),
+							dismissButton: .destructive(Text("Окей")) {
+								viewModel.cacheCleared = false
+							}
+						)
+					}
 				}
-				//					.alert(isPresented: $cacheCleared) {
-				//						Alert(title: Text("Кеш очищен"))
-				//					}
+//				Section {}
+//					.alert(isPresented: $viewModel.cacheCleared) {
+//						Alert(
+//							title: Text("Кэш очищен"),
+//							dismissButton: .destructive(Text("Окей")) {
+//								viewModel.cacheCleared = false
+//							}
+//						)
+//					}
 			}
 		}
 	}
@@ -138,9 +183,7 @@ struct SettingsView: View {
 	}
 
 	private func clearCache() {
-		// Логика очистки кеша
-		// Например, можно добавить код для удаления данных кеша
-		viewModel.cacheCleared = true // Установить флаг о том, что кеш очищен
+		viewModel.cacheCleared = true
 	}
 }
 
