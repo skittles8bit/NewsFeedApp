@@ -85,7 +85,7 @@ struct SettingsView: View {
 			Form {
 				Group {
 					Section {
-						Toggle("Обновлять новости по таймеру", isOn: $viewModel.isTimerEnabled)
+						Toggle(Constants.newsUpdateToggleTitle, isOn: $viewModel.isTimerEnabled)
 							.onChange(of: viewModel.isTimerEnabled) { value in
 								if value {
 									withAnimation {
@@ -98,7 +98,7 @@ struct SettingsView: View {
 								}
 							}
 						if viewModel.isPickerPresented {
-							Picker("Интервал обновления", selection: $viewModel.updateInterval) {
+							Picker(Constants.timerPickerViewTitle, selection: $viewModel.updateInterval) {
 								ForEach([10, 15, 30, 40], id: \.self) { interval in
 									Text("\(interval) секунд")
 								}
@@ -107,7 +107,7 @@ struct SettingsView: View {
 							.frame(height: 150)
 						}
 						// Текст внизу секции
-						Text("Вы можете настроить автоматическое обновление новостей.\nУбедитесь, что у вас есть стабильное соединение с интернетом.")
+						Text(Constants.sectionBottomTimerText)
 							.font(.footnote) // Установка размера шрифта для текста
 							.foregroundColor(.gray) // Установка цвета текста
 							.padding(.top, 5) // Отступ сверху
@@ -116,11 +116,11 @@ struct SettingsView: View {
 				}
 
 				Section {
-					Toggle("Показывать описание новости", isOn: $viewModel.showDescription)
+					Toggle(Constants.descriptionToggleTitle, isOn: $viewModel.showDescription)
 				}
 
 				Section {
-					Toggle("Источник новостей", isOn: $viewModel.isNewsSourceEnabled)
+					Toggle(Constants.sourceToggleTitle, isOn: $viewModel.isNewsSourceEnabled)
 						.onChange(of: viewModel.isNewsSourceEnabled) { value in
 							if value {
 								withAnimation {
@@ -134,7 +134,7 @@ struct SettingsView: View {
 						}
 					if viewModel.isNewsSourcePresented {
 						NavigationLink(destination: AddSourceView()) {
-							Text("Добавить источник")
+							Text(Constants.sourceButtonTitle)
 						}
 					}
 				}
@@ -143,7 +143,7 @@ struct SettingsView: View {
 					Button(action: {
 						viewModel.showAlert = true
 					}) {
-						Text("Очистить кеш")
+						Text(Constants.cacheButtonTitle)
 							.foregroundColor(.red)
 					}
 					.alert(isPresented: $viewModel.showAlert) {
@@ -165,15 +165,6 @@ struct SettingsView: View {
 						)
 					}
 				}
-//				Section {}
-//					.alert(isPresented: $viewModel.cacheCleared) {
-//						Alert(
-//							title: Text("Кэш очищен"),
-//							dismissButton: .destructive(Text("Окей")) {
-//								viewModel.cacheCleared = false
-//							}
-//						)
-//					}
 			}
 		}
 	}
@@ -184,6 +175,23 @@ struct SettingsView: View {
 
 	private func clearCache() {
 		viewModel.cacheCleared = true
+	}
+}
+
+// MARK: - Private
+
+private extension SettingsView {
+
+	enum Constants {
+
+		static let title = "Настройки"
+		static let newsUpdateToggleTitle = "Обновлять новости по таймеру"
+		static let timerPickerViewTitle = "Обновлять новости по таймеру"
+		static let sectionBottomTimerText = "Вы можете настроить автоматическое обновление новостей.\nУбедитесь, что у вас есть стабильное соединение с интернетом."
+		static let descriptionToggleTitle = "Показывать описание новости"
+		static let sourceToggleTitle = "Источник новостей"
+		static let sourceButtonTitle = "Добавить источник"
+		static let cacheButtonTitle = "Очистить кеш"
 	}
 }
 
